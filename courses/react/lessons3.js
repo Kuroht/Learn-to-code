@@ -502,7 +502,8 @@ LESSONS.push({
 <li>Um hook próprio é uma função cujo nome começa por <code>use</code> e que usa outros hooks (<code>useState</code>, <code>useEffect</code>). Devolve o que quiseres: aqui, as tarefas e as funções para as mudar.</li>
 <li>Cada componente que chama o hook tem o <strong>seu</strong> estado: o hook partilha a lógica, não os dados.</li>
 <li>O texto do formulário vive no <code>FormNova</code>, perto de onde é usado. Repara no painel: enquanto escreves, só o FormNova renderiza.</li>
-<li>Próximos passos: guardar as tarefas no <code>localStorage</code> com um efeito; pedir dados a uma API a sério com <code>fetch</code>; várias páginas com o React Router; e as React DevTools no browser (o painel "Componentes" deste curso imita-as).</li>
+<li>A app está feita. As lições 11 a 14 explicam o que mais confunde no React: quando acontece cada coisa (o ciclo de vida) e que hook usar em cada caso.</li>
+<li>Depois disso: guardar as tarefas no <code>localStorage</code> com um efeito; pedir dados a uma API a sério com <code>fetch</code>; várias páginas com o React Router; e as React DevTools no browser (o painel "Componentes" deste curso imita-as).</li>
 </ul>`,
   analogy: 'Um hook próprio é uma receita escrita num cartão: a App e outro componente qualquer podem seguir a mesma receita, mas cada um cozinha na sua panela.',
   examples: [{

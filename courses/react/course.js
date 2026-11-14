@@ -3,10 +3,10 @@ module.exports = {
   slug: 'react',
   title: 'React do Zero',
   mark: '.tsx',
-  description: 'Uma lista de tarefas construída passo a passo: componentes, props, estado, eventos, listas e efeitos.',
+  description: 'Uma lista de tarefas construída passo a passo, e depois o ciclo de vida e quando usar cada hook (useEffect, useRef, useMemo, useCallback).',
   storageKey: 'reactdozero-progresso-v1', // não mudar depois de publicado: apagava o progresso guardado
   cheatTitle: 'Cábula de React',
-  lessonFiles: ['lessons1.js', 'lessons2.js', 'lessons3.js'],
+  lessonFiles: ['lessons1.js', 'lessons2.js', 'lessons3.js', 'lessons4.js'],
   viz: 'react', // usa shared/viz-react.js: a app a correr e a árvore de componentes
   // O CSS de todas as apps do curso (o App.css do projeto). A cábula mostra a parte que interessa: mantém as duas iguais.
   previewCss: `

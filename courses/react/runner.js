@@ -2,7 +2,9 @@
 // 1. o TypeScript verifica os tipos de cada App.tsx com os tipos oficiais do React (@types/react), como num
 //    projeto Vite com TypeScript;
 // 2. a app corre num browser sem janela (o mesmo React que vai dentro da página), cada passo é repetido
-//    com as suas ações, e confirma-se o que aparece (chk) e que componentes renderizaram (rr).
+//    com as suas ações, e confirma-se o que aparece (chk), que componentes renderizaram (rr), quantas vezes (rn)
+//    e as linhas da consola desde o início (log).
+// Nas perguntas e nos testes dos exercícios, o seletor especial "@consola" dá as linhas da consola, uma por linha.
 const path = require('path');
 const ts = require('typescript');
 const pageCheck = require('../../shared/page-check.js');
@@ -49,6 +51,12 @@ function typeErrors(code) {
     .map(d => `error TS${d.code}: ${ts.flattenDiagnosticMessageText(d.messageText, '\n').split('\n')[0]}`);
 }
 
+// Uma medição: a consola ("@consola") ou um elemento da página (como no curso de HTML).
+async function measure(sel, what) {
+  if (sel === '@consola') return (await pageCheck.evaluate(() => window.__dozero.logs().map(l => l.text))).join('\n');
+  return pageCheck.measure(sel, what);
+}
+
 const UMD = reactUmd();
 const pageOf = code => pageHtml(toPageJs(code), config.previewCss, UMD[0], UMD[1]);
 
@@ -66,7 +74,7 @@ module.exports = {
     await pageCheck.open();
     const jsErrors = await pageCheck.render(pageOf(code), q.width, q.acts, { settle: SETTLE, wait: q.wait });
     if (jsErrors.length) return { error: 'ERRO DE JAVASCRIPT NA APP: ' + jsErrors.join('; ') };
-    return { out: await pageCheck.measure(q.ask[0], q.ask[1]) };
+    return { out: await measure(q.ask[0], q.ask[1]) };
   },
 
   async checkExample(ex, lesson, { label, report }) {
@@ -83,7 +91,7 @@ module.exports = {
       report.check(`${where}: sem erros de JavaScript`, jsErrors.length === 0, jsErrors.join('\n'));
       if (s.sel) report.check(`${where}: "${s.sel}" encontra elementos`, Number(await pageCheck.measure(s.sel, 'count')) > 0);
       for (const [sel, what, expected] of ex.steps[i].chk || []) {
-        const got = await pageCheck.measure(sel, what);
+        const got = await measure(sel, what);
         report.check(`${where}: ${sel} ${what} = ${expected}`, got === String(expected), `real: ${got}`);
       }
       // rr: os componentes que renderizaram por causa deste passo (a montagem, ou a última ação).
@@ -91,6 +99,17 @@ module.exports = {
       if (rr) {
         const rendered = Object.keys(await pageCheck.evaluate(() => window.__dozero.rendered())).sort();
         report.check(`${where}: renderizaram ${rr.join(', ') || '(nenhum)'}`, JSON.stringify(rendered) === JSON.stringify(rr.slice().sort()), `real: ${rendered.join(', ') || '(nenhum)'}`);
+      }
+      // rn: quantas vezes renderizaram (para mostrar renders a mais), por exemplo { App: 2 }.
+      for (const [name, times] of Object.entries(ex.steps[i].rn || {})) {
+        const counts = await pageCheck.evaluate(() => window.__dozero.rendered());
+        report.check(`${where}: ${name} renderizou ${times} vez(es)`, (counts[name] || 0) === times, `real: ${counts[name] || 0}`);
+      }
+      // log: todas as linhas da consola desde que a app abriu.
+      const log = ex.steps[i].log;
+      if (log) {
+        const got = await measure('@consola');
+        report.check(`${where}: consola = ${log.join(' / ') || '(vazia)'}`, got === log.join('\n'), `real: ${got.split('\n').join(' / ') || '(vazia)'}`);
       }
     }
   },
@@ -104,7 +123,7 @@ module.exports = {
     const jsErrors = await pageCheck.render(pageOf(ex.solution), ex.width, ex.acts, { settle: SETTLE, wait: ex.wait });
     report.check(label + ': sem erros de JavaScript', jsErrors.length === 0, jsErrors.join('\n'));
     for (const [sel, what, expected] of ex.tests || []) {
-      const got = await pageCheck.measure(sel, what);
+      const got = await measure(sel, what);
       report.check(`${label}: ${sel} ${what} = ${expected}`, got === String(expected), `real: ${got}`);
     }
   },

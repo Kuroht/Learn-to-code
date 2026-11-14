@@ -14,3 +14,9 @@ iframe.preview { display: block; width: 100%; min-height: 240px; border: 0; back
 .rk { color: var(--muted); }
 .rs .rk { color: var(--t-num); }
 .rp, .rs { overflow-wrap: anywhere; }
+.rs-ref .rk, .rs-memo .rk { color: var(--t-ty, var(--muted)); }
+/* A consola só aparece nos exemplos com console.log (o atributo hidden tem de vencer o display do .panel). */
+.rconsole-panel[hidden] { display: none; }
+.rconsole { padding: 8px 12px; display: grid; gap: 2px; font-family: var(--font-mono); font-size: .8rem; min-height: 40px; }
+.rlog { color: var(--muted); }
+.rlog.fresh { color: var(--ink); font-weight: 700; }

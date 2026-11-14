@@ -106,6 +106,13 @@ Exercise `run` uses the same `⟦...⟧` convention. All of `o` joined together 
 - Only React 18 ships UMD files; don't upgrade `react`/`react-dom` to 19 without replacing the UMD approach.
 - Literal `const` values make comparisons fail type-checking (`1 === 3` → TS2367): type them (`const total: number = 3`).
 - `course.js → previewCss` is the CSS of every app; the cheat sheet shows a copy of it, keep the two in sync.
+- 15 lessons (an exception to the 10-11 rule, asked by the owner): 0-10 build the app, 11-14 explain the lifecycle and when to use
+  each hook (11 lifecycle/pages, 12 "which hook?" guide + useRef, 13 useMemo/useCallback/memo, 14 custom hooks).
+- If an example's code has `console.log`, a "Consola" panel appears (new lines of the step in bold). Step `log` = every console line
+  since the app opened (checked exactly); `rn: { App: 2 }` = exact render counts. Quizzes and exercise tests can measure
+  `['@consola', 'text']` (lines joined by newlines; use `mono: true` on the quiz). No accents in console output.
+- The component tree shows `useState` values, refs `(ref)` and `useMemo`/`useCallback` values `(memo)`, named from the code
+  (custom hooks, including generic ones, are followed). Write memo components as `const X = memo(function X(...) {...})`.
 
 ## TypeScript course specifics (`courses/typescript`)
 

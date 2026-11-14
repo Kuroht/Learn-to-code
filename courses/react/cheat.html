@@ -119,6 +119,43 @@ const { tarefas, remover } = useTarefas(TAREFAS);
     </div>
 
     <div class="box">
+      <h3>Que hook uso?</h3>
+      <ol>
+        <li>Acontece por causa de uma ação do utilizador? → código no <strong>evento</strong> (<code>onClick</code>, <code>onSubmit</code>).</li>
+        <li>Calcula-se a partir das props ou do estado? → um <strong>cálculo</strong> no render, sem hook.</li>
+        <li>Aparece no ecrã e muda? → <strong>useState</strong>.</li>
+        <li>Lembrar entre renders sem redesenhar (um id, um elemento)? → <strong>useRef</strong>.</li>
+        <li>Manter algo de fora do React a par (servidor, temporizador, título)? → <strong>useEffect</strong>.</li>
+        <li>Está lento, ou um filho renderiza sem precisar? → <strong>useMemo / useCallback / memo</strong> (raro).</li>
+        <li>A mesma mistura de hooks em dois componentes? → um <strong>hook próprio</strong>.</li>
+      </ol>
+    </div>
+
+    <div class="box">
+      <h3>Ciclo de vida</h3>
+<pre class="snip"><code class="tsx">// montar:     render → página desenhada → efeitos
+// atualizar:  render → limpeza dos efeitos cujas
+//             dependências mudaram → esses efeitos outra vez
+// desmontar:  limpezas; o estado do componente perde-se
+useEffect(() =&gt; {
+  // depois de montar (e quando x muda)
+  return () =&gt; { /* antes de desmontar (e antes de repetir) */ };
+}, [x]);   // [] = só ao montar; sem lista = depois de todos os renders</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>useRef, useMemo, useCallback, memo</h3>
+<pre class="snip"><code class="tsx">const vezes = useRef(0);          // vezes.current muda sem render
+const campo = useRef&lt;HTMLInputElement&gt;(null);
+&lt;input ref={campo} /&gt;             // campo.current?.focus()
+
+const ordenados = useMemo(() =&gt; ordenar(lista), [lista]);
+const somar = useCallback(() =&gt; setN(n + 1), [n]);
+const Botao = memo(function Botao(props: BotaoProps) { ... });
+// useCallback só serve para passar a um componente com memo</code></pre>
+    </div>
+
+    <div class="box">
       <h3>Mensagens de erro e avisos</h3>
       <div class="t-wrap"><table class="t">
         <thead><tr><th>Mensagem</th><th>Costuma ser</th></tr></thead>
