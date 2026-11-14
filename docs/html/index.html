@@ -675,7 +675,7 @@ font-size: 1.5em;  /* 1,5 × a letra do pai */
 </template>
 
 <script>
-const COURSE = {"slug":"html","title":"HTML e CSS do Zero","storageKey":"htmldozero-progresso-v1","cheatTitle":"Cábula de HTML e CSS","vizLabels":null,"viz":"page"};
+const COURSE = {"slug":"html","title":"HTML e CSS do Zero","storageKey":"htmldozero-progresso-v1","cheatTitle":"Cábula de HTML e CSS","vizLabels":null,"viz":"page","courses":[{"slug":"c","title":"C do Zero","mark":".c"},{"slug":"sql","title":"SQL do Zero","mark":".sql"},{"slug":"python","title":"Python do Zero","mark":".py"},{"slug":"csharp","title":"C# do Zero","mark":".cs"},{"slug":"rust","title":"Rust do Zero","mark":".rs"},{"slug":"html","title":"HTML e CSS do Zero","mark":".html"},{"slug":"javascript","title":"JavaScript do Zero","mark":".js"},{"slug":"typescript","title":"TypeScript do Zero","mark":".ts"}]};
 // Realce de sintaxe para HTML e CSS (no mesmo ficheiro). Cada grupo corresponde a uma classe em "classes":
 // comentários, textos entre aspas, etiquetas, nomes de atributos, propriedades CSS e números/cores.
 const SYNTAX = {
@@ -2679,7 +2679,18 @@ LESSONS.push({
       '<div class="nav-label">Lições</div>' +
       LESSONS.map(l => '<a href="#licao-' + l.id + '"' + cur('licao-' + l.id) + '><span class="nav-num">' + l.id + '</span><span>' + esc(l.title) + '</span><span class="nav-done">' + (isDone(l.id) ? '✓' : '') + '</span></a>').join('') +
       '<div class="nav-label">Consulta</div>' +
-      '<a href="#cabula"' + cur('cabula') + '><span class="nav-icon">{ }</span><span>' + esc(COURSE.cheatTitle) + '</span><span></span></a>';
+      '<a href="#cabula"' + cur('cabula') + '><span class="nav-icon">{ }</span><span>' + esc(COURSE.cheatTitle) + '</span><span></span></a>' +
+      otherCoursesHtml();
+  }
+
+  // Os outros cursos do site, para saltar de um para outro. Os links apontam para o index.html de cada pasta,
+  // para funcionarem também com os ficheiros abertos diretamente do disco (sem servidor).
+  function otherCoursesHtml() {
+    const others = (COURSE.courses || []).filter(c => c.slug !== COURSE.slug);
+    if (!others.length) return '';
+    return '<div class="nav-label">Outros cursos</div>' +
+      '<a href="../index.html"><span class="nav-icon">⌂</span><span>Todos os cursos</span><span></span></a>' +
+      others.map(c => '<a href="../' + encodeURIComponent(c.slug) + '/index.html"><span class="nav-icon">' + esc(c.mark) + '</span><span>' + esc(c.title) + '</span><span></span></a>').join('');
   }
 
   // ---------- menu no telemóvel ----------

@@ -37,7 +37,9 @@ function buildCourse(slug) {
   const vizList = [].concat(config.viz || []);
   const vizJs = vizList.map(v => '\n' + read('viz-' + v + '.js')).join('');
   const vizCss = vizList.map(v => '<style>\n' + read('viz-' + v + '.css') + '</style>\n').join('');
-  const courseJs = 'const COURSE = ' + JSON.stringify({ slug, title: config.title, storageKey: config.storageKey, cheatTitle: config.cheatTitle, vizLabels: config.vizLabels || null, viz: vizList[0] || null }) + ';\n' + course.syntaxSource + vizJs;
+  // courses: todos os cursos do site, para a barra lateral poder saltar de um para outro.
+  const courses = listSlugs().map(s => { const c = loadCourse(s).config; return { slug: s, title: c.title, mark: c.mark }; });
+  const courseJs = 'const COURSE = ' + JSON.stringify({ slug, title: config.title, storageKey: config.storageKey, cheatTitle: config.cheatTitle, vizLabels: config.vizLabels || null, viz: vizList[0] || null, courses }) + ';\n' + course.syntaxSource + vizJs;
   const inlined = engine + courseJs + course.lessonsSource;
   if (inlined.includes('</script')) throw new Error(slug + ': o texto "</script" partia a página');
 
@@ -63,7 +65,8 @@ function buildCatalog() {
   const cards = listSlugs().map(slug => {
     const { config } = loadCourse(slug);
     const style = config.theme ? ` style="--card-light: ${config.theme.light.accent}; --card-dark: ${config.theme.dark.accent}"` : '';
-    return `      <a class="course" href="${slug}/"${style}>\n` +
+    // index.html explícito: assim o link funciona também com os ficheiros abertos diretamente do disco.
+    return `      <a class="course" href="${slug}/index.html"${style}>\n` +
       `        <span class="course-mark">${esc(config.mark)}</span>\n` +
       `        <strong>${esc(config.title)}</strong>\n` +
       `        <span>${esc(config.description)}</span>\n` +

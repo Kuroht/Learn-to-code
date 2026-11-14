@@ -822,7 +822,18 @@ details[open] summary { border-bottom: 1px solid var(--line); }
       '<div class="nav-label">Lições</div>' +
       LESSONS.map(l => '<a href="#licao-' + l.id + '"' + cur('licao-' + l.id) + '><span class="nav-num">' + l.id + '</span><span>' + esc(l.title) + '</span><span class="nav-done">' + (isDone(l.id) ? '✓' : '') + '</span></a>').join('') +
       '<div class="nav-label">Consulta</div>' +
-      '<a href="#cabula"' + cur('cabula') + '><span class="nav-icon">{ }</span><span>' + esc(COURSE.cheatTitle) + '</span><span></span></a>';
+      '<a href="#cabula"' + cur('cabula') + '><span class="nav-icon">{ }</span><span>' + esc(COURSE.cheatTitle) + '</span><span></span></a>' +
+      otherCoursesHtml();
+  }
+
+  // Os outros cursos do site, para saltar de um para outro. Os links apontam para o index.html de cada pasta,
+  // para funcionarem também com os ficheiros abertos diretamente do disco (sem servidor).
+  function otherCoursesHtml() {
+    const others = (COURSE.courses || []).filter(c => c.slug !== COURSE.slug);
+    if (!others.length) return '';
+    return '<div class="nav-label">Outros cursos</div>' +
+      '<a href="../index.html"><span class="nav-icon">⌂</span><span>Todos os cursos</span><span></span></a>' +
+      others.map(c => '<a href="../' + encodeURIComponent(c.slug) + '/index.html"><span class="nav-icon">' + esc(c.mark) + '</span><span>' + esc(c.title) + '</span><span></span></a>').join('');
   }
 
   // ---------- menu no telemóvel ----------

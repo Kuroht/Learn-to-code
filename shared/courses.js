@@ -6,7 +6,8 @@ const ROOT = path.join(__dirname, '..');
 const COURSES_DIR = path.join(ROOT, 'courses');
 
 // Lista os slugs de todos os cursos, pela ordem em que aparecem na página inicial.
-const ORDER = ['c', 'sql', 'python', 'csharp', 'rust', 'typescript'];
+// A ordem sugerida para aprender (e a dos cartões na página inicial e na barra lateral).
+const ORDER = ['c', 'sql', 'python', 'csharp', 'rust', 'html', 'javascript', 'typescript'];
 function listSlugs() {
   const found = fs.readdirSync(COURSES_DIR).filter(name => fs.existsSync(path.join(COURSES_DIR, name, 'course.js')));
   const rank = slug => (ORDER.includes(slug) ? ORDER.indexOf(slug) : ORDER.length);
