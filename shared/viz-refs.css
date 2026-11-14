@@ -1,0 +1,27 @@
+/* ---------- visualizador de referências (Python, C#, ...) ---------- */
+/* Usa as variáveis do template, por isso funciona nos temas claro e escuro. */
+.names { display: flex; flex-wrap: wrap; gap: 6px; }
+.name { display: flex; align-items: baseline; gap: 8px; border: 1px solid var(--line); border-radius: 8px; padding: 4px 9px; background: var(--code-bg); font-family: var(--font-mono); max-width: 100%; }
+.name.is-new { border-color: var(--accent); }
+.name .var-type { font-size: .7rem; }
+.name .var-name { font-size: .9rem; }
+.name > span:last-child { font-size: .95rem; overflow-wrap: anywhere; }
+.ref { display: inline-block; font-family: var(--font-mono); font-size: .78rem; font-weight: 600; border-radius: 5px; padding: 0 5px; border: 1.5px solid currentColor; white-space: nowrap; }
+.ref-c0 { color: var(--t-fn); }
+.ref-c1 { color: var(--t-str); }
+.ref-c2 { color: var(--t-ty); }
+.ref-c3 { color: var(--t-num); }
+.ref-c4 { color: var(--t-kw); }
+.ref-c5 { color: var(--t-pp); }
+.ref.chg, .name .chg, .obj .chg { background: var(--mark); box-shadow: 0 0 0 2px var(--mark-edge); border-radius: 4px; }
+.objs { display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-start; }
+.obj { border: 1px solid var(--line); border-radius: 8px; padding: 6px 9px 7px; background: var(--panel); display: grid; gap: 4px; min-width: 70px; max-width: 100%; }
+.obj.is-new { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.obj.orphan { opacity: .5; border-style: dashed; }
+.obj-top { display: flex; gap: 8px; align-items: baseline; justify-content: space-between; }
+.obj-top .var-type { font-family: var(--font-mono); font-size: .7rem; }
+.obj .var-val { font-size: 1rem; }
+.obj .cells .cell-v { min-width: 2.2em; }
+.obj-empty { font-family: var(--font-mono); font-size: .8rem; color: var(--muted); font-style: italic; }
+.orphan-note { font-size: .7rem; color: var(--muted); font-style: italic; }
+.mini.kv td { font-family: var(--font-mono); }

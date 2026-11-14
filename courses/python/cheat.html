@@ -1,0 +1,161 @@
+  <section class="lesson-head">
+    <span class="eyebrow">Resumo</span>
+    <h1>Cábula de Python</h1>
+    <p class="lead">Tudo o que as lições ensinam, numa página. Boa para ter aberta enquanto fazes exercícios.</p>
+  </section>
+  <div class="cheat">
+    <div class="box">
+      <h3>Básico</h3>
+<pre class="snip"><code class="python"># comentário
+nome = input("Nome? ")          # devolve sempre texto
+idade = int(input("Idade? "))   # converte para inteiro
+print("Ola", nome)              # muda de linha sozinho
+print(f"{nome} tem {idade} anos")
+print(f"{3.14159:.2f}")         # 3.14
+print("a", "b", sep="-", end="")</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Tipos e conversões</h3>
+      <div class="t-wrap"><table class="t">
+        <thead><tr><th>Tipo</th><th>Exemplo</th><th>Converter</th></tr></thead>
+        <tbody>
+          <tr><td><code>int</code></td><td><code>42</code></td><td><code>int("42")</code></td></tr>
+          <tr><td><code>float</code></td><td><code>14.5</code></td><td><code>float("14.5")</code></td></tr>
+          <tr><td><code>str</code></td><td><code>"Ana"</code> ou <code>'Ana'</code></td><td><code>str(42)</code></td></tr>
+          <tr><td><code>bool</code></td><td><code>True</code>, <code>False</code></td><td></td></tr>
+          <tr><td><code>None</code></td><td>"nada"</td><td></td></tr>
+        </tbody>
+      </table></div>
+      <p><code>type(x)</code> diz o tipo do objeto para onde x aponta.</p>
+    </div>
+
+    <div class="box">
+      <h3>Operadores</h3>
+      <div class="t-wrap"><table class="t">
+        <tbody>
+          <tr><td>Contas</td><td><code>7 / 2</code> → 3.5 · <code>7 // 2</code> → 3 · <code>7 % 2</code> → 1 · <code>2 ** 3</code> → 8</td></tr>
+          <tr><td>Comparar</td><td><code>== != &lt; &gt; &lt;= &gt;=</code> · <code>0 &lt;= x &lt;= 20</code></td></tr>
+          <tr><td>Lógicos</td><td><code>and or not</code></td></tr>
+          <tr><td>Atalhos</td><td><code>x += 1</code> (não há <code>x++</code>)</td></tr>
+          <tr><td>Pertence</td><td><code>x in lista</code>, <code>"an" in texto</code>, <code>chave in dic</code></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="box">
+      <h3>Decisões e ciclos</h3>
+<pre class="snip"><code class="python">if nota &gt;= 10:
+    print("Aprovado")
+elif nota &gt;= 0:
+    print("Reprovado")
+else:
+    print("Invalida")
+
+for i in range(5):        # 0, 1, 2, 3, 4
+    ...
+for i in range(1, 11):    # 1 a 10
+    ...
+for letra in "ola":       # 'o', 'l', 'a'
+    ...
+while True:
+    if fim:
+        break</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Listas</h3>
+<pre class="snip"><code class="python">v = [12, 17, 9]
+v[0]  v[-1]  v[1:3]  v[::-1]  len(v)
+v.append(15)        # no fim
+v.insert(0, 8)      # na posição 0
+x = v.pop()         # tira o último
+v.remove(17)        # tira o primeiro 17
+v.sort()            # ordena a própria lista (devolve None)
+w = sorted(v)       # lista nova, ordenada
+sum(v)  max(v)  min(v)
+c = v.copy()        # cópia a sério (c = v não copia!)</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Texto</h3>
+<pre class="snip"><code class="python">s = "  Ana Silva "
+s.strip()  s.upper()  s.lower()
+s.replace("a", "o")
+s.split()            # ['Ana', 'Silva']
+"-".join(lista)
+s.count("a")  s.find("S")  len(s)
+s[0]  s[1:3]  s[::-1]
+# s[0] = "x" dá erro: o texto não muda</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Dicionários</h3>
+<pre class="snip"><code class="python">d = {"Ana": 17, "Rui": 9}
+d["Ana"]             # 17 (KeyError se não existir)
+d["Ines"] = 14       # acrescenta ou troca
+d.get("Tiago", 0)    # 0 se não existir
+"Ana" in d           # procura nas chaves
+for nome, nota in d.items():
+    print(nome, nota)</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Funções</h3>
+<pre class="snip"><code class="python">def media(lista):
+    return sum(lista) / len(lista)
+
+def mostra(x):       # sem return: devolve None
+    print(x)</code></pre>
+      <p>O parâmetro aponta para o mesmo objeto que o argumento: se a função muda uma lista recebida, a mudança vê-se fora.</p>
+    </div>
+
+    <div class="box">
+      <h3>Erros e ficheiros</h3>
+<pre class="snip"><code class="python">try:
+    n = int(texto)
+except ValueError:
+    print("Nao e um numero")
+
+with open("dados.txt", "w") as f:    # "r" ler · "w" escrever (apaga) · "a" acrescentar
+    f.write("linha\n")
+with open("dados.txt") as f:
+    for linha in f:
+        print(linha.strip())</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Mensagens de erro</h3>
+      <div class="t-wrap"><table class="t">
+        <thead><tr><th>Mensagem (última linha)</th><th>Costuma ser</th></tr></thead>
+        <tbody>
+          <tr><td><code>SyntaxError: expected ':'</code></td><td>falta o <code>:</code> no if, for, while ou def</td></tr>
+          <tr><td><code>IndentationError: unexpected indent</code></td><td>espaços a mais no início da linha</td></tr>
+          <tr><td><code>IndentationError: expected an indented block</code></td><td>o bloco do if, for ou def está vazio ou encostado à esquerda</td></tr>
+          <tr><td><code>SyntaxError: '(' was never closed</code></td><td>falta fechar um parêntese</td></tr>
+          <tr><td><code>NameError: name 'x' is not defined</code></td><td>nome mal escrito, ou usado antes de lhe dar valor</td></tr>
+          <tr><td><code>TypeError: can only concatenate str (not "int") to str</code></td><td>texto + número: falta um <code>int()</code> ou <code>str()</code></td></tr>
+          <tr><td><code>ValueError: invalid literal for int() with base 10: 'abc'</code></td><td><code>int()</code> de um texto que não é um número</td></tr>
+          <tr><td><code>IndexError: list index out of range</code></td><td>índice maior do que a lista (o último é <code>len - 1</code>)</td></tr>
+          <tr><td><code>KeyError: 'Tiago'</code></td><td>chave que não existe no dicionário: usa <code>in</code> ou <code>get</code></td></tr>
+          <tr><td><code>TypeError: 'str' object does not support item assignment</code></td><td>tentaste mudar uma letra de um texto</td></tr>
+          <tr><td><code>AttributeError: 'list' object has no attribute 'push'</code></td><td>método que não existe (aqui era <code>append</code>)</td></tr>
+          <tr><td><code>ZeroDivisionError: division by zero</code></td><td>divisão por zero</td></tr>
+          <tr><td><code>FileNotFoundError: [Errno 2] No such file or directory</code></td><td>o ficheiro não está na pasta onde o programa corre</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="box">
+      <h3>Antes de entregar</h3>
+      <ul class="checklist">
+        <li>Os if, for, while e def acabam com <code>:</code> e o bloco tem 4 espaços.</li>
+        <li>O que vem do <code>input</code> foi convertido antes das contas.</li>
+        <li>As divisões usam <code>/</code> ou <code>//</code> conforme queres real ou inteiro.</li>
+        <li>Os <code>range</code> acabam onde devem (o último número não está incluído).</li>
+        <li>Onde precisavas de uma cópia de uma lista, usaste <code>.copy()</code>.</li>
+        <li>As funções que devem devolver um valor têm <code>return</code> (e não só <code>print</code>).</li>
+        <li>Testaste com valores pequenos e casos limite (0, lista vazia, chave que não existe).</li>
+      </ul>
+    </div>
+  </div>

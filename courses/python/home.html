@@ -1,0 +1,67 @@
+  <section class="hero">
+    <span class="eyebrow">Programação em Python · para quem já fez o C</span>
+    <h1>Aprender Python a ver os nomes e os objetos</h1>
+    <p>Onze lições curtas, do primeiro <code>print</code> aos dicionários e ficheiros. Em cada exemplo carregas em "Seguinte" e vês para que objeto aponta cada nome, quando um objeto muda e quando aparece um novo.</p>
+    <div class="hero-actions" id="hero-actions"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>Como usar</h2></div>
+    <ol class="steps">
+      <li><h3>Lê a explicação</h3><p>É curta e compara com o C sempre que ajuda. Fica com a ideia principal e passa ao exemplo.</p></li>
+      <li><h3>Corre o exemplo</h3><p>Antes de cada "Seguinte", tenta adivinhar: este nome vai apontar para um objeto novo, ou o objeto vai mudar?</p></li>
+      <li><h3>Responde às perguntas</h3><p>São do tipo "o que aparece no ecrã?". Cada resposta traz a explicação.</p></li>
+      <li><h3>Faz os exercícios no computador</h3><p>Escreve e corre o programa antes de abrires a solução. A dica ajuda a começar.</p></li>
+    </ol>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>Lições</h2><p>Segue a ordem: cada lição usa o que veio antes.</p></div>
+    <div class="grid-lessons" id="home-lessons"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>A ideia que muda tudo: nomes e objetos</h2>
+      <p>É a diferença mais importante para o C, e a que explica os erros mais estranhos.</p>
+    </div>
+    <div class="two">
+      <div class="prose">
+        <p>Em C, <code>b = a</code> copiava o valor para outra caixa. Em Python, <code>b = a</code> cola um segundo nome no <strong>mesmo objeto</strong>.</p>
+        <p>Com números e textos nunca se nota, porque eles nunca mudam: cada conta cria um objeto novo. Com listas e dicionários nota-se muito, porque eles mudam por dentro, e a mudança vê-se por todos os nomes que lhes apontam.</p>
+        <p>Nas perguntas "o que aparece no ecrã?", desenha no papel o que o visualizador desenha: os nomes de um lado, os objetos do outro, e uma seta de cada nome para o seu objeto.</p>
+      </div>
+      <div class="t-wrap">
+        <table class="t trace">
+          <thead><tr><th>Código</th><th>O que acontece</th></tr></thead>
+          <tbody>
+            <tr><td>a = [1, 2]</td><td>cria a lista, a → lista</td></tr>
+            <tr><td>b = a</td><td>b → a <strong>mesma</strong> lista</td></tr>
+            <tr class="hl"><td>b.append(3)</td><td>a lista muda; a vê [1, 2, 3]</td></tr>
+            <tr><td>b = [9]</td><td>lista nova; só o b muda</td></tr>
+            <tr><td>c = a.copy()</td><td>outra lista, igual à de a</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="two">
+    <div class="box">
+      <h2>Onde praticar</h2>
+      <ul>
+        <li><strong>No browser, sem instalar nada:</strong> <a href="https://www.online-python.com">Online Python</a> ou <a href="https://pythontutor.com">Python Tutor</a>, que também desenha os nomes e os objetos.</li>
+        <li><strong>No teu computador:</strong> instala o Python (python.org ou Microsoft Store). Escreve o programa num ficheiro <code>ola.py</code> e corre-o com <code>python ola.py</code>.</li>
+        <li>Também podes escrever <code>python</code> sozinho no terminal e experimentar linha a linha: cada expressão mostra logo o resultado.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h2>Para quem está a explicar</h2>
+      <ul>
+        <li>Pede-lhe que diga o que vai acontecer <em>antes</em> de carregar em "Seguinte", sobretudo nas lições 1, 6 e 7.</li>
+        <li>Quando aparece um erro, leiam juntos a <strong>última linha</strong> da mensagem: diz o tipo de erro e porquê.</li>
+        <li>A indentação faz parte do programa. Confirmem que o editor usa 4 espaços.</li>
+        <li>Se o C estiver fresco, comparem: muitas coisas são iguais (índices a partir de 0, %, while), outras não (/ e //, nomes e objetos).</li>
+      </ul>
+    </div>
+  </section>

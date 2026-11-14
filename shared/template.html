@@ -610,7 +610,7 @@ details[open] summary { border-bottom: 1px solid var(--line); }
       noteLine.textContent = 'linha ' + s.l;
       noteText.innerHTML = s.n;
       if (SIDE) {
-        SIDE.render(host, s, prev);
+        SIDE.render(host, s, prev, { renderTerm, isLast: cur === steps.length - 1 });
       } else {
         mem.innerHTML = memHtml(s.frames, prev ? prev.frames : null);
         term.innerHTML = renderTerm(s.out, cur < steps.length - 1);

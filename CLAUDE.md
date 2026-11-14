@@ -63,6 +63,16 @@ Exercise `run` uses the same `⟦...⟧` convention. All of `o` joined together 
 - `runner.js` exports `toolName`, `installHint`, `isAvailable()`, `wrapQuiz(code, quiz, lesson)` and `run(code, stdin, tmpDir, item, lesson)` → `{ out }` or `{ error }` (+ optional `warnings`).
   Optional `checkExample(example, lesson, { label, report })` replaces the default "compare `o` with stdout" check for examples.
 - `course.js → viz: 'tables'` swaps the Memory + Screen panel for Database + Result (`shared/viz-tables.js/.css`).
+- `course.js → viz: 'refs'` swaps it for Names + Objects + Screen (`shared/viz-refs.js/.css`), for languages with references
+  (Python now; meant to be reused for C# and TypeScript). Steps add `obj: { o1: [type, value] }` to create or change heap objects;
+  a variable whose value is `'@o1'` points to object o1 (shown as a coloured `→ #1` tag, no drawn arrows). Objects no name can reach
+  fade for one step, then disappear. Frame `global` is shown as is; other frames get `()`.
+
+## Python course specifics (`courses/python`)
+
+- Runs `python -I` (or `python3`). If the program ends with an exception, the last stderr line (e.g. `TypeError: ...`)
+  is appended to stdout, so examples and quiz options can show errors as the student sees them.
+- Every name points to an object (lesson 1's model). Numbers and texts inside lists/dicts are shown inline to keep the panel readable.
 
 ## SQL course specifics (`courses/sql`)
 

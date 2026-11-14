@@ -1,0 +1,2609 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Python do Zero</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Caderno de laboratório: papel azulado, tinta azul-escura, marcador amarelo na linha que está a correr.
+     Layout: barra lateral com as lições + coluna de leitura; o visualizador alarga para código | memória + ecrã. */
+  --paper: #f2f4f8;
+  --panel: #ffffff;
+  --ink: #161d2e;
+  --muted: #586276;
+  --line: #d9dfea;
+  --accent: #2547d0;
+  --accent-ink: #ffffff;
+  --accent-soft: #e6ebfc;
+  --mark: #ffe58a;
+  --mark-edge: #d9a514;
+  --ok: #17804a;
+  --ok-soft: #e1f3e8;
+  --bad: #bf3329;
+  --bad-soft: #fbe6e3;
+  --code-bg: #f8f9fc;
+  --term-bg: #121826;
+  --term-ink: #dfe6f3;
+  --term-in: #ffd866;
+  --t-kw: #7a2bc2;
+  --t-ty: #0b7584;
+  --t-str: #a0450a;
+  --t-num: #ad1767;
+  --t-com: #737d90;
+  --t-pp: #39691a;
+  --t-fn: #2547d0;
+  --shadow: 0 1px 2px rgba(22, 29, 46, .06), 0 6px 20px rgba(22, 29, 46, .05);
+  --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0f121a;
+    --panel: #161b25;
+    --ink: #e6e9f1;
+    --muted: #98a1b4;
+    --line: #283041;
+    --accent: #8ea5ff;
+    --accent-ink: #0f121a;
+    --accent-soft: #1d2645;
+    --mark: rgba(255, 210, 60, .2);
+    --mark-edge: #e9bd3a;
+    --ok: #4cc47f;
+    --ok-soft: rgba(76, 196, 127, .14);
+    --bad: #ff7d70;
+    --bad-soft: rgba(255, 125, 112, .14);
+    --code-bg: #121620;
+    --term-bg: #0a0d14;
+    --t-kw: #c79bf2;
+    --t-ty: #63d3e2;
+    --t-str: #f4a46d;
+    --t-num: #ff8cc4;
+    --t-com: #7e899f;
+    --t-pp: #a8d873;
+    --t-fn: #8ea5ff;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 6px 20px rgba(0, 0, 0, .25);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0f121a;
+  --panel: #161b25;
+  --ink: #e6e9f1;
+  --muted: #98a1b4;
+  --line: #283041;
+  --accent: #8ea5ff;
+  --accent-ink: #0f121a;
+  --accent-soft: #1d2645;
+  --mark: rgba(255, 210, 60, .2);
+  --mark-edge: #e9bd3a;
+  --ok: #4cc47f;
+  --ok-soft: rgba(76, 196, 127, .14);
+  --bad: #ff7d70;
+  --bad-soft: rgba(255, 125, 112, .14);
+  --code-bg: #121620;
+  --term-bg: #0a0d14;
+  --t-kw: #c79bf2;
+  --t-ty: #63d3e2;
+  --t-str: #f4a46d;
+  --t-num: #ff8cc4;
+  --t-com: #7e899f;
+  --t-pp: #a8d873;
+  --t-fn: #8ea5ff;
+  --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 6px 20px rgba(0, 0, 0, .25);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 17px/1.6 var(--font-body);
+}
+a { color: var(--accent); text-underline-offset: 3px; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+h1, h2, h3, h4 { font-family: var(--font-display); line-height: 1.15; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(2rem, 1.5rem + 2vw, 2.9rem); font-weight: 800; letter-spacing: -.02em; }
+h2 { font-size: 1.55rem; font-weight: 800; letter-spacing: -.01em; }
+h3 { font-size: 1.15rem; font-weight: 600; }
+h4 { font-size: 1.05rem; font-weight: 600; }
+p { margin: 0; }
+code, pre, kbd { font-family: var(--font-mono); font-size: .88em; }
+:not(pre) > code {
+  background: var(--accent-soft);
+  padding: .08em .35em;
+  border-radius: 5px;
+  white-space: nowrap;
+}
+
+/* ---------- estrutura ---------- */
+.app { display: grid; grid-template-columns: 276px minmax(0, 1fr); min-height: 100vh; }
+.sidebar {
+  position: sticky; top: 0; height: 100vh; overflow-y: auto;
+  background: var(--panel); border-right: 1px solid var(--line);
+  padding: 22px 14px 28px; display: flex; flex-direction: column; gap: 18px;
+}
+.brand { display: flex; align-items: baseline; gap: 8px; padding: 0 10px; text-decoration: none; color: var(--ink); }
+.brand-mark {
+  font-family: var(--font-mono); font-weight: 600; font-size: .95rem;
+  background: var(--ink); color: var(--panel); padding: 2px 7px; border-radius: 6px;
+}
+.brand-name { font-family: var(--font-display); font-weight: 800; font-size: 1.35rem; letter-spacing: -.01em; }
+.progress { padding: 0 10px; display: grid; gap: 6px; font-size: .85rem; color: var(--muted); }
+.progress-track { height: 6px; background: var(--line); border-radius: 99px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--ok); border-radius: 99px; transition: width .3s; }
+.nav { display: grid; gap: 2px; }
+.nav-label { font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); padding: 10px 10px 4px; }
+.nav a {
+  display: grid; grid-template-columns: 26px minmax(0, 1fr) auto; align-items: center; gap: 8px;
+  padding: 7px 10px; border-radius: 8px; color: var(--ink); text-decoration: none; font-size: .95rem; line-height: 1.3;
+}
+.nav a:hover { background: var(--paper); }
+.nav a[aria-current="page"] { background: var(--accent-soft); color: var(--accent); font-weight: 700; }
+.nav-num {
+  font-family: var(--font-mono); font-size: .78rem; color: var(--muted); text-align: center;
+  border: 1px solid var(--line); border-radius: 6px; padding: 1px 0;
+}
+.nav a[aria-current="page"] .nav-num { border-color: var(--accent); color: var(--accent); }
+.nav-done { color: var(--ok); font-size: .85rem; font-weight: 700; }
+.nav-icon { width: 26px; text-align: center; color: var(--muted); font-family: var(--font-mono); font-size: .8rem; }
+
+main { padding: 36px clamp(16px, 4vw, 52px) 96px; min-width: 0; }
+.content { max-width: 1060px; margin: 0 auto; display: grid; gap: 40px; }
+.prose { max-width: 68ch; display: grid; gap: 14px; }
+.prose ul { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
+
+.topbar { display: none; }
+
+/* ---------- tabelas ---------- */
+.t-wrap { overflow-x: auto; }
+table.t { border-collapse: collapse; width: 100%; font-size: .93rem; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.t th, .t td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.t th { font-size: .78rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); background: var(--code-bg); }
+.t tr:last-child td { border-bottom: 0; }
+.t td code { white-space: nowrap; }
+
+/* ---------- código ---------- */
+pre { margin: 0; }
+pre.snip {
+  background: var(--code-bg); border: 1px solid var(--line); border-radius: 10px;
+  padding: 12px 14px; overflow-x: auto; line-height: 1.55;
+}
+.t-kw { color: var(--t-kw); font-weight: 600; }
+.t-ty { color: var(--t-ty); font-weight: 600; }
+.t-str { color: var(--t-str); }
+.t-num { color: var(--t-num); }
+.t-com { color: var(--t-com); font-style: italic; }
+.t-pp { color: var(--t-pp); }
+.t-fn { color: var(--t-fn); }
+
+/* ---------- cabeçalho da lição ---------- */
+.lesson-head { display: grid; gap: 10px; }
+.eyebrow { font-family: var(--font-mono); font-size: .82rem; color: var(--accent); font-weight: 600; letter-spacing: .02em; }
+.lead { font-size: 1.15rem; color: var(--muted); max-width: 60ch; }
+.analogy {
+  max-width: 68ch; background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--mark-edge);
+  border-radius: 10px; padding: 14px 18px; display: grid; gap: 4px;
+}
+.analogy-label { font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+.section { display: grid; gap: 16px; }
+.section-head { display: grid; gap: 4px; }
+.section-head p { color: var(--muted); }
+
+/* ---------- visualizador ---------- */
+.viz {
+  background: var(--panel); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow);
+  padding: 16px; display: grid; gap: 12px;
+}
+.viz:focus-visible { outline-offset: 4px; border-radius: 14px; }
+.viz-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; }
+.viz-title { display: grid; gap: 2px; }
+.viz-title small { font-family: var(--font-mono); color: var(--muted); font-size: .78rem; }
+.viz-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.viz-count { font-family: var(--font-mono); font-size: .82rem; color: var(--muted); min-width: 9.5em; text-align: center; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.btn {
+  font: inherit; font-size: .92rem; font-weight: 700; cursor: pointer;
+  border: 1px solid var(--line); background: var(--panel); color: var(--ink);
+  padding: 7px 14px; border-radius: 9px; line-height: 1.2;
+}
+.btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+.btn:disabled { opacity: .45; cursor: default; }
+.btn-primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn-primary:hover:not(:disabled) { color: var(--accent-ink); filter: brightness(1.08); }
+.btn-ghost { border-color: transparent; color: var(--muted); }
+.viz-bar { height: 4px; background: var(--line); border-radius: 99px; overflow: hidden; }
+.viz-bar span { display: block; height: 100%; background: var(--accent); transition: width .2s; }
+.viz-note {
+  background: var(--accent-soft); border-radius: 10px; padding: 12px 14px; min-height: 3.4em;
+  display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; align-items: start;
+}
+.viz-note code { background: var(--panel); }
+.viz-note-line { font-family: var(--font-mono); font-size: .78rem; font-weight: 600; color: var(--accent); background: var(--panel); border-radius: 6px; padding: 2px 7px; margin-top: 2px; white-space: nowrap; }
+.viz-grid { display: grid; grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr); gap: 12px; align-items: start; }
+.viz-side { display: grid; gap: 12px; }
+.panel { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--code-bg); }
+.panel-label {
+  font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .09em; color: var(--muted);
+  padding: 7px 12px; border-bottom: 1px solid var(--line); background: var(--panel);
+  display: flex; justify-content: space-between; gap: 8px;
+}
+.code { overflow-x: auto; padding: 8px 0; font-family: var(--font-mono); font-size: .86rem; line-height: 1.65; }
+.ln { display: grid; grid-template-columns: 2.6em 1.3em minmax(0, 1fr); white-space: pre; min-width: max-content; padding-right: 14px; }
+.ln .no { text-align: right; color: var(--t-com); opacity: .8; user-select: none; }
+.ln .arrow { text-align: center; color: var(--mark-edge); user-select: none; }
+.ln.cur { background: var(--mark); box-shadow: inset 3px 0 0 var(--mark-edge); }
+.ln.cur .no { color: var(--ink); opacity: 1; font-weight: 600; }
+
+.mem { padding: 10px; display: grid; gap: 10px; min-height: 92px; }
+.mem-empty { color: var(--muted); font-size: .9rem; padding: 6px 4px; }
+.frame { border: 1px dashed var(--line); border-radius: 9px; padding: 8px; display: grid; gap: 8px; background: var(--panel); }
+.frame.active { border: 1px solid var(--accent); }
+.frame-name { font-family: var(--font-mono); font-size: .78rem; font-weight: 600; color: var(--muted); display: flex; justify-content: space-between; }
+.frame.active .frame-name { color: var(--accent); }
+.vars { display: flex; flex-wrap: wrap; gap: 8px; }
+.var {
+  border: 1px solid var(--line); border-radius: 8px; padding: 6px 9px 7px; background: var(--code-bg);
+  display: grid; gap: 2px; min-width: 76px; max-width: 100%;
+}
+.var.wide { flex-basis: 100%; }
+.var-top { display: flex; justify-content: space-between; gap: 10px; font-family: var(--font-mono); font-size: .7rem; color: var(--muted); }
+.var-type { color: var(--t-ty); }
+.var-name { font-family: var(--font-mono); font-weight: 600; font-size: .9rem; }
+.var-val { font-family: var(--font-mono); font-size: 1.05rem; font-variant-numeric: tabular-nums; border-radius: 5px; padding: 0 3px; margin: 0 -3px; overflow-wrap: anywhere; }
+.chg { background: var(--mark); box-shadow: 0 0 0 2px var(--mark-edge); }
+.var.is-new { border-color: var(--accent); }
+.garbage { color: var(--muted); font-style: italic; }
+.ptr-addr { color: var(--t-num); }
+.ptr-arrow { color: var(--accent); font-size: .9rem; font-weight: 600; }
+.cells { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 2px; }
+.cell { display: grid; text-align: center; min-width: 2.7em; }
+.cell-v { font-family: var(--font-mono); font-size: .92rem; border: 1px solid var(--line); background: var(--panel); border-radius: 5px; padding: 2px 4px; }
+.cell-i { font-family: var(--font-mono); font-size: .66rem; color: var(--muted); }
+.fields { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 10px; font-family: var(--font-mono); font-size: .88rem; margin-top: 2px; }
+.fields .f-name { color: var(--muted); }
+.mini { border-collapse: collapse; font-family: var(--font-mono); font-size: .84rem; margin-top: 4px; }
+.mini th, .mini td { border: 1px solid var(--line); padding: 2px 8px; text-align: left; }
+.mini th { font-weight: 600; color: var(--muted); font-size: .72rem; background: var(--panel); }
+.addr-note { font-size: .74rem; color: var(--muted); }
+
+.term {
+  background: var(--term-bg); color: var(--term-ink); font-family: var(--font-mono); font-size: .86rem;
+  line-height: 1.6; padding: 10px 14px; white-space: pre-wrap; overflow-wrap: anywhere; min-height: 4.8em; max-height: 15em; overflow-y: auto;
+}
+.term .in { color: var(--term-in); font-weight: 600; }
+.term .enter { color: var(--term-in); opacity: .55; font-size: .8em; margin-left: 2px; }
+.term .caret { display: inline-block; width: .55em; height: 1.05em; background: var(--term-ink); opacity: .55; vertical-align: text-bottom; }
+.term .ph { color: #7e899f; font-style: italic; }
+.panel.out { background: var(--term-bg); border-color: var(--term-bg); }
+.panel.out .panel-label { background: var(--term-bg); color: #9aa6bd; border-color: #263046; }
+
+/* ---------- erros comuns ---------- */
+.mistakes { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; max-width: 76ch; }
+.mistakes li { background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--bad); border-radius: 9px; padding: 10px 14px; }
+
+/* ---------- quiz ---------- */
+.quiz { display: grid; gap: 14px; }
+.q { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: grid; gap: 12px; }
+.q-text { font-weight: 700; display: flex; gap: 10px; align-items: baseline; }
+.q-num { font-family: var(--font-mono); font-size: .78rem; color: var(--muted); font-weight: 400; white-space: nowrap; }
+.opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 8px; }
+.opt {
+  font: inherit; text-align: left; cursor: pointer; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; align-items: start;
+  border: 1px solid var(--line); background: var(--code-bg); color: var(--ink); border-radius: 9px; padding: 9px 12px;
+}
+.opt:hover:not(:disabled) { border-color: var(--accent); }
+.opt:disabled { cursor: default; }
+.opt-key { font-family: var(--font-mono); font-size: .78rem; font-weight: 600; color: var(--muted); border: 1px solid var(--line); border-radius: 5px; padding: 0 6px; margin-top: 2px; background: var(--panel); }
+.opt-txt.mono { font-family: var(--font-mono); font-size: .9rem; white-space: pre; overflow-x: auto; }
+.opt.right { border-color: var(--ok); background: var(--ok-soft); }
+.opt.right .opt-key { border-color: var(--ok); color: var(--ok); }
+.opt.wrong { border-color: var(--bad); background: var(--bad-soft); }
+.opt.wrong .opt-key { border-color: var(--bad); color: var(--bad); }
+.opt.dim { opacity: .55; }
+.q-exp { border-radius: 9px; padding: 10px 14px; background: var(--code-bg); border: 1px solid var(--line); }
+.q-exp strong.ok { color: var(--ok); }
+.q-exp strong.bad { color: var(--bad); }
+.score {
+  background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;
+}
+.score-num { font-family: var(--font-display); font-weight: 800; font-size: 1.6rem; font-variant-numeric: tabular-nums; }
+
+/* ---------- exercícios ---------- */
+.exs { display: grid; gap: 14px; }
+.ex { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: grid; gap: 12px; }
+.ex-label { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .09em; color: var(--muted); margin-bottom: 4px; }
+.ex .term { border-radius: 9px; max-height: none; min-height: 0; }
+details { border: 1px solid var(--line); border-radius: 9px; background: var(--code-bg); }
+summary { cursor: pointer; padding: 9px 14px; font-weight: 700; color: var(--accent); }
+details[open] summary { border-bottom: 1px solid var(--line); }
+.det-body { padding: 12px 14px; display: grid; gap: 10px; }
+.det-body pre.snip { background: var(--panel); }
+.sol-tools { display: flex; justify-content: flex-end; }
+
+/* ---------- navegação entre lições ---------- */
+.pager { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; border-top: 1px solid var(--line); padding-top: 24px; }
+.pager a {
+  display: grid; gap: 2px; text-decoration: none; color: var(--ink); background: var(--panel);
+  border: 1px solid var(--line); border-radius: 10px; padding: 10px 16px; min-width: 220px;
+}
+.pager a:hover { border-color: var(--accent); }
+.pager small { color: var(--muted); font-size: .8rem; }
+.pager .next { text-align: right; margin-left: auto; }
+
+/* ---------- início ---------- */
+.hero { display: grid; gap: 16px; padding-top: 8px; }
+.hero p { font-size: 1.15rem; color: var(--muted); max-width: 58ch; }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.hero-actions .btn { padding: 10px 18px; font-size: 1rem; text-decoration: none; display: inline-block; }
+.steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; counter-reset: s; }
+.steps li { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; display: grid; gap: 6px; counter-increment: s; align-content: start; }
+.steps li::before { content: counter(s); font-family: var(--font-mono); font-weight: 600; font-size: .8rem; color: var(--accent); border: 1px solid var(--accent); border-radius: 6px; width: 1.8em; text-align: center; }
+.steps p { color: var(--muted); font-size: .95rem; }
+.grid-lessons { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; }
+.card-lesson {
+  display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 12px; text-decoration: none; color: var(--ink);
+  background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px; align-content: start;
+}
+.card-lesson:hover { border-color: var(--accent); }
+.card-lesson .nav-num { grid-row: span 2; width: 28px; height: 24px; line-height: 20px; }
+.card-lesson strong { font-family: var(--font-display); font-weight: 600; font-size: 1.02rem; line-height: 1.25; }
+.card-lesson span.s { color: var(--muted); font-size: .88rem; line-height: 1.35; }
+.card-lesson .done-tag { grid-column: 2; font-size: .78rem; font-weight: 700; color: var(--ok); }
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; align-items: start; }
+.box { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; display: grid; gap: 10px; }
+.box ul { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
+.trace td, .trace th { font-family: var(--font-mono); font-size: .84rem; text-align: center; }
+.trace td:last-child, .trace th:last-child { text-align: left; }
+.trace tr.hl td { background: var(--mark); }
+
+/* ---------- cábula ---------- */
+.cheat { columns: 2 380px; column-gap: 14px; }
+.cheat .box { break-inside: avoid; margin-bottom: 14px; }
+.cheat h3 { font-size: 1.05rem; }
+.cheat .t { font-size: .86rem; }
+.checklist { list-style: none; padding: 0 !important; }
+.checklist li { padding-left: 1.6em; position: relative; }
+.checklist li::before { content: ""; position: absolute; left: 0; top: .3em; width: .95em; height: .95em; border: 2px solid var(--muted); border-radius: 3px; }
+
+/* ---------- telemóvel ---------- */
+@media (max-width: 960px) {
+  .app { grid-template-columns: minmax(0, 1fr); }
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    position: sticky; top: 0; z-index: 20; background: var(--panel); border-bottom: 1px solid var(--line); padding: 10px 16px;
+  }
+  .sidebar {
+    position: fixed; z-index: 30; left: 0; top: 0; width: min(300px, 86vw); height: 100%;
+    transform: translateX(-102%); transition: transform .2s; box-shadow: var(--shadow);
+  }
+  .sidebar.open { transform: none; }
+  .scrim { position: fixed; inset: 0; background: rgba(10, 13, 20, .45); z-index: 25; }
+  main { padding-top: 24px; }
+}
+@media (max-width: 820px) {
+  .viz-grid { grid-template-columns: minmax(0, 1fr); }
+  .viz-controls { width: 100%; }
+  .viz-count { min-width: 0; flex: 1; }
+}
+@media (max-width: 480px) {
+  body { font-size: 16px; }
+  .viz { padding: 12px; }
+  .pager a { min-width: 0; flex: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; scroll-behavior: auto !important; }
+}
+</style>
+<style>
+/* ---------- visualizador de referências (Python, C#, ...) ---------- */
+/* Usa as variáveis do template, por isso funciona nos temas claro e escuro. */
+.names { display: flex; flex-wrap: wrap; gap: 6px; }
+.name { display: flex; align-items: baseline; gap: 8px; border: 1px solid var(--line); border-radius: 8px; padding: 4px 9px; background: var(--code-bg); font-family: var(--font-mono); max-width: 100%; }
+.name.is-new { border-color: var(--accent); }
+.name .var-type { font-size: .7rem; }
+.name .var-name { font-size: .9rem; }
+.name > span:last-child { font-size: .95rem; overflow-wrap: anywhere; }
+.ref { display: inline-block; font-family: var(--font-mono); font-size: .78rem; font-weight: 600; border-radius: 5px; padding: 0 5px; border: 1.5px solid currentColor; white-space: nowrap; }
+.ref-c0 { color: var(--t-fn); }
+.ref-c1 { color: var(--t-str); }
+.ref-c2 { color: var(--t-ty); }
+.ref-c3 { color: var(--t-num); }
+.ref-c4 { color: var(--t-kw); }
+.ref-c5 { color: var(--t-pp); }
+.ref.chg, .name .chg, .obj .chg { background: var(--mark); box-shadow: 0 0 0 2px var(--mark-edge); border-radius: 4px; }
+.objs { display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-start; }
+.obj { border: 1px solid var(--line); border-radius: 8px; padding: 6px 9px 7px; background: var(--panel); display: grid; gap: 4px; min-width: 70px; max-width: 100%; }
+.obj.is-new { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.obj.orphan { opacity: .5; border-style: dashed; }
+.obj-top { display: flex; gap: 8px; align-items: baseline; justify-content: space-between; }
+.obj-top .var-type { font-family: var(--font-mono); font-size: .7rem; }
+.obj .var-val { font-size: 1rem; }
+.obj .cells .cell-v { min-width: 2.2em; }
+.obj-empty { font-family: var(--font-mono); font-size: .8rem; color: var(--muted); font-style: italic; }
+.orphan-note { font-size: .7rem; color: var(--muted); font-style: italic; }
+.mini.kv td { font-family: var(--font-mono); }
+</style>
+<style>
+:root { --accent: #a14a00; --accent-soft: #fbeee0; --t-fn: #a14a00; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --accent: #ffad5c; --accent-soft: #33230f; --t-fn: #ffad5c; } }
+:root[data-theme="dark"] { --accent: #ffad5c; --accent-soft: #33230f; --t-fn: #ffad5c; }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <a class="brand" href="#inicio"><span class="brand-mark">.py</span><span class="brand-name">Python do Zero</span></a>
+    <button class="btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="sidebar">Lições</button>
+  </header>
+  <aside class="sidebar" id="sidebar" aria-label="Lições">
+    <a class="brand" href="#inicio"><span class="brand-mark">.py</span><span class="brand-name">Python do Zero</span></a>
+    <div class="progress" id="progress"></div>
+    <nav class="nav" id="nav"></nav>
+  </aside>
+  <main id="main" tabindex="-1">
+    <noscript><p>Esta página precisa de JavaScript para funcionar.</p></noscript>
+    <div class="content" id="view"></div>
+  </main>
+</div>
+
+<template id="tpl-home">
+  <section class="hero">
+    <span class="eyebrow">Programação em Python · para quem já fez o C</span>
+    <h1>Aprender Python a ver os nomes e os objetos</h1>
+    <p>Onze lições curtas, do primeiro <code>print</code> aos dicionários e ficheiros. Em cada exemplo carregas em "Seguinte" e vês para que objeto aponta cada nome, quando um objeto muda e quando aparece um novo.</p>
+    <div class="hero-actions" id="hero-actions"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>Como usar</h2></div>
+    <ol class="steps">
+      <li><h3>Lê a explicação</h3><p>É curta e compara com o C sempre que ajuda. Fica com a ideia principal e passa ao exemplo.</p></li>
+      <li><h3>Corre o exemplo</h3><p>Antes de cada "Seguinte", tenta adivinhar: este nome vai apontar para um objeto novo, ou o objeto vai mudar?</p></li>
+      <li><h3>Responde às perguntas</h3><p>São do tipo "o que aparece no ecrã?". Cada resposta traz a explicação.</p></li>
+      <li><h3>Faz os exercícios no computador</h3><p>Escreve e corre o programa antes de abrires a solução. A dica ajuda a começar.</p></li>
+    </ol>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>Lições</h2><p>Segue a ordem: cada lição usa o que veio antes.</p></div>
+    <div class="grid-lessons" id="home-lessons"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>A ideia que muda tudo: nomes e objetos</h2>
+      <p>É a diferença mais importante para o C, e a que explica os erros mais estranhos.</p>
+    </div>
+    <div class="two">
+      <div class="prose">
+        <p>Em C, <code>b = a</code> copiava o valor para outra caixa. Em Python, <code>b = a</code> cola um segundo nome no <strong>mesmo objeto</strong>.</p>
+        <p>Com números e textos nunca se nota, porque eles nunca mudam: cada conta cria um objeto novo. Com listas e dicionários nota-se muito, porque eles mudam por dentro, e a mudança vê-se por todos os nomes que lhes apontam.</p>
+        <p>Nas perguntas "o que aparece no ecrã?", desenha no papel o que o visualizador desenha: os nomes de um lado, os objetos do outro, e uma seta de cada nome para o seu objeto.</p>
+      </div>
+      <div class="t-wrap">
+        <table class="t trace">
+          <thead><tr><th>Código</th><th>O que acontece</th></tr></thead>
+          <tbody>
+            <tr><td>a = [1, 2]</td><td>cria a lista, a → lista</td></tr>
+            <tr><td>b = a</td><td>b → a <strong>mesma</strong> lista</td></tr>
+            <tr class="hl"><td>b.append(3)</td><td>a lista muda; a vê [1, 2, 3]</td></tr>
+            <tr><td>b = [9]</td><td>lista nova; só o b muda</td></tr>
+            <tr><td>c = a.copy()</td><td>outra lista, igual à de a</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="two">
+    <div class="box">
+      <h2>Onde praticar</h2>
+      <ul>
+        <li><strong>No browser, sem instalar nada:</strong> <a href="https://www.online-python.com">Online Python</a> ou <a href="https://pythontutor.com">Python Tutor</a>, que também desenha os nomes e os objetos.</li>
+        <li><strong>No teu computador:</strong> instala o Python (python.org ou Microsoft Store). Escreve o programa num ficheiro <code>ola.py</code> e corre-o com <code>python ola.py</code>.</li>
+        <li>Também podes escrever <code>python</code> sozinho no terminal e experimentar linha a linha: cada expressão mostra logo o resultado.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h2>Para quem está a explicar</h2>
+      <ul>
+        <li>Pede-lhe que diga o que vai acontecer <em>antes</em> de carregar em "Seguinte", sobretudo nas lições 1, 6 e 7.</li>
+        <li>Quando aparece um erro, leiam juntos a <strong>última linha</strong> da mensagem: diz o tipo de erro e porquê.</li>
+        <li>A indentação faz parte do programa. Confirmem que o editor usa 4 espaços.</li>
+        <li>Se o C estiver fresco, comparem: muitas coisas são iguais (índices a partir de 0, %, while), outras não (/ e //, nomes e objetos).</li>
+      </ul>
+    </div>
+  </section>
+</template>
+
+<template id="tpl-cheat">
+  <section class="lesson-head">
+    <span class="eyebrow">Resumo</span>
+    <h1>Cábula de Python</h1>
+    <p class="lead">Tudo o que as lições ensinam, numa página. Boa para ter aberta enquanto fazes exercícios.</p>
+  </section>
+  <div class="cheat">
+    <div class="box">
+      <h3>Básico</h3>
+<pre class="snip"><code class="python"># comentário
+nome = input("Nome? ")          # devolve sempre texto
+idade = int(input("Idade? "))   # converte para inteiro
+print("Ola", nome)              # muda de linha sozinho
+print(f"{nome} tem {idade} anos")
+print(f"{3.14159:.2f}")         # 3.14
+print("a", "b", sep="-", end="")</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Tipos e conversões</h3>
+      <div class="t-wrap"><table class="t">
+        <thead><tr><th>Tipo</th><th>Exemplo</th><th>Converter</th></tr></thead>
+        <tbody>
+          <tr><td><code>int</code></td><td><code>42</code></td><td><code>int("42")</code></td></tr>
+          <tr><td><code>float</code></td><td><code>14.5</code></td><td><code>float("14.5")</code></td></tr>
+          <tr><td><code>str</code></td><td><code>"Ana"</code> ou <code>'Ana'</code></td><td><code>str(42)</code></td></tr>
+          <tr><td><code>bool</code></td><td><code>True</code>, <code>False</code></td><td></td></tr>
+          <tr><td><code>None</code></td><td>"nada"</td><td></td></tr>
+        </tbody>
+      </table></div>
+      <p><code>type(x)</code> diz o tipo do objeto para onde x aponta.</p>
+    </div>
+
+    <div class="box">
+      <h3>Operadores</h3>
+      <div class="t-wrap"><table class="t">
+        <tbody>
+          <tr><td>Contas</td><td><code>7 / 2</code> → 3.5 · <code>7 // 2</code> → 3 · <code>7 % 2</code> → 1 · <code>2 ** 3</code> → 8</td></tr>
+          <tr><td>Comparar</td><td><code>== != &lt; &gt; &lt;= &gt;=</code> · <code>0 &lt;= x &lt;= 20</code></td></tr>
+          <tr><td>Lógicos</td><td><code>and or not</code></td></tr>
+          <tr><td>Atalhos</td><td><code>x += 1</code> (não há <code>x++</code>)</td></tr>
+          <tr><td>Pertence</td><td><code>x in lista</code>, <code>"an" in texto</code>, <code>chave in dic</code></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="box">
+      <h3>Decisões e ciclos</h3>
+<pre class="snip"><code class="python">if nota &gt;= 10:
+    print("Aprovado")
+elif nota &gt;= 0:
+    print("Reprovado")
+else:
+    print("Invalida")
+
+for i in range(5):        # 0, 1, 2, 3, 4
+    ...
+for i in range(1, 11):    # 1 a 10
+    ...
+for letra in "ola":       # 'o', 'l', 'a'
+    ...
+while True:
+    if fim:
+        break</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Listas</h3>
+<pre class="snip"><code class="python">v = [12, 17, 9]
+v[0]  v[-1]  v[1:3]  v[::-1]  len(v)
+v.append(15)        # no fim
+v.insert(0, 8)      # na posição 0
+x = v.pop()         # tira o último
+v.remove(17)        # tira o primeiro 17
+v.sort()            # ordena a própria lista (devolve None)
+w = sorted(v)       # lista nova, ordenada
+sum(v)  max(v)  min(v)
+c = v.copy()        # cópia a sério (c = v não copia!)</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Texto</h3>
+<pre class="snip"><code class="python">s = "  Ana Silva "
+s.strip()  s.upper()  s.lower()
+s.replace("a", "o")
+s.split()            # ['Ana', 'Silva']
+"-".join(lista)
+s.count("a")  s.find("S")  len(s)
+s[0]  s[1:3]  s[::-1]
+# s[0] = "x" dá erro: o texto não muda</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Dicionários</h3>
+<pre class="snip"><code class="python">d = {"Ana": 17, "Rui": 9}
+d["Ana"]             # 17 (KeyError se não existir)
+d["Ines"] = 14       # acrescenta ou troca
+d.get("Tiago", 0)    # 0 se não existir
+"Ana" in d           # procura nas chaves
+for nome, nota in d.items():
+    print(nome, nota)</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Funções</h3>
+<pre class="snip"><code class="python">def media(lista):
+    return sum(lista) / len(lista)
+
+def mostra(x):       # sem return: devolve None
+    print(x)</code></pre>
+      <p>O parâmetro aponta para o mesmo objeto que o argumento: se a função muda uma lista recebida, a mudança vê-se fora.</p>
+    </div>
+
+    <div class="box">
+      <h3>Erros e ficheiros</h3>
+<pre class="snip"><code class="python">try:
+    n = int(texto)
+except ValueError:
+    print("Nao e um numero")
+
+with open("dados.txt", "w") as f:    # "r" ler · "w" escrever (apaga) · "a" acrescentar
+    f.write("linha\n")
+with open("dados.txt") as f:
+    for linha in f:
+        print(linha.strip())</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Mensagens de erro</h3>
+      <div class="t-wrap"><table class="t">
+        <thead><tr><th>Mensagem (última linha)</th><th>Costuma ser</th></tr></thead>
+        <tbody>
+          <tr><td><code>SyntaxError: expected ':'</code></td><td>falta o <code>:</code> no if, for, while ou def</td></tr>
+          <tr><td><code>IndentationError: unexpected indent</code></td><td>espaços a mais no início da linha</td></tr>
+          <tr><td><code>IndentationError: expected an indented block</code></td><td>o bloco do if, for ou def está vazio ou encostado à esquerda</td></tr>
+          <tr><td><code>SyntaxError: '(' was never closed</code></td><td>falta fechar um parêntese</td></tr>
+          <tr><td><code>NameError: name 'x' is not defined</code></td><td>nome mal escrito, ou usado antes de lhe dar valor</td></tr>
+          <tr><td><code>TypeError: can only concatenate str (not "int") to str</code></td><td>texto + número: falta um <code>int()</code> ou <code>str()</code></td></tr>
+          <tr><td><code>ValueError: invalid literal for int() with base 10: 'abc'</code></td><td><code>int()</code> de um texto que não é um número</td></tr>
+          <tr><td><code>IndexError: list index out of range</code></td><td>índice maior do que a lista (o último é <code>len - 1</code>)</td></tr>
+          <tr><td><code>KeyError: 'Tiago'</code></td><td>chave que não existe no dicionário: usa <code>in</code> ou <code>get</code></td></tr>
+          <tr><td><code>TypeError: 'str' object does not support item assignment</code></td><td>tentaste mudar uma letra de um texto</td></tr>
+          <tr><td><code>AttributeError: 'list' object has no attribute 'push'</code></td><td>método que não existe (aqui era <code>append</code>)</td></tr>
+          <tr><td><code>ZeroDivisionError: division by zero</code></td><td>divisão por zero</td></tr>
+          <tr><td><code>FileNotFoundError: [Errno 2] No such file or directory</code></td><td>o ficheiro não está na pasta onde o programa corre</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="box">
+      <h3>Antes de entregar</h3>
+      <ul class="checklist">
+        <li>Os if, for, while e def acabam com <code>:</code> e o bloco tem 4 espaços.</li>
+        <li>O que vem do <code>input</code> foi convertido antes das contas.</li>
+        <li>As divisões usam <code>/</code> ou <code>//</code> conforme queres real ou inteiro.</li>
+        <li>Os <code>range</code> acabam onde devem (o último número não está incluído).</li>
+        <li>Onde precisavas de uma cópia de uma lista, usaste <code>.copy()</code>.</li>
+        <li>As funções que devem devolver um valor têm <code>return</code> (e não só <code>print</code>).</li>
+        <li>Testaste com valores pequenos e casos limite (0, lista vazia, chave que não existe).</li>
+      </ul>
+    </div>
+  </div>
+</template>
+
+<script>
+const COURSE = {"slug":"python","title":"Python do Zero","storageKey":"pythondozero-progresso-v1","cheatTitle":"Cábula de Python"};
+// Realce de sintaxe para Python. Cada grupo da regex corresponde, pela ordem, a uma classe em "classes".
+const SYNTAX = {
+  re: /(#.*$)|([fF]?"(?:\\.|[^"\\])*"|[fF]?'(?:\\.|[^'\\])*')|\b(int|float|str|bool|list|dict|tuple|None|True|False)\b|\b(def|return|if|elif|else|for|while|in|not|and|or|is|import|from|as|with|try|except|finally|raise|break|continue|pass|lambda|class|global)\b|\b(\d+(?:\.\d+)?)\b|\b([A-Za-z_]\w*)(?=\()/g,
+  classes: ['com', 'str', 'ty', 'kw', 'num', 'fn'],
+};
+
+// ===== Visualizador de referências (Python, e mais tarde C# e TypeScript) =====
+// Troca o painel "Memória" por dois: "Nomes" (os frames, com as variáveis) e "Objetos" (o heap).
+// Uma variável que aponta para um objeto mostra "→ #1"; o objeto tem a etiqueta "#1" da mesma cor.
+// Assim, dois nomes a apontar para a mesma lista veem-se logo. Só entra nas páginas com viz: 'refs'.
+
+const VIZ_SIDE = (function () {
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const isRef = v => typeof v === 'string' && v.charAt(0) === '@';
+
+  // A etiqueta de um objeto: o id sem o "o" ('o3' → '#3'), com uma de seis cores.
+  function chip(id, changed, arrow) {
+    const n = parseInt(id.replace(/\D/g, ''), 10) || 0;
+    return '<span class="ref ref-c' + (n % 6) + (changed ? ' chg' : '') + '">' + (arrow ? '→ ' : '') + '#' + esc(id.replace(/^o/, '')) + '</span>';
+  }
+
+  // Um valor dentro de uma variável ou de um objeto: uma referência vira etiqueta, o resto aparece tal e qual.
+  function valueHtml(v, changed) {
+    if (isRef(v)) return chip(v.slice(1), changed, true);
+    return '<span class="' + (changed ? 'chg' : '') + '">' + esc(v) + '</span>';
+  }
+  const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+
+  // ---------- Nomes ----------
+  function namesHtml(frames, prevFrames) {
+    if (!frames.length) return '<p class="mem-empty">O programa ainda não começou a correr.</p>';
+    return frames.map((f, fi) => {
+      const active = fi === frames.length - 1;
+      const prev = prevFrames && prevFrames[fi] && prevFrames[fi].name === f.name ? prevFrames[fi] : null;
+      const vars = f.vars.length
+        ? '<div class="names">' + f.vars.map(v => {
+          const old = prev ? prev.vars.find(x => x.name === v.name) : undefined;
+          const isNew = prevFrames && !old;
+          return '<div class="name' + (isNew ? ' is-new' : '') + '">' +
+            (v.type ? '<span class="var-type">' + esc(v.type) + '</span>' : '') +
+            '<span class="var-name">' + esc(v.name) + '</span>' + valueHtml(v.value, old && !same(old.value, v.value)) + '</div>';
+        }).join('') + '</div>'
+        : '<p class="mem-empty">sem nomes</p>';
+      // O frame de topo chama-se "global" (Python) ou "Main" (C#); os das funções levam () no fim.
+      const label = f.name === 'global' ? 'global' : f.name + '()';
+      return '<div class="frame' + (active ? ' active' : '') + '"><div class="frame-name"><span>' + esc(label) + '</span>' +
+        (active && frames.length > 1 ? '<span>a correr</span>' : (!active ? '<span>em pausa</span>' : '')) + '</div>' + vars + '</div>';
+    }).join('');
+  }
+
+  // ---------- Objetos ----------
+  // O corpo de um objeto depende do tipo: lista/tuplo (caixas com índice), dicionário (chave → valor),
+  // objeto com campos (C#), ou um valor simples (int, str, ...).
+  function objectBody(obj, old) {
+    const v = obj.value;
+    const prevAt = k => (old && old.type === obj.type && old.value ? old.value[k] : undefined);
+    if (Array.isArray(v) && (obj.type === 'dict' || /^Dictionary/.test(obj.type))) {
+      if (!v.length) return '<span class="obj-empty">vazio</span>';
+      const oldMap = {};
+      if (old && Array.isArray(old.value)) old.value.forEach(([k, x]) => { oldMap[JSON.stringify(k)] = x; });
+      return '<div class="t-wrap"><table class="mini kv"><tbody>' + v.map(([k, x]) => {
+        const before = oldMap[JSON.stringify(k)];
+        const changed = old && (before === undefined || !same(before, x));
+        return '<tr><td>' + valueHtml(k, false) + '</td><td>' + valueHtml(x, changed) + '</td></tr>';
+      }).join('') + '</tbody></table></div>';
+    }
+    if (Array.isArray(v)) {
+      if (!v.length) return '<span class="obj-empty">vazia</span>';
+      return '<div class="cells">' + v.map((x, i) => {
+        const before = prevAt(i);
+        const changed = old && (before === undefined || !same(before, x));
+        return '<div class="cell"><span class="cell-v">' + valueHtml(x, changed) + '</span><span class="cell-i">[' + i + ']</span></div>';
+      }).join('') + '</div>';
+    }
+    if (v && typeof v === 'object') {
+      return '<div class="fields">' + Object.keys(v).map(k => {
+        const before = prevAt(k);
+        return '<span class="f-name">' + esc(k) + '</span><span>' + valueHtml(v[k], old && !same(before, v[k])) + '</span>';
+      }).join('') + '</div>';
+    }
+    return '<div class="var-val">' + valueHtml(v, old && !same(old.value, v)) + '</div>';
+  }
+
+  function heapHtml(heap, orphans, prevHeap) {
+    const ids = Object.keys(heap);
+    if (!ids.length) return '<p class="mem-empty">Ainda não há objetos.</p>';
+    return '<div class="objs">' + ids.map(id => {
+      const obj = heap[id];
+      const old = prevHeap ? prevHeap[id] : undefined;
+      const isNew = prevHeap && !old;
+      const orphan = orphans.includes(id);
+      return '<div class="obj' + (isNew ? ' is-new' : '') + (orphan ? ' orphan' : '') + '">' +
+        '<div class="obj-top">' + chip(id, false, false) + '<span class="var-type">' + esc(obj.type) + '</span></div>' +
+        objectBody(obj, old) +
+        (orphan ? '<span class="orphan-note">sem nomes: vai ser apagado</span>' : '') + '</div>';
+    }).join('') + '</div>';
+  }
+
+  return {
+    panelsHtml() {
+      return '<div class="panel"><div class="panel-label"><span>Nomes</span><span>→ #n = aponta para o objeto #n</span></div><div class="mem names-box"></div></div>' +
+        '<div class="panel"><div class="panel-label"><span>Objetos</span><span>amarelo = mudou agora</span></div><div class="mem heap-box"></div></div>' +
+        '<div class="panel out"><div class="panel-label"><span>Ecrã</span></div><pre class="term"></pre></div>';
+    },
+    // helpers vem do template: renderTerm (o ecrã) e isLast (se é o último passo).
+    render(host, step, prev, helpers) {
+      host.querySelector('.names-box').innerHTML = namesHtml(step.frames, prev ? prev.frames : null);
+      host.querySelector('.heap-box').innerHTML = heapHtml(step.heap, step.orphans, prev ? prev.heap : null);
+      const term = host.querySelector('.term');
+      term.innerHTML = helpers.renderTerm(step.out, !helpers.isLast);
+      term.scrollTop = term.scrollHeight;
+    },
+  };
+})();
+
+if (typeof module !== 'undefined') module.exports = { VIZ_SIDE };
+
+</script>
+<script>
+// ===== Motor do visualizador: transforma a lista de passos de um exemplo em fotografias da memória. =====
+// É partilhado por todos os cursos e corre tanto na página como nos testes (shared/check.js).
+function parseVarPath(key) {
+  const m = key.match(/^([A-Za-z_]\w*)(.*)$/);
+  if (!m) throw new Error('caminho inválido: ' + key);
+  const path = [];
+  const re = /\[(\d+)\]|\.([A-Za-z_]\w*)/g;
+  let t;
+  let consumed = 0;
+  while ((t = re.exec(m[2]))) {
+    path.push(t[1] !== undefined ? Number(t[1]) : t[2]);
+    consumed += t[0].length;
+  }
+  if (consumed !== m[2].length) throw new Error('caminho inválido: ' + key);
+  return { name: m[1], path };
+}
+
+// ---------- tabelas (cursos de SQL) ----------
+// Uma coluna escreve-se como no CREATE TABLE: ['numero', 'INTEGER PRIMARY KEY'] ou ['curso', 'INTEGER REFERENCES cursos(id)'].
+function parseColumn(spec) {
+  const [name, def] = spec;
+  const fk = /REFERENCES\s+(\w+)\s*\((\w+)\)/i.exec(def);
+  return {
+    name,
+    def,
+    type: def.split(/\s+/)[0].toUpperCase(),
+    pk: /PRIMARY\s+KEY/i.test(def),
+    fk: fk ? fk[1] + '.' + fk[2] : null,
+  };
+}
+
+// Transforma { cols, key?, rows? } numa tabela do motor. Cada linha leva um id interno,
+// para o visualizador saber que linha é qual mesmo depois de outras serem apagadas.
+function makeTable(spec, nextId) {
+  const cols = spec.cols.map(parseColumn);
+  (spec.key || []).forEach(k => {
+    const col = cols.find(c => c.name === k);
+    if (!col) throw new Error('chave com coluna inexistente: ' + k);
+    col.pk = true;
+  });
+  const table = { cols, rows: [] };
+  (spec.rows || []).forEach(cells => addRow(table, cells, nextId));
+  return table;
+}
+
+function addRow(table, cells, nextId) {
+  if (cells.length !== table.cols.length) throw new Error('linha com ' + cells.length + ' valores numa tabela com ' + table.cols.length + ' colunas');
+  table.rows.push({ id: nextId(), cells: cells.slice() });
+}
+
+// Aplica as operações de tabelas de um passo: create, ins, upd, del, drop.
+function applyTableOps(tables, s, where, nextId) {
+  const find = name => {
+    if (!tables[name]) throw new Error('tabela inexistente: ' + name + where);
+    return tables[name];
+  };
+  if (s.create) {
+    for (const [name, spec] of Object.entries(s.create)) {
+      if (tables[name]) throw new Error('tabela repetida: ' + name + where);
+      tables[name] = makeTable(spec, nextId);
+    }
+  }
+  if (s.ins) {
+    for (const [name, rows] of Object.entries(s.ins)) rows.forEach(cells => addRow(find(name), cells, nextId));
+  }
+  if (s.upd) {
+    for (const [name, changes] of Object.entries(s.upd)) {
+      const t = find(name);
+      for (const [index, sets] of Object.entries(changes)) {
+        const row = t.rows[Number(index)];
+        if (!row) throw new Error('linha inexistente: ' + name + '[' + index + ']' + where);
+        for (const [col, value] of Object.entries(sets)) {
+          const c = t.cols.findIndex(x => x.name === col);
+          if (c < 0) throw new Error('coluna inexistente: ' + name + '.' + col + where);
+          row.cells[c] = value;
+        }
+      }
+    }
+  }
+  if (s.del) {
+    for (const [name, indexes] of Object.entries(s.del)) {
+      const t = find(name);
+      indexes.forEach(i => { if (!t.rows[i]) throw new Error('apagar linha inexistente: ' + name + '[' + i + ']' + where); });
+      t.rows = t.rows.filter((_, i) => !indexes.includes(i));
+    }
+  }
+  if (s.drop) s.drop.forEach(name => { find(name); delete tables[name]; });
+  // tm: marcas que só valem neste passo, por exemplo as linhas que o WHERE de um UPDATE encontrou.
+  if (s.tm) {
+    for (const [name, marks] of Object.entries(s.tm)) {
+      const t = find(name);
+      Object.keys(marks).forEach(i => { if (!t.rows[i]) throw new Error('marca em linha inexistente: ' + name + '[' + i + ']' + where); });
+    }
+  }
+}
+
+// g: a grelha de trabalho de uma consulta (o que o FROM, o WHERE, o GROUP BY... já construíram).
+function checkGrid(g, where) {
+  if (g === null) return;
+  if (!Array.isArray(g.cols) || !Array.isArray(g.rows)) throw new Error('grelha sem cols ou rows' + where);
+  g.rows.forEach(r => { if (r.length !== g.cols.length) throw new Error('linha da grelha com ' + r.length + ' valores e ' + g.cols.length + ' colunas' + where); });
+  if (g.marks && g.marks.length !== g.rows.length) throw new Error('marks da grelha com tamanho diferente das linhas' + where);
+  if (g.groups && g.groups.reduce((a, b) => a + b, 0) !== g.rows.length) throw new Error('groups da grelha não somam o número de linhas' + where);
+}
+
+// ---------- referências e objetos (cursos de Python, C#, ...) ----------
+// Um valor que começa por @ é uma referência para um objeto do heap: '@o1'.
+const isRef = v => typeof v === 'string' && v.charAt(0) === '@';
+
+// Todas as referências que um valor contém (o próprio valor, os elementos de uma lista, os campos de um objeto).
+function refsIn(value) {
+  if (isRef(value)) return [value.slice(1)];
+  if (Array.isArray(value)) return value.flatMap(refsIn);
+  if (value && typeof value === 'object') return Object.values(value).flatMap(refsIn);
+  return [];
+}
+
+// Os objetos a que já ninguém chega, partindo dos nomes de todos os frames.
+function unreachable(frames, heap) {
+  const seen = new Set();
+  const visit = id => {
+    if (seen.has(id) || !heap[id]) return;
+    seen.add(id);
+    refsIn(heap[id].value).forEach(visit);
+  };
+  frames.forEach(f => f.vars.forEach(v => refsIn(v.value).forEach(visit)));
+  return Object.keys(heap).filter(id => !seen.has(id));
+}
+
+// initialTables: a base de dados com que o exemplo começa ({ nome: { cols, rows } }), ou nada.
+function buildSteps(raw, initialTables) {
+  let frames = [];
+  let out = '';
+  let lastId = 0;
+  const nextId = () => ++lastId;
+  let tables = {};
+  for (const [name, spec] of Object.entries(initialTables || {})) tables[name] = makeTable(spec, nextId);
+  let grid = null;
+  // heap: os objetos ({ id: { type, value } }). Um objeto sem nomes aparece desbotado num passo e desaparece no seguinte.
+  let heap = {};
+  let orphans = [];
+  const res = [];
+  raw.forEach((s, idx) => {
+    frames = JSON.parse(JSON.stringify(frames));
+    tables = JSON.parse(JSON.stringify(tables));
+    heap = JSON.parse(JSON.stringify(heap));
+    orphans.forEach(id => { delete heap[id]; });
+    const where = ' (passo ' + (idx + 1) + ')';
+    applyTableOps(tables, s, where, nextId);
+    // obj: cria ou muda objetos: { o1: ['list', ['@o2', 3]] }
+    if (s.obj) {
+      for (const [id, spec] of Object.entries(s.obj)) heap[id] = { type: spec[0], value: JSON.parse(JSON.stringify(spec[1])) };
+    }
+    if (s.g !== undefined) {
+      checkGrid(s.g, where);
+      grid = JSON.parse(JSON.stringify(s.g));
+    }
+    const findFrame = name => {
+      for (let i = frames.length - 1; i >= 0; i--) if (frames[i].name === name) return frames[i];
+      throw new Error('frame inexistente: ' + name + where);
+    };
+    if (s.pop) {
+      if (!frames.length) throw new Error('pop sem frames' + where);
+      frames.pop();
+    }
+    if (s.push) frames.push({ name: s.push, vars: [] });
+    if (s.x) {
+      for (const [fn, names] of Object.entries(s.x)) {
+        const f = findFrame(fn);
+        names.forEach(n => {
+          if (!f.vars.some(v => v.name === n)) throw new Error('apagar variável inexistente: ' + n + where);
+        });
+        f.vars = f.vars.filter(v => !names.includes(v.name));
+      }
+    }
+    if (s.d) {
+      for (const [fn, vars] of Object.entries(s.d)) {
+        const f = findFrame(fn);
+        for (const [name, spec] of Object.entries(vars)) {
+          if (f.vars.some(v => v.name === name)) throw new Error('variável repetida: ' + name + where);
+          const [type, value, addr] = spec;
+          f.vars.push({ name, type, value: JSON.parse(JSON.stringify(value)), addr: addr || null });
+        }
+      }
+    }
+    if (s.u) {
+      for (const [fn, sets] of Object.entries(s.u)) {
+        const f = findFrame(fn);
+        for (const [key, value] of Object.entries(sets)) {
+          const { name, path } = parseVarPath(key);
+          const v = f.vars.find(x => x.name === name);
+          if (!v) throw new Error('atualizar variável inexistente: ' + name + where);
+          if (!path.length) { v.value = value; continue; }
+          let target = v.value;
+          for (let i = 0; i < path.length - 1; i++) {
+            target = target[path[i]];
+            if (target === undefined) throw new Error('caminho inexistente: ' + key + where);
+          }
+          const last = path[path.length - 1];
+          if (target[last] === undefined) throw new Error('caminho inexistente: ' + key + where);
+          target[last] = value;
+        }
+      }
+    }
+    if (s.o) out += s.o;
+    // Todas as referências têm de apontar para objetos que existem.
+    const allValues = frames.flatMap(f => f.vars.map(v => v.value)).concat(Object.values(heap).map(o => o.value));
+    allValues.flatMap(refsIn).forEach(id => { if (!heap[id]) throw new Error('referência para um objeto inexistente: @' + id + where); });
+    orphans = unreachable(frames, heap);
+    res.push({ l: s.l, frames, out, n: s.n || '', tables, tmarks: s.tm || {}, grid, err: s.err || '', heap, orphans });
+  });
+  return res;
+}
+
+if (typeof module !== 'undefined') module.exports = { buildSteps, parseVarPath, makeTable };
+
+</script>
+<script>
+// ===== Python do Zero — conteúdo das lições (parte 1) =====
+// Formato de um passo do visualizador (l, n, o, push, pop e x são como no C):
+//   obj: { o1: [tipo, valor] }   cria ou muda um objeto. Valores simples em forma de repr: 5, 2.5, "'Ana'", 'None'.
+//        Listas: ['list', [12, "'Ana'", '@o2']]; dicionários: ['dict', [["'Ana'", 17], ...]].
+//        Uma string que começa por @ é uma referência para outro objeto.
+//   d / u: { global: { nome: ['', '@o1'] } } / { global: { nome: '@o2' } }   cria um nome / muda para onde aponta.
+// O frame de topo chama-se 'global'. Um objeto a que já nenhum nome chega aparece desbotado e desaparece no passo seguinte.
+// Para simplificar, os números e textos dentro de listas e dicionários aparecem lá dentro, em vez de serem objetos à parte.
+const C = (s, ...v) => String.raw(s, ...v).replace(/^\n/, '').replace(/\n\s*$/, '');
+const H = (s, ...v) => String.raw(s, ...v);
+const LESSONS = [];
+
+// ---------------------------------------------------------------- 0
+LESSONS.push({
+  id: 0,
+  title: 'Olá, Python',
+  short: 'print, sem main nem ;, e a indentação no lugar das chavetas',
+  body: H`
+<p>Se já fizeste o C do Zero, vais achar o Python muito mais curto. Compara:</p>
+<div class="two">
+<pre class="snip"><code>#include &lt;stdio.h&gt;
+
+int main(void) {
+    printf("Ola!\n");
+    return 0;
+}</code></pre>
+<pre class="snip"><code>print("Ola!")</code></pre>
+</div>
+<ul>
+<li>Não há <code>main</code>, nem <code>#include</code>, nem <code>;</code>. O programa corre de cima para baixo, a partir da primeira linha.</li>
+<li>Não se compila à parte: corre-se logo com <code>python ola.py</code>.</li>
+<li><code>print</code> já muda de linha no fim. Com vários valores separados por vírgula, põe um espaço entre eles.</li>
+<li><strong>Os blocos marcam-se com a indentação</strong> (os espaços no início da linha), não com chavetas. A linha do <code>if</code> acaba com <code>:</code> e tudo o que está mais à direita pertence-lhe. Usa sempre 4 espaços.</li>
+<li>Os comentários começam com <code>#</code>.</li>
+</ul>`,
+  analogy: 'O C é uma receita com a lista de utensílios, o "comece aqui" e um ponto final em cada passo. O Python é a mesma receita escrita por quem já te conhece: só os passos, e as sub-tarefas indicadas pelo recuo do texto.',
+  examples: [{
+    title: 'O print',
+    code: C`
+print("Ola, Python!")
+print("2 + 3 =", 2 + 3)
+print("A", "B", "C", sep="-")
+print("sem mudar", end=" ")
+print("de linha")`,
+    steps: [
+      { l: 1, push: 'global', o: 'Ola, Python!\n', n: H`O programa começa na primeira linha. O <code>print</code> escreve o texto e muda de linha sozinho: não é preciso <code>\n</code>.` },
+      { l: 2, o: '2 + 3 = 5\n', n: H`Dois valores separados por vírgula: o texto e o resultado da conta. O print põe um espaço entre eles. Não há <code>%d</code>: o print sabe mostrar números.` },
+      { l: 3, o: 'A-B-C\n', n: H`<code>sep="-"</code> troca o espaço entre os valores por um hífen.` },
+      { l: 4, o: 'sem mudar ', n: H`<code>end=" "</code> troca a mudança de linha do fim por um espaço.` },
+      { l: 5, o: 'de linha\n', n: 'Por isso este texto continua na mesma linha.' },
+    ],
+  }, {
+    title: 'Blocos com indentação',
+    code: C`
+nota = 14
+if nota >= 10:
+    print("Aprovado")
+    print("Parabens")
+print("Fim")`,
+    steps: [
+      { l: 1, push: 'global', obj: { o1: ['int', 14] }, d: { global: { nota: ['', '@o1'] } }, n: H`Uma variável sem declarar o tipo. Na lição seguinte vais ver o que está mesmo a acontecer nos painéis da direita.` },
+      { l: 2, n: H`<code>if</code> sem parênteses e com <code>:</code> no fim. 14 &gt;= 10 é verdadeiro.` },
+      { l: 3, o: 'Aprovado\n', n: 'Esta linha está mais à direita, por isso pertence ao if.' },
+      { l: 4, o: 'Parabens\n', n: 'Esta também: tem a mesma indentação.' },
+      { l: 5, o: 'Fim\n', n: H`Esta voltou à esquerda, por isso já não pertence ao if: corre sempre. Em C eram as chavetas que diziam isto.` },
+    ],
+  }],
+  mistakes: [
+    H`Pôr <code>;</code> no fim das linhas por hábito do C. Não dá erro, mas não é preciso.`,
+    H`Esquecer os <code>:</code> no fim do <code>if</code>, <code>for</code>, <code>while</code> ou <code>def</code>: <em>SyntaxError: expected ':'</em>.`,
+    H`Indentação errada: um espaço a mais dá <em>IndentationError: unexpected indent</em>; um bloco vazio dá <em>expected an indented block</em>.`,
+    H`Misturar tabs e espaços. Configura o editor para inserir 4 espaços quando carregas na tecla Tab.`,
+    H`Escrever <code>Print</code>: tal como o C, o Python distingue maiúsculas de minúsculas.`,
+  ],
+  quiz: [
+    { q: 'O que aparece no ecrã?', code: C`
+print("A", "B")
+print("A" + "B")`, opts: ['A B\nAB', 'AB\nAB', 'A B\nA B', 'AB\nA B'], ok: 0, mono: true, check: true,
+      exp: H`Com vírgula, o print separa os valores com um espaço. Com <code>+</code>, os dois textos são colados num só antes de serem mostrados.` },
+    { q: 'O que aparece no ecrã?', code: C`
+print("x", end="")
+print("y")
+print("z")`, opts: ['x\ny\nz', 'xy\nz', 'xyz', 'x y\nz'], ok: 1, mono: true, check: true,
+      exp: H`O primeiro print acaba com <code>end=""</code>, sem mudar de linha, por isso o "y" fica colado. O segundo print já muda de linha normalmente.` },
+    { q: 'O que aparece no ecrã?', code: C`
+x = 3
+if x > 5:
+    print("grande")
+print("fim")`, opts: ['grande\nfim', 'fim', 'grande', 'Nada'], ok: 1, mono: true, check: true,
+      exp: H`3 &gt; 5 é falso, por isso salta o bloco do if. O <code>print("fim")</code> está encostado à esquerda, fora do if, e corre sempre.` },
+    { q: 'Em Python, o que diz que linhas pertencem a um if?', opts: ['As chavetas { }', 'A indentação (os espaços no início da linha)', 'O ; no fim do bloco', 'A palavra end'], ok: 1,
+      exp: 'As linhas do bloco têm de estar mais à direita do que o if, todas com a mesma indentação. Assim que uma linha volta à esquerda, o bloco acabou.' },
+  ],
+  exercises: [{
+    title: 'Apresenta-te',
+    text: 'Escreve um programa que mostre o teu nome numa linha e o teu curso na linha seguinte.',
+    run: 'Nome: Joao\nCurso: Engenharia Informatica\n',
+    hint: 'Dois print, um por linha. Não é preciso \\n.',
+    solution: C`
+print("Nome: Joao")
+print("Curso: Engenharia Informatica")`,
+  }, {
+    title: 'Contas',
+    text: 'Mostra a soma, a diferença e o produto de 8 e 3, exatamente neste formato.',
+    run: '8 + 3 = 11\n8 - 3 = 5\n8 * 3 = 24\n',
+    hint: H`Podes fazer a conta dentro do print: <code>print("8 + 3 =", 8 + 3)</code>.`,
+    solution: C`
+print("8 + 3 =", 8 + 3)
+print("8 - 3 =", 8 - 3)
+print("8 * 3 =", 8 * 3)`,
+  }],
+});
+
+// ---------------------------------------------------------------- 1
+LESSONS.push({
+  id: 1,
+  title: 'Variáveis são nomes, não caixas',
+  short: 'objetos, nomes que apontam para eles, e type()',
+  body: H`
+<p>Em C, uma variável era uma <strong>caixa</strong> com um tipo: <code>int a = 5;</code> guardava o 5 dentro da caixa <code>a</code>, e <code>b = a</code> copiava o 5 para outra caixa.</p>
+<p>Em Python é diferente. <code>a = 5</code> cria um <strong>objeto</strong> (o número 5) e cola-lhe o <strong>nome</strong> <code>a</code>. O nome não é a caixa: é uma etiqueta que aponta para o objeto.</p>
+<ul>
+<li><code>b = a</code> não copia nada: cola um segundo nome <strong>no mesmo objeto</strong>.</li>
+<li><code>a = a + 1</code> calcula 6, cria um objeto novo com o 6 e muda a etiqueta <code>a</code> para lá. O <code>b</code> continua no 5. Os números (e os textos) nunca mudam por dentro: diz-se que são <strong>imutáveis</strong>.</li>
+<li>O tipo é do objeto, não do nome. O mesmo nome pode apontar para um número e, mais à frente, para um texto. <code>type(x)</code> diz o tipo do objeto para onde <code>x</code> aponta.</li>
+<li>Um objeto a que já nenhum nome aponta é apagado pelo Python sozinho (no visualizador fica desbotado antes de desaparecer).</li>
+</ul>
+<p>Nos painéis da direita, <code>a → #1</code> quer dizer "o nome a aponta para o objeto #1".</p>`,
+  analogy: 'Os objetos são coisas em cima de uma mesa e os nomes são post-its. "a = 5" é pôr o 5 na mesa e colar-lhe um post-it "a". "b = a" é colar um segundo post-it na mesma coisa. "a = a + 1" é pôr um 6 na mesa e mudar o post-it "a" para lá; o post-it "b" fica onde estava.',
+  examples: [{
+    title: 'Dois nomes, um objeto',
+    code: C`
+a = 5
+b = a
+a = a + 1
+print(a, b)
+a = "cinco"
+print(type(a), b)`,
+    steps: [
+      { l: 1, push: 'global', obj: { o1: ['int', 5] }, d: { global: { a: ['', '@o1'] } }, n: H`Cria o objeto 5 (o #1) e o nome <code>a</code> passa a apontar para ele.` },
+      { l: 2, d: { global: { b: ['', '@o1'] } }, n: H`<code>b = a</code> não copia o 5: o nome <code>b</code> aponta para o <strong>mesmo</strong> objeto #1. Há dois nomes e um só objeto.` },
+      { l: 3, obj: { o2: ['int', 6] }, u: { global: { a: '@o2' } }, n: H`Calcula <code>a + 1</code> = 6, que é um objeto <strong>novo</strong> (#2), e muda o nome <code>a</code> para lá. O 5 não mudou, e o <code>b</code> continua a apontar para ele.` },
+      { l: 4, o: '6 5\n', n: H`O print segue cada nome até ao seu objeto: <code>a</code> dá 6, <code>b</code> dá 5.` },
+      { l: 5, obj: { o3: ['str', "'cinco'"] }, u: { global: { a: '@o3' } }, n: H`Agora <code>a</code> aponta para um texto. Em C não podias trocar o tipo de uma variável; em Python o tipo é do objeto. O 6 ficou sem nomes: o Python vai apagá-lo.` },
+      { l: 6, o: "<class 'str'> 5\n", n: H`<code>type(a)</code> diz o tipo do objeto para onde <code>a</code> aponta: <code>str</code> (texto). O 6 já desapareceu.` },
+    ],
+  }],
+  mistakes: [
+    H`Usar um nome antes de lhe dar um valor: <em>NameError: name 'nota' is not defined</em>. Também aparece se o nome estiver mal escrito.`,
+    H`Achar que <code>b = a</code> faz uma cópia. Com números e textos não se nota, mas com listas vai fazer toda a diferença (lição 6).`,
+    H`Escrever decimais com vírgula: <code>x = 14,5</code> não dá erro, mas cria um par de valores (14, 5), e não o número 14.5.`,
+    H`Dar a uma variável o nome de uma função do Python (<code>list</code>, <code>str</code>, <code>sum</code>, <code>input</code>): depois a função deixa de funcionar nesse programa.`,
+  ],
+  quiz: [
+    { q: 'O que aparece no ecrã?', code: C`
+x = 3
+y = x
+x = 7
+print(x, y)`, opts: ['7 7', '3 3', '7 3', '3 7'], ok: 2, mono: true, check: true,
+      exp: H`<code>y = x</code> pôs o <code>y</code> a apontar para o 3. Depois <code>x = 7</code> muda só o nome <code>x</code> para um objeto novo; o <code>y</code> continua no 3.` },
+    { q: 'O que aparece no ecrã?', code: C`
+x = 10
+x = "dez"
+print(x)`, opts: ['10', 'dez', '10 dez', 'TypeError: cannot assign str to int'], ok: 1, mono: true, check: true,
+      exp: 'Os nomes não têm tipo: x passou a apontar para um texto. Em C isto não compilava; em Python é permitido.' },
+    { q: 'O que aparece no ecrã?', code: C`print(type(3.0), type(3))`, opts: ["<class 'float'> <class 'int'>", "<class 'int'> <class 'int'>", "<class 'float'> <class 'float'>", 'float int'], ok: 0, mono: true, check: true,
+      exp: H`<code>3.0</code> tem ponto, por isso é um real (<code>float</code>, o double do C). <code>3</code> é um inteiro (<code>int</code>).` },
+    { q: 'Depois de a = 5 e b = a, quantos objetos com o valor 5 há?', opts: ['Nenhum', 'Um, com dois nomes', 'Dois, um para cada nome', 'Depende do computador'], ok: 1,
+      exp: H`<code>b = a</code> não cria nada novo: dá um segundo nome ao objeto que já existia.` },
+  ],
+  exercises: [{
+    title: 'Trocar valores',
+    text: 'Começa com a = 1 e b = 2, troca os valores das duas variáveis e mostra-os. Em Python consegues fazê-lo numa só linha, sem variável auxiliar.',
+    run: 'a = 2 b = 1\n',
+    hint: H`<code>a, b = b, a</code> calcula primeiro os dois valores da direita e só depois muda os dois nomes.`,
+    solution: C`
+a = 1
+b = 2
+a, b = b, a
+print("a =", a, "b =", b)`,
+  }, {
+    title: 'Para o ano',
+    text: 'Cria as variáveis nome = "Ana" e idade = 19 e mostra as duas frases abaixo, usando as variáveis.',
+    run: 'Ana tem 19 anos\nPara o ano tem 20\n',
+    hint: H`<code>print(nome, "tem", idade, "anos")</code>. A conta <code>idade + 1</code> pode ir dentro do print.`,
+    solution: C`
+nome = "Ana"
+idade = 19
+print(nome, "tem", idade, "anos")
+print("Para o ano tem", idade + 1)`,
+  }],
+});
+
+// ---------------------------------------------------------------- 2
+LESSONS.push({
+  id: 2,
+  title: 'Ler do teclado e converter',
+  short: 'input() devolve sempre texto, int(), float() e f-strings',
+  body: H`
+<p><code>input("Pergunta? ")</code> mostra a pergunta, espera que o utilizador escreva e carregue em Enter, e devolve o que ele escreveu. Não há <code>&amp;</code> nem códigos de formato como no <code>scanf</code>.</p>
+<p>O ponto importante: <strong><code>input</code> devolve sempre texto</strong> (<code>str</code>), mesmo que o utilizador escreva um número. Para fazer contas, converte:</p>
+<table class="t">
+<thead><tr><th>Escreves</th><th>Dá</th></tr></thead>
+<tbody>
+<tr><td><code>int("19")</code></td><td>o inteiro 19</td></tr>
+<tr><td><code>float("1.75")</code></td><td>o real 1.75 (com ponto, não vírgula)</td></tr>
+<tr><td><code>str(19)</code></td><td>o texto "19"</td></tr>
+</tbody>
+</table>
+<p>Para escrever texto com valores lá dentro, usa uma <strong>f-string</strong>: um <code>f</code> antes das aspas e as expressões entre chavetas. <code>f"{nome} tem {idade} anos"</code>. Para casas decimais: <code>f"{media:.2f}"</code>, como o <code>%.2f</code> do C.</p>`,
+  analogy: 'O input é um secretário que anota tudo o que lhe dizem num papel, por escrito. Se lhe ditares "19", ele entrega-te o texto "19", não o número. Para fazer contas tens de lhe pedir que o converta: int().',
+  examples: [{
+    title: 'Perguntar e responder',
+    code: C`
+nome = input("Nome? ")
+idade = int(input("Idade? "))
+print(f"{nome} faz {idade + 1} anos para o ano.")`,
+    steps: [
+      { l: 1, push: 'global', o: 'Nome? ⟦Rita⟧', obj: { o1: ['str', "'Rita'"] }, d: { global: { nome: ['', '@o1'] } }, n: H`O programa mostra a pergunta e <strong>pára</strong> até o utilizador escrever e carregar em Enter. O texto escrito torna-se um objeto <code>str</code>.` },
+      { l: 2, o: 'Idade? ⟦19⟧', obj: { o2: ['int', 19] }, d: { global: { idade: ['', '@o2'] } }, n: H`O <code>input</code> devolve o texto <code>'19'</code> e o <code>int(...)</code> converte-o no número 19. Sem o int, idade seria texto.` },
+      { l: 3, o: 'Rita faz 20 anos para o ano.\n', n: H`Na f-string, cada <code>{...}</code> é trocado pelo valor da expressão. <code>idade + 1</code> dá 20.` },
+    ],
+  }, {
+    title: 'Esquecer a conversão',
+    code: C`
+idade = input("Idade? ")
+print(idade + 1)`,
+    steps: [
+      { l: 1, push: 'global', o: 'Idade? ⟦19⟧', obj: { o1: ['str', "'19'"] }, d: { global: { idade: ['', '@o1'] } }, n: H`Sem <code>int</code>, a <code>idade</code> aponta para o texto <code>'19'</code>. Repara no tipo do objeto #1: <code>str</code>.` },
+      { l: 2, o: 'TypeError: can only concatenate str (not "int") to str\n', n: H`Texto + número não faz sentido para o Python: dá erro e o programa pára. A mensagem diz que só se pode juntar (concatenar) texto com texto.` },
+    ],
+  }],
+  mistakes: [
+    H`Fazer contas com o resultado do <code>input</code> sem converter: <em>TypeError: can only concatenate str (not "int") to str</em>.`,
+    H`Converter texto que não é número: <code>int("abc")</code> dá <em>ValueError: invalid literal for int() with base 10: 'abc'</em>. Também acontece com <code>int("2.5")</code>.`,
+    H`Escrever um real com vírgula: <code>float("1,5")</code> dá <em>ValueError: could not convert string to float: '1,5'</em>.`,
+    H`Esquecer o <code>f</code> antes das aspas: <code>"{nome}"</code> mostra literalmente <code>{nome}</code>.`,
+  ],
+  quiz: [
+    { q: 'O que aparece no ecrã?', code: C`
+x = "5"
+y = 3
+print(x * y)`, opts: ['15', '555', '53', 'TypeError: can only concatenate str (not "int") to str'], ok: 1, mono: true, check: true,
+      exp: H`<code>x</code> é texto. Texto vezes um inteiro repete o texto: "5" três vezes dá "555". Com <code>+</code> é que dava erro.` },
+    { q: 'O que aparece no ecrã?', code: C`print(int("7") + int("3"))`, opts: ['73', '10', '7 3', 'ValueError'], ok: 1, mono: true, check: true,
+      exp: H`Os dois textos são convertidos em números antes de somar: 7 + 3 = 10. Sem o <code>int</code>, <code>"7" + "3"</code> dava "73".` },
+    { q: 'O que aparece no ecrã?', code: C`print(f"{7 / 2:.2f}")`, opts: ['3.5', '3.50', '3', '3.00'], ok: 1, mono: true, check: true,
+      exp: H`7 / 2 dá 3.5 em Python (vês porquê na lição seguinte), e <code>:.2f</code> mostra sempre 2 casas decimais.` },
+    { q: 'O que aparece no ecrã?', code: C`print("5" + 3)`, opts: ['8', '53', 'TypeError: can only concatenate str (not "int") to str', '5 3'], ok: 2, mono: true, check: true,
+      exp: 'O Python não converte sozinho: texto + inteiro é um erro. Ou convertes o texto (int("5") + 3) ou o número (\"5\" + str(3)).' },
+  ],
+  exercises: [{
+    title: 'Somar dois números',
+    text: 'Pede dois inteiros ao utilizador e mostra a soma.',
+    run: 'Primeiro: ⟦4⟧Segundo: ⟦9⟧Soma: 13\n',
+    hint: H`<code>a = int(input("Primeiro: "))</code>, o mesmo para o segundo, e depois <code>print("Soma:", a + b)</code>.`,
+    solution: C`
+a = int(input("Primeiro: "))
+b = int(input("Segundo: "))
+print("Soma:", a + b)`,
+  }, {
+    title: 'Área de um círculo',
+    text: 'Lê o raio (um número real) e mostra a área com 2 casas decimais. Área = 3.14159 × raio × raio.',
+    run: 'Raio: ⟦2⟧Area: 12.57\n',
+    hint: H`Usa <code>float(...)</code> para o raio poder ter casas decimais, e <code>f"Area: {area:.2f}"</code> para mostrar.`,
+    solution: C`
+raio = float(input("Raio: "))
+area = 3.14159 * raio * raio
+print(f"Area: {area:.2f}")`,
+  }],
+});
+
+// ---------------------------------------------------------------- 3
+LESSONS.push({
+  id: 3,
+  title: 'Contas e decisões',
+  short: '/ contra //, %, **, if, elif, else, and e or',
+  body: H`
+<p>Os operadores são quase os do C, com uma diferença que apanha toda a gente:</p>
+<table class="t">
+<thead><tr><th>Escreves</th><th>Dá</th><th>Em C</th></tr></thead>
+<tbody>
+<tr><td><code>7 / 2</code></td><td><code>3.5</code> (sempre real)</td><td>dava 3</td></tr>
+<tr><td><code>7 // 2</code></td><td><code>3</code> (divisão inteira)</td><td>era o <code>/</code> com inteiros</td></tr>
+<tr><td><code>7 % 2</code></td><td><code>1</code> (resto)</td><td>igual</td></tr>
+<tr><td><code>2 ** 10</code></td><td><code>1024</code> (potência)</td><td>não havia</td></tr>
+</tbody>
+</table>
+<p>As decisões usam <code>if</code>, <code>elif</code> (o <code>else if</code> do C) e <code>else</code>, cada um com <code>:</code> e um bloco indentado. Os lógicos escrevem-se por extenso: <code>and</code>, <code>or</code>, <code>not</code>. Verdadeiro e falso são <code>True</code> e <code>False</code>, com maiúscula.</p>
+<p>Uma vantagem: <code>0 &lt;= nota &lt;= 20</code> funciona como na matemática (em C não funcionava).</p>`,
+  analogy: 'O / é dividir uma piza: 7 pizas por 2 pessoas dá 3,5 a cada uma. O // é dividir bilhetes de concerto: só há bilhetes inteiros, cada um leva 3 e o % diz quantos sobram.',
+  examples: [{
+    title: 'Aprovado ou reprovado',
+    code: C`
+nota = int(input("Nota? "))
+if nota < 0 or nota > 20:
+    print("Nota invalida")
+elif nota >= 10:
+    print("Aprovado")
+else:
+    print("Reprovado")
+print(nota // 2, nota / 2, nota % 2)`,
+    steps: [
+      { l: 1, push: 'global', o: 'Nota? ⟦13⟧', obj: { o1: ['int', 13] }, d: { global: { nota: ['', '@o1'] } }, n: 'Lê a nota e converte-a em inteiro.' },
+      { l: 2, n: H`13 &lt; 0 é falso, 13 &gt; 20 é falso. Falso <code>or</code> falso dá falso: salta este bloco.` },
+      { l: 4, n: H`<code>elif</code>: 13 &gt;= 10 é verdadeiro, entra.` },
+      { l: 5, o: 'Aprovado\n', n: H`Só um dos blocos de uma cadeia if / elif / else é executado: o primeiro cuja condição é verdadeira.` },
+      { l: 8, o: '6 6.5 1\n', n: H`<code>13 // 2</code> dá 6 (divisão inteira), <code>13 / 2</code> dá 6.5 (divisão normal) e <code>13 % 2</code> dá 1 (o resto).` },
+    ],
+  }],
+  mistakes: [
+    H`Esperar um inteiro de <code>/</code>. Em Python, <code>/</code> dá sempre um real; para a divisão inteira é <code>//</code>.`,
+    H`Escrever <code>&amp;&amp;</code>, <code>||</code> ou <code>!</code> do C. Em Python é <code>and</code>, <code>or</code> e <code>not</code>.`,
+    H`Escrever <code>else if</code> em vez de <code>elif</code>, ou esquecer os <code>:</code>.`,
+    H`Escrever <code>true</code> em minúsculas: <em>NameError: name 'true' is not defined</em>.`,
+    H`Usar <code>=</code> numa condição: <code>if x = 5:</code> dá <em>SyntaxError</em>. Para comparar é <code>==</code>.`,
+  ],
+  quiz: [
+    { q: 'O que aparece no ecrã?', code: C`print(7 / 2, 7 // 2)`, opts: ['3 3', '3.5 3', '3.5 3.5', '3 3.5'], ok: 1, mono: true, check: true,
+      exp: H`<code>/</code> é a divisão normal (3.5) e <code>//</code> a divisão inteira (3). É ao contrário do que estavas habituado em C, onde <code>7 / 2</code> dava 3.` },
+    { q: 'O que aparece no ecrã?', code: C`print(2 ** 3 * 2)`, opts: ['64', '16', '12', '8'], ok: 1, mono: true, check: true,
+      exp: H`A potência vem primeiro: 2 ** 3 = 8, e depois 8 × 2 = 16. Seria 64 se fosse <code>2 ** (3 * 2)</code>.` },
+    { q: 'O que aparece no ecrã?', code: C`
+x = 15
+print(10 <= x <= 20)`, opts: ['True', 'False', '1', 'SyntaxError'], ok: 0, mono: true, check: true,
+      exp: H`Em Python as comparações encadeiam-se como na matemática: é o mesmo que <code>10 &lt;= x and x &lt;= 20</code>. E o resultado é <code>True</code>, não 1 como em C.` },
+    { q: 'O que aparece no ecrã?', code: C`
+x = 7
+if x > 5:
+    print("A")
+elif x > 3:
+    print("B")
+else:
+    print("C")`, opts: ['A', 'AB', 'A\nB', 'B'], ok: 0, mono: true, check: true,
+      exp: H`7 &gt; 5 é verdadeiro, por isso escreve A. Também é verdade que 7 &gt; 3, mas o <code>elif</code> só é testado quando as condições anteriores falharam.` },
+    { q: 'O que aparece no ecrã? (esta é difícil)', code: C`print(-7 // 2)`, opts: ['-3', '-4', '-3.5', '3'], ok: 1, mono: true, check: true,
+      exp: H`O <code>//</code> arredonda sempre para baixo: -3.5 fica -4. Em C, <code>-7 / 2</code> cortava as casas decimais e dava -3.` },
+  ],
+  exercises: [{
+    title: 'Par ou ímpar',
+    text: 'Lê um inteiro e diz se é par ou ímpar.',
+    run: 'Numero: ⟦7⟧7 e impar\n',
+    hint: H`Um número é par quando <code>n % 2 == 0</code>.`,
+    solution: C`
+n = int(input("Numero: "))
+if n % 2 == 0:
+    print(n, "e par")
+else:
+    print(n, "e impar")`,
+  }, {
+    title: 'Classificação',
+    text: 'Lê uma nota (0 a 20) e mostra "Insuficiente" (menos de 10), "Suficiente" (10 a 13), "Bom" (14 a 16) ou "Muito bom" (17 a 20).',
+    run: 'Nota: ⟦15⟧Bom\n',
+    hint: H`Uma cadeia <code>if</code> / <code>elif</code> / <code>else</code>, começando pela nota mais baixa: <code>if nota &lt; 10</code>, <code>elif nota &lt;= 13</code>, ...`,
+    solution: C`
+nota = int(input("Nota: "))
+if nota < 10:
+    print("Insuficiente")
+elif nota <= 13:
+    print("Suficiente")
+elif nota <= 16:
+    print("Bom")
+else:
+    print("Muito bom")`,
+  }],
+});
+
+// ===== Python do Zero — conteúdo das lições (parte 2) =====
+
+// ---------------------------------------------------------------- 4
+LESSONS.push({
+  id: 4,
+  title: 'Ciclos: for e while',
+  short: 'range, percorrer texto, while, break e o do-while que não existe',
+  body: H`
+<p>O <code>while</code> é igual ao do C: repete enquanto a condição for verdadeira. O <code>for</code> é diferente: <strong>percorre uma sequência</strong>, dando ao nome do ciclo cada valor, um de cada vez.</p>
+<table class="t">
+<thead><tr><th>Python</th><th>Valores</th><th>Em C</th></tr></thead>
+<tbody>
+<tr><td><code>for i in range(4):</code></td><td>0, 1, 2, 3</td><td><code>for (i = 0; i &lt; 4; i++)</code></td></tr>
+<tr><td><code>for i in range(1, 5):</code></td><td>1, 2, 3, 4 (o 5 fica de fora)</td><td><code>for (i = 1; i &lt; 5; i++)</code></td></tr>
+<tr><td><code>for i in range(0, 10, 3):</code></td><td>0, 3, 6, 9</td><td><code>for (i = 0; i &lt; 10; i += 3)</code></td></tr>
+<tr><td><code>for letra in "ola":</code></td><td>'o', 'l', 'a'</td><td>um ciclo até ao <code>'\0'</code></td></tr>
+</tbody>
+</table>
+<ul>
+<li>Não existe <code>i++</code>: escreve-se <code>i += 1</code>.</li>
+<li><code>break</code> sai do ciclo; <code>continue</code> salta para a volta seguinte.</li>
+<li>Não há <code>do-while</code>. Para "pedir até estar certo", pergunta uma vez antes do <code>while</code> e outra vez no fim do bloco, ou usa <code>while True:</code> com um <code>break</code>.</li>
+</ul>`,
+  analogy: 'O for do Python é uma fila de pessoas a passar por uma porta: o nome do ciclo é o crachá que vai sendo colado a cada pessoa que passa. Não precisas de contar as pessoas, a fila acaba sozinha.',
+  examples: [{
+    title: 'Somar de 1 a 3',
+    code: C`
+soma = 0
+for i in range(1, 4):
+    soma = soma + i
+    print("i =", i, "soma =", soma)
+print("Total:", soma)`,
+    steps: [
+      { l: 1, push: 'global', obj: { o1: ['int', 0] }, d: { global: { soma: ['', '@o1'] } }, n: 'O acumulador começa em 0, como em C.' },
+      { l: 2, obj: { o2: ['int', 1] }, d: { global: { i: ['', '@o2'] } }, n: H`<code>range(1, 4)</code> dá 1, 2 e 3. Na primeira volta, <code>i</code> aponta para o 1.` },
+      { l: 3, obj: { o3: ['int', 1] }, u: { global: { soma: '@o3' } }, n: H`<code>soma + i</code> = 0 + 1 = 1, um objeto novo. O <code>soma</code> passa para lá e o 0 fica sem nomes.` },
+      { l: 4, o: 'i = 1 soma = 1\n', n: 'Mostra os valores desta volta.' },
+      { l: 2, obj: { o4: ['int', 2] }, u: { global: { i: '@o4' } }, n: H`Segunda volta: <code>i</code> passa para o 2. Não há <code>i++</code>: é o for que vai buscar o valor seguinte.` },
+      { l: 3, obj: { o5: ['int', 3] }, u: { global: { soma: '@o5' } }, n: 'soma = 1 + 2 = 3' },
+      { l: 4, o: 'i = 2 soma = 3\n', n: 'Mostra os valores desta volta.' },
+      { l: 2, obj: { o6: ['int', 3] }, u: { global: { i: '@o6' } }, n: H`Terceira e última volta: <code>i</code> passa para o 3.` },
+      { l: 3, obj: { o7: ['int', 6] }, u: { global: { soma: '@o7' } }, n: 'soma = 3 + 3 = 6' },
+      { l: 4, o: 'i = 3 soma = 6\n', n: 'Mostra os valores desta volta.' },
+      { l: 2, n: H`O <code>range</code> não tem mais valores: o ciclo acaba. Ao contrário do C, o <code>i</code> continua a existir depois do ciclo.` },
+      { l: 5, o: 'Total: 6\n', n: 'Esta linha já está fora do ciclo.' },
+    ],
+  }, {
+    title: 'Pedir até estar certo',
+    code: C`
+n = int(input("Positivo? "))
+while n <= 0:
+    n = int(input("Positivo? "))
+print("Obrigado:", n)`,
+    steps: [
+      { l: 1, push: 'global', o: 'Positivo? ⟦-3⟧', obj: { o1: ['int', -3] }, d: { global: { n: ['', '@o1'] } }, n: H`Como não há <code>do-while</code>, pergunta-se uma primeira vez antes do ciclo.` },
+      { l: 2, n: H`-3 &lt;= 0 é verdadeiro: entra no ciclo.` },
+      { l: 3, o: 'Positivo? ⟦0⟧', obj: { o2: ['int', 0] }, u: { global: { n: '@o2' } }, n: 'Pergunta outra vez.' },
+      { l: 2, n: H`0 &lt;= 0 é verdadeiro: mais uma volta.` },
+      { l: 3, o: 'Positivo? ⟦8⟧', obj: { o3: ['int', 8] }, u: { global: { n: '@o3' } }, n: 'Agora escreve 8.' },
+      { l: 2, n: H`8 &lt;= 0 é falso: sai do ciclo.` },
+      { l: 4, o: 'Obrigado: 8\n', n: 'Só chega aqui com um número positivo.' },
+    ],
+  }],
+  mistakes: [
+    H`Achar que <code>range(1, 5)</code> inclui o 5. O segundo número nunca está incluído.`,
+    H`Escrever <code>i++</code>: dá <em>SyntaxError</em>. É <code>i += 1</code>.`,
+    H`Ciclo infinito num <code>while</code>: esquecer de mudar a variável da condição dentro do bloco.`,
+    H`Esquecer os <code>:</code> no fim do <code>for</code> ou do <code>while</code>, ou a indentação do bloco.`,
+    H`Escrever <code>for i in 10:</code>. Um número não é uma sequência: <em>TypeError: 'int' object is not iterable</em>. É <code>range(10)</code>.`,
+  ],
+  quiz: [
+    { q: 'O que aparece no ecrã?', code: C`
+for i in range(3):
+    print(i, end=" ")`, opts: ['0 1 2', '1 2 3', '0 1 2 3', '1 2'], ok: 0, mono: true, check: true,
+      exp: H`<code>range(3)</code> começa em 0 e pára antes do 3: 0, 1, 2.` },
+    { q: 'O que aparece no ecrã?', code: C`
+for i in range(2, 10, 3):
+    print(i)`, opts: ['2\n5\n8', '2\n5\n8\n11', '3\n6\n9', '2\n4\n6\n8'], ok: 0, mono: true, check: true,
+      exp: 'Começa em 2 e vai de 3 em 3: 2, 5, 8. O 11 já passa do 10, que de qualquer forma nunca está incluído.' },
+    { q: 'O que aparece no ecrã?', code: C`
+conta = 0
+for c in "banana":
+    if c == "a":
+        conta += 1
+print(conta)`, opts: ['3', '2', '6', '1'], ok: 0, mono: true, check: true,
+      exp: H`O for dá a <code>c</code> cada letra de "banana", uma a uma. Há três letras a.` },
+    { q: 'O que aparece no ecrã?', code: C`
+i = 0
+while i < 10:
+    i += 4
+print(i)`, opts: ['8', '12', '10', '4'], ok: 1, mono: true, check: true,
+      exp: 'i vale 0, 4, 8 e, na última volta, 12. Só então a condição 12 < 10 falha. O print está fora do ciclo e mostra 12.' },
+  ],
+  exercises: [{
+    title: 'Tabuada',
+    text: 'Lê um número e mostra a tabuada dele, de 1 a 10.',
+    run: 'Numero: ⟦7⟧' + Array.from({ length: 10 }, (_, i) => `7 x ${i + 1} = ${7 * (i + 1)}\n`).join(''),
+    hint: H`<code>for i in range(1, 11):</code> e, em cada volta, <code>print(n, "x", i, "=", n * i)</code>.`,
+    solution: C`
+n = int(input("Numero: "))
+for i in range(1, 11):
+    print(n, "x", i, "=", n * i)`,
+  }, {
+    title: 'Somar até aparecer um zero',
+    text: 'Lê números até o utilizador escrever 0. No fim mostra a soma e quantos números foram lidos (sem contar o 0).',
+    run: 'Numero (0 termina): ⟦5⟧Numero (0 termina): ⟦3⟧Numero (0 termina): ⟦10⟧Numero (0 termina): ⟦0⟧Soma: 18\nLidos: 3\n',
+    hint: H`<code>while True:</code>, lê o número, e se for 0 faz <code>break</code>. Senão, soma e conta.`,
+    solution: C`
+soma = 0
+conta = 0
+while True:
+    n = int(input("Numero (0 termina): "))
+    if n == 0:
+        break
+    soma += n
+    conta += 1
+print("Soma:", soma)
+print("Lidos:", conta)`,
+  }],
+});
+
+// ---------------------------------------------------------------- 5
+LESSONS.push({
+  id: 5,
+  title: 'Listas',
+  short: 'índices, len, append, fatias, e listas que mudam por dentro',
+  body: H`
+<p>Uma <strong>lista</strong> guarda vários valores por ordem: <code>notas = [12, 17, 9]</code>. Parece um array do C, mas é muito mais prática:</p>
+<ul>
+<li>Os índices começam em 0, como em C: <code>notas[0]</code> é o 12. E podes contar do fim: <code>notas[-1]</code> é o último.</li>
+<li><code>len(notas)</code> dá o tamanho. A lista <strong>cresce</strong>: <code>notas.append(15)</code> acrescenta no fim. Também há <code>insert</code>, <code>pop</code>, <code>remove</code> e <code>sort</code>.</li>
+<li>Uma <strong>fatia</strong> dá uma lista nova com parte dos elementos: <code>notas[1:3]</code> são os índices 1 e 2 (o 3 fica de fora, como no <code>range</code>).</li>
+<li><code>x in notas</code> diz se o valor está na lista. <code>for n in notas:</code> percorre-a.</li>
+<li>Ao contrário dos números e dos textos, as listas são <strong>mutáveis</strong>: o <code>append</code> e o <code>notas[2] = 10</code> mudam o próprio objeto, em vez de criarem um novo.</li>
+</ul>`,
+  analogy: 'Uma lista é um comboio de carruagens numeradas a partir do 0. Podes engatar mais carruagens no fim (append), trocar a carga de uma (notas[2] = 10) ou tirar uma (pop), e continua a ser o mesmo comboio.',
+  examples: [{
+    title: 'Mexer numa lista',
+    code: C`
+notas = [12, 17, 9]
+notas.append(15)
+notas[2] = 10
+print(notas, len(notas))
+print(notas[0], notas[-1])
+print(notas[1:3])`,
+    steps: [
+      { l: 1, push: 'global', obj: { o1: ['list', [12, 17, 9]] }, d: { global: { notas: ['', '@o1'] } }, n: 'Uma lista com 3 elementos, nos índices 0, 1 e 2.' },
+      { l: 2, obj: { o1: ['list', [12, 17, 9, 15]] }, n: H`O <code>append</code> acrescenta no fim do <strong>mesmo</strong> objeto #1. Não se cria uma lista nova: em C, um array nunca podia crescer.` },
+      { l: 3, obj: { o1: ['list', [12, 17, 10, 15]] }, n: 'Muda o elemento de índice 2, outra vez dentro da mesma lista.' },
+      { l: 4, o: '[12, 17, 10, 15] 4\n', n: H`O print mostra a lista toda, com os parênteses retos. <code>len</code> dá 4.` },
+      { l: 5, o: '12 15\n', n: H`<code>notas[-1]</code> é o último elemento, sem precisares de saber o tamanho.` },
+      { l: 6, obj: { o2: ['list', [17, 10]] }, o: '[17, 10]\n', n: H`A fatia <code>[1:3]</code> cria uma lista <strong>nova</strong> (#2) com os índices 1 e 2. Como nenhum nome aponta para ela, vai ser apagada logo a seguir.` },
+    ],
+  }, {
+    title: 'Uma fila de espera',
+    code: C`
+fila = ["Ana", "Rui"]
+fila.insert(0, "Ines")
+fila.append("Tiago")
+primeiro = fila.pop(0)
+print(primeiro, fila)
+print("Rui" in fila, len(fila))`,
+    steps: [
+      { l: 1, push: 'global', obj: { o1: ['list', ["'Ana'", "'Rui'"]] }, d: { global: { fila: ['', '@o1'] } }, n: 'Uma lista de textos.' },
+      { l: 2, obj: { o1: ['list', ["'Ines'", "'Ana'", "'Rui'"]] }, n: H`<code>insert(0, ...)</code> põe a Ines na posição 0; os outros andam uma posição.` },
+      { l: 3, obj: { o1: ['list', ["'Ines'", "'Ana'", "'Rui'", "'Tiago'"]] }, n: H`<code>append</code> põe o Tiago no fim.` },
+      { l: 4, obj: { o1: ['list', ["'Ana'", "'Rui'", "'Tiago'"]], o2: ['str', "'Ines'"] }, d: { global: { primeiro: ['', '@o2'] } }, n: H`<code>pop(0)</code> tira o elemento da posição 0 e devolve-o: a Ines sai da fila e fica com o nome <code>primeiro</code>.` },
+      { l: 5, o: "Ines ['Ana', 'Rui', 'Tiago']\n", n: 'Repara nas plicas: o print de uma lista mostra os textos entre plicas.' },
+      { l: 6, o: 'True 3\n', n: H`<code>"Rui" in fila</code> dá <code>True</code>. Ficaram 3 pessoas.` },
+    ],
+  }],
+  mistakes: [
+    H`Aceder a um índice que não existe: <em>IndexError: list index out of range</em>. Numa lista de 4, o último é <code>[3]</code> (ou <code>[-1]</code>).`,
+    H`Escrever <code>x = notas.sort()</code>. O <code>sort</code> ordena a própria lista e devolve <code>None</code>. Para ter uma cópia ordenada, usa <code>sorted(notas)</code>.`,
+    H`Usar <code>push</code> (de outras linguagens): <em>AttributeError: 'list' object has no attribute 'push'. Did you mean '.append'?</em>`,
+    H`Esquecer que a fatia <code>[a:b]</code> não inclui o índice <code>b</code>.`,
+    H`Fazer <code>notas.append(15, 16)</code>. O append recebe um só valor; para vários usa <code>notas.extend([15, 16])</code>.`,
+  ],
+  quiz: [
+    { q: 'O que aparece no ecrã?', code: C`
+v = [3, 6, 9, 12]
+print(v[1], v[-1])`, opts: ['3 12', '6 12', '6 9', '3 9'], ok: 1, mono: true, check: true,
+      exp: H`Os índices começam em 0, por isso <code>v[1]</code> é o 6. <code>v[-1]</code> é o último, o 12.` },
+    { q: 'O que aparece no ecrã?', code: C`
+v = [1, 2, 3]
+v.append([4, 5])
+print(len(v))`, opts: ['5', '4', '3', 'TypeError'], ok: 1, mono: true, check: true,
+      exp: H`O append acrescenta <strong>um</strong> elemento, e esse elemento é a lista [4, 5] inteira. A lista fica [1, 2, 3, [4, 5]], com 4 elementos.` },
+    { q: 'O que aparece no ecrã?', code: C`
+v = [10, 20, 30, 40, 50]
+print(v[1:3])`, opts: ['[20, 30]', '[20, 30, 40]', '[10, 20, 30]', '[30, 40]'], ok: 0, mono: true, check: true,
+      exp: 'A fatia começa no índice 1 (o 20) e pára antes do índice 3: ficam o 20 e o 30.' },
+    { q: 'O que aparece no ecrã?', code: C`
+v = [5, 1, 4]
+x = v.sort()
+print(x, v)`, opts: ['[1, 4, 5] [1, 4, 5]', 'None [1, 4, 5]', '[1, 4, 5] [5, 1, 4]', 'None [5, 1, 4]'], ok: 1, mono: true, check: true,
+      exp: H`O <code>sort</code> muda a própria lista e não devolve nada (devolve <code>None</code>). Por isso <code>x</code> fica com None, e <code>v</code> fica ordenada.` },
+  ],
+  exercises: [{
+    title: 'Ao contrário',
+    text: 'Lê 5 inteiros, um por linha, para uma lista. Mostra a lista ao contrário e a soma dos números.',
+    run: '⟦1⟧⟦2⟧⟦3⟧⟦4⟧⟦5⟧[5, 4, 3, 2, 1]\nSoma: 15\n',
+    hint: H`Começa com <code>numeros = []</code> e faz <code>append</code> num for de 5 voltas. <code>numeros[::-1]</code> dá a lista ao contrário e <code>sum(numeros)</code> a soma.`,
+    solution: C`
+numeros = []
+for i in range(5):
+    numeros.append(int(input()))
+print(numeros[::-1])
+print("Soma:", sum(numeros))`,
+  }, {
+    title: 'Acima da média',
+    text: 'Para a lista [4, 8, 15, 16, 23, 42], calcula a média e conta quantos valores estão acima dela.',
+    run: 'Media: 18.0\nAcima da media: 2\n',
+    hint: H`<code>media = sum(v) / len(v)</code>. Depois percorre a lista com um for e conta os maiores do que a média.`,
+    solution: C`
+v = [4, 8, 15, 16, 23, 42]
+media = sum(v) / len(v)
+acima = 0
+for x in v:
+    if x > media:
+        acima += 1
+print("Media:", media)
+print("Acima da media:", acima)`,
+  }],
+});
+
+// ---------------------------------------------------------------- 6
+LESSONS.push({
+  id: 6,
+  title: 'Dois nomes, uma lista',
+  short: 'b = a não copia: aliasing, copy(), is contra ==',
+  body: H`
+<p>Lembras-te de que <code>b = a</code> não copia nada, só cola um segundo nome no mesmo objeto? Com números e textos isso não se notava, porque eles nunca mudam. Com <strong>listas</strong>, que mudam por dentro, nota-se muito:</p>
+<ul>
+<li>Depois de <code>b = a</code>, <code>b.append(4)</code> muda o único objeto que existe, por isso <code>a</code> também "muda". Diz-se que <code>a</code> e <code>b</code> são <strong>aliases</strong> (dois nomes para a mesma coisa).</li>
+<li>Já <code>b = [9]</code> não mexe em <code>a</code>: cria uma lista nova e muda só a etiqueta <code>b</code>.</li>
+<li>Para ter uma cópia a sério: <code>c = a.copy()</code> (ou <code>a[:]</code>, ou <code>list(a)</code>).</li>
+<li><code>a == b</code> pergunta se têm o mesmo conteúdo; <code>a is b</code> pergunta se são o mesmo objeto.</li>
+</ul>
+<p>Se fizeste a lição dos apontadores do C, é a mesma ideia: em C, dois apontadores para a mesma variável; aqui, dois nomes para o mesmo objeto.</p>`,
+  analogy: 'Dois comandos da mesma televisão: se mudas de canal com um, a televisão muda para os dois, porque só há uma televisão. Comprar uma televisão nova e ficar com um dos comandos para ela (b = [9]) já não mexe na antiga.',
+  examples: [{
+    title: 'Mudar através do outro nome',
+    code: C`
+a = [1, 2, 3]
+b = a
+b.append(4)
+print(a)
+print(a is b)
+b = [9]
+print(a, b)`,
+    steps: [
+      { l: 1, push: 'global', obj: { o1: ['list', [1, 2, 3]] }, d: { global: { a: ['', '@o1'] } }, n: H`Uma lista, o objeto #1, com o nome <code>a</code>.` },
+      { l: 2, d: { global: { b: ['', '@o1'] } }, n: H`<code>b = a</code>: o <code>b</code> aponta para o <strong>mesmo</strong> objeto #1. Repara nas duas setas para o #1. Não há nenhuma lista nova.` },
+      { l: 3, obj: { o1: ['list', [1, 2, 3, 4]] }, n: H`O append através de <code>b</code> muda o objeto #1, o único que existe.` },
+      { l: 4, o: '[1, 2, 3, 4]\n', n: H`Por isso, quem segue o nome <code>a</code> também vê o 4.` },
+      { l: 5, o: 'True\n', n: H`<code>is</code> pergunta "são o mesmo objeto?". São.` },
+      { l: 6, obj: { o2: ['list', [9]] }, u: { global: { b: '@o2' } }, n: H`Agora é diferente: <code>b = [9]</code> cria uma lista nova (#2) e muda só a etiqueta <code>b</code>. O objeto #1 não é tocado.` },
+      { l: 7, o: '[1, 2, 3, 4] [9]\n', n: H`<code>a</code> continua na lista antiga. Mudar o objeto (append) e mudar o nome (=) são coisas diferentes.` },
+    ],
+  }, {
+    title: 'Uma cópia a sério',
+    code: C`
+a = [1, 2, 3]
+c = a.copy()
+c.append(4)
+print(a, c)
+print(a == [1, 2, 3], a is c)`,
+    steps: [
+      { l: 1, push: 'global', obj: { o1: ['list', [1, 2, 3]] }, d: { global: { a: ['', '@o1'] } }, n: 'A mesma lista de antes.' },
+      { l: 2, obj: { o2: ['list', [1, 2, 3]] }, d: { global: { c: ['', '@o2'] } }, n: H`<code>copy()</code> cria uma lista <strong>nova</strong> (#2) com os mesmos valores. Agora há dois objetos.` },
+      { l: 3, obj: { o2: ['list', [1, 2, 3, 4]] }, n: 'O append muda só a cópia.' },
+      { l: 4, o: '[1, 2, 3] [1, 2, 3, 4]\n', n: 'A original ficou como estava.' },
+      { l: 5, o: 'True False\n', n: H`<code>==</code> compara o conteúdo (é igual a [1, 2, 3]); <code>is</code> compara se é o mesmo objeto (a e c não são).` },
+    ],
+  }],
+  mistakes: [
+    H`Fazer <code>backup = lista</code> antes de mudar a lista, a pensar que guardou uma cópia. Guardou um segundo nome; usa <code>lista.copy()</code>.`,
+    H`Passar uma lista a uma função e estranhar que ela mude no programa principal (lição 7).`,
+    H`Usar <code>is</code> para comparar valores (<code>if nome is "Ana"</code>). Para valores é <code>==</code>; o <code>is</code> só serve para saber se é o mesmo objeto (e para <code>is None</code>).`,
+    H`Criar uma matriz com <code>[[0] * 3] * 3</code>: são três nomes para a mesma linha. Usa <code>[[0] * 3 for _ in range(3)]</code>.`,
+  ],
+  quiz: [
+    { q: 'O que aparece no ecrã?', code: C`
+x = [1, 2]
+y = x
+y[0] = 99
+print(x)`, opts: ['[1, 2]', '[99, 2]', '[99, 2] [99, 2]', 'TypeError'], ok: 1, mono: true, check: true,
+      exp: H`<code>x</code> e <code>y</code> apontam para a mesma lista. Mudar um elemento através de <code>y</code> muda o único objeto que existe.` },
+    { q: 'O que aparece no ecrã?', code: C`
+x = [1, 2]
+y = x[:]
+y[0] = 99
+print(x)`, opts: ['[1, 2]', '[99, 2]', '[99, 1, 2]', '[]'], ok: 0, mono: true, check: true,
+      exp: H`A fatia <code>[:]</code> (do princípio ao fim) cria uma lista nova com os mesmos valores, ou seja, uma cópia. Mudar a cópia não mexe na original.` },
+    { q: 'O que aparece no ecrã?', code: C`
+x = 5
+y = x
+y = y + 1
+print(x)`, opts: ['5', '6', '5 6', 'None'], ok: 0, mono: true, check: true,
+      exp: H`Os números não mudam por dentro: <code>y + 1</code> cria um objeto novo e só o nome <code>y</code> passa para lá. O <code>x</code> continua no 5.` },
+    { q: 'O que aparece no ecrã?', code: C`
+a = [1, 2]
+b = [1, 2]
+print(a == b, a is b)`, opts: ['True True', 'True False', 'False False', 'False True'], ok: 1, mono: true, check: true,
+      exp: H`São duas listas criadas em separado, com o mesmo conteúdo: <code>==</code> dá True, <code>is</code> dá False.` },
+    { q: 'O que aparece no ecrã? (esta é difícil)', code: C`
+m = [[0] * 2] * 2
+m[0][0] = 1
+print(m)`, opts: ['[[1, 0], [0, 0]]', '[[1, 0], [1, 0]]', '[[1, 1], [0, 0]]', '[[1, 1], [1, 1]]'], ok: 1, mono: true, check: true,
+      exp: H`<code>[linha] * 2</code> não copia a linha: faz uma lista com duas referências para a <strong>mesma</strong> linha. Mudar <code>m[0][0]</code> muda essa linha, que também é a <code>m[1]</code>.` },
+  ],
+  exercises: [{
+    title: 'Ordenar sem estragar',
+    text: 'Começa com original = [3, 1, 2]. Faz uma cópia, ordena a cópia e mostra as duas listas.',
+    run: 'original: [3, 1, 2]\nordenada: [1, 2, 3]\n',
+    hint: H`<code>ordenada = original.copy()</code> e depois <code>ordenada.sort()</code>. (Também podias usar <code>sorted(original)</code>, que devolve uma lista nova.)`,
+    solution: C`
+original = [3, 1, 2]
+ordenada = original.copy()
+ordenada.sort()
+print("original:", original)
+print("ordenada:", ordenada)`,
+  }, {
+    title: 'Cópia de segurança',
+    text: 'Tens compras = ["pao", "leite"]. Guarda uma cópia de segurança em backup, esvazia a lista compras com compras.clear() e mostra as duas listas. O backup tem de continuar com os dois produtos.',
+    run: "[] ['pao', 'leite']\n",
+    hint: H`Se fizeres <code>backup = compras</code>, o <code>clear</code> esvazia as duas, porque é a mesma lista. Usa <code>compras.copy()</code>.`,
+    solution: C`
+compras = ["pao", "leite"]
+backup = compras.copy()
+compras.clear()
+print(compras, backup)`,
+  }],
+});
+
+// ---------------------------------------------------------------- 7
+LESSONS.push({
+  id: 7,
+  title: 'Funções',
+  short: 'def, return, None, e parâmetros que apontam para os mesmos objetos',
+  body: H`
+<p>Uma função define-se com <code>def</code>, sem tipos: <code>def quadrado(x):</code>, e um bloco indentado. Devolve um valor com <code>return</code>; se não tiver <code>return</code>, devolve <code>None</code> (o "nada" do Python).</p>
+<p>Como são passados os argumentos? Nem cópia, como no C, nem apontador: <strong>o parâmetro é um nome novo que aponta para o mesmo objeto</strong> que o argumento. Isto tem duas consequências:</p>
+<ul>
+<li>Se a função <strong>muda o objeto</strong> (por exemplo, <code>lista.append(...)</code>), quem chamou vê a mudança, porque é o mesmo objeto.</li>
+<li>Se a função <strong>muda o nome</strong> (<code>valor = 0</code>), só o nome local muda. Com números e textos, que nunca mudam por dentro, o resultado é o mesmo que a passagem por valor do C.</li>
+</ul>
+<p>As funções também são objetos: <code>def</code> cria um objeto função e cola-lhe o nome.</p>`,
+  analogy: 'Chamar uma função é dar ao colega a morada do teu armário, com um post-it novo com o nome que ele quiser. Se ele arrumar o armário, quando lá fores vês a diferença. Se ele colar o post-it noutro armário, o teu fica igual.',
+  examples: [{
+    title: 'Uma função que devolve um valor',
+    code: C`
+def quadrado(x):
+    r = x * x
+    return r
+
+n = 4
+q = quadrado(n)
+print(n, q)`,
+    steps: [
+      { l: 1, push: 'global', obj: { o1: ['function', 'quadrado(x)'] }, d: { global: { quadrado: ['', '@o1'] } }, n: H`O <code>def</code> não corre a função: cria um objeto função e cola-lhe o nome <code>quadrado</code>. O corpo só corre quando a função for chamada.` },
+      { l: 5, obj: { o2: ['int', 4] }, d: { global: { n: ['', '@o2'] } }, n: 'O programa continua depois da função: n aponta para o 4.' },
+      { l: 6, push: 'quadrado', d: { quadrado: { x: ['', '@o2'] } }, n: H`Chama a função. Cria-se um frame novo, e o parâmetro <code>x</code> aponta para o <strong>mesmo</strong> objeto 4 que o <code>n</code>.` },
+      { l: 2, obj: { o3: ['int', 16] }, d: { quadrado: { r: ['', '@o3'] } }, n: 'r = 4 × 4 = 16' },
+      { l: 3, n: H`<code>return r</code> devolve o objeto 16 a quem chamou.` },
+      { l: 6, pop: true, d: { global: { q: ['', '@o3'] } }, n: H`O frame da função desaparece (e com ele os nomes x e r), mas o objeto 16 não: agora é o <code>q</code> que aponta para ele.` },
+      { l: 7, o: '4 16\n', n: 'Mostra os dois valores.' },
+    ],
+  }, {
+    title: 'Mudar o objeto contra mudar o nome',
+    code: C`
+def junta(lista, valor):
+    lista.append(valor)
+    valor = 0
+
+notas = [12, 15]
+v = 18
+junta(notas, v)
+print(notas, v)`,
+    steps: [
+      { l: 1, push: 'global', obj: { o1: ['function', 'junta(lista, valor)'] }, d: { global: { junta: ['', '@o1'] } }, n: 'Define a função.' },
+      { l: 5, obj: { o2: ['list', [12, 15]] }, d: { global: { notas: ['', '@o2'] } }, n: 'Uma lista com duas notas.' },
+      { l: 6, obj: { o3: ['int', 18] }, d: { global: { v: ['', '@o3'] } }, n: 'E um número.' },
+      { l: 7, push: 'junta', d: { junta: { lista: ['', '@o2'], valor: ['', '@o3'] } }, n: H`Na chamada, <code>lista</code> aponta para o mesmo objeto que <code>notas</code> (#2) e <code>valor</code> para o mesmo que <code>v</code> (#3).` },
+      { l: 2, obj: { o2: ['list', [12, 15, 18]] }, n: H`O append muda o objeto #2, que é o mesmo do <code>notas</code>. Esta mudança vai ficar.` },
+      { l: 3, obj: { o4: ['int', 0] }, u: { junta: { valor: '@o4' } }, n: H`<code>valor = 0</code> só muda o nome local <code>valor</code> para outro objeto. O <code>v</code> do programa principal continua no 18.` },
+      { l: 7, pop: true, n: 'A função acaba e os seus nomes desaparecem. O 0 fica sem nomes.' },
+      { l: 8, o: '[12, 15, 18] 18\n', n: 'A lista mudou (a função mexeu no objeto), o v não (a função só mudou um nome dela).' },
+    ],
+  }],
+  mistakes: [
+    H`Confundir <code>print</code> com <code>return</code>. Uma função que só faz print devolve <code>None</code> a quem a chama.`,
+    H`Esquecer os parênteses ao chamar: <code>x = quadrado</code> dá a própria função, não o resultado.`,
+    H`Chamar a função antes do <code>def</code>: <em>NameError</em>. O def tem de correr primeiro.`,
+    H`Mudar uma lista recebida como parâmetro sem querer. Se a função não a deve mudar, trabalha numa cópia.`,
+    H`Esquecer que o <code>return</code> sai logo da função: o código a seguir, no mesmo bloco, não corre.`,
+  ],
+  quiz: [
+    { q: 'O que aparece no ecrã?', code: C`
+def dobro(n):
+    return n * 2
+
+print(dobro(dobro(3)))`, opts: ['6', '9', '12', '3'], ok: 2, mono: true, check: true,
+      exp: 'Começa por dentro: dobro(3) = 6, e depois dobro(6) = 12.' },
+    { q: 'O que aparece no ecrã?', code: C`
+def f(x):
+    x = x + 1
+
+a = 1
+f(a)
+print(a)`, opts: ['1', '2', 'None', '0'], ok: 0, mono: true, check: true,
+      exp: H`<code>x = x + 1</code> cria um objeto novo e muda só o nome local <code>x</code>. O <code>a</code> continua no 1, como no C.` },
+    { q: 'O que aparece no ecrã?', code: C`
+def f(v):
+    v.append(0)
+
+a = [1]
+f(a)
+print(a)`, opts: ['[1]', '[1, 0]', '[0]', 'None'], ok: 1, mono: true, check: true,
+      exp: H`<code>v</code> e <code>a</code> apontam para a mesma lista. O append muda esse objeto, e a mudança vê-se fora da função.` },
+    { q: 'O que aparece no ecrã?', code: C`
+def f():
+    print("ola")
+
+x = f()
+print(x)`, opts: ['ola', 'ola\nNone', 'None', 'ola\nola'], ok: 1, mono: true, check: true,
+      exp: H`Chamar <code>f()</code> escreve "ola". Como a função não tem <code>return</code>, devolve <code>None</code>, e é isso que <code>x</code> recebe.` },
+  ],
+  exercises: [{
+    title: 'Função eh_par',
+    text: 'Escreve uma função eh_par(n) que devolve True se n for par e False se não for. Usa-a para classificar os números de 1 a 4.',
+    run: '1: impar\n2: par\n3: impar\n4: par\n',
+    hint: H`A função pode ser uma só linha: <code>return n % 2 == 0</code>. No ciclo: <code>if eh_par(i):</code>.`,
+    solution: C`
+def eh_par(n):
+    return n % 2 == 0
+
+for i in range(1, 5):
+    if eh_par(i):
+        print(f"{i}: par")
+    else:
+        print(f"{i}: impar")`,
+  }, {
+    title: 'Função media',
+    text: 'Escreve uma função media(lista) que devolve a média dos números da lista. Mostra a média de [12, 15, 14] com 2 casas decimais.',
+    run: 'Media: 13.67\n',
+    hint: H`<code>return sum(lista) / len(lista)</code>. Em Python o <code>/</code> já dá real.`,
+    solution: C`
+def media(lista):
+    return sum(lista) / len(lista)
+
+print(f"Media: {media([12, 15, 14]):.2f}")`,
+  }],
+});
+
+// ===== Python do Zero — conteúdo das lições (parte 3) =====
+
+// ---------------------------------------------------------------- 8
+LESSONS.push({
+  id: 8,
+  title: 'Texto (strings)',
+  short: "índices e fatias, métodos que devolvem texto novo, e porque é que s[0] = 'x' dá erro",
+  body: H`
+<p>Em C uma string era um array de <code>char</code> com um <code>'\0'</code> no fim, e precisavas de <code>strcpy</code>, <code>strcmp</code> e <code>strlen</code>. Em Python é um objeto <code>str</code> e tudo fica mais simples: copias com <code>=</code>, comparas com <code>==</code>, juntas com <code>+</code>.</p>
+<ul>
+<li>Índices e fatias funcionam como nas listas: <code>s[0]</code>, <code>s[-1]</code>, <code>s[1:3]</code>, <code>s[::-1]</code> (ao contrário). <code>len(s)</code> dá o tamanho.</li>
+<li>As strings são <strong>imutáveis</strong>: <code>s[0] = "p"</code> dá erro. Para "mudar" um texto, crias outro: <code>"p" + s[1:]</code>.</li>
+<li>Por isso os métodos <strong>devolvem um texto novo</strong> e deixam o original igual: <code>s.upper()</code>, <code>s.lower()</code>, <code>s.strip()</code> (tira espaços das pontas), <code>s.replace("a", "o")</code>.</li>
+<li><code>s.split()</code> parte o texto numa lista de palavras; <code>"-".join(lista)</code> faz o contrário.</li>
+<li><code>"an" in s</code> diz se aparece; <code>s.count("a")</code> conta; <code>s.find("n")</code> dá a posição (ou -1).</li>
+</ul>`,
+  analogy: 'Uma string é uma frase gravada numa placa de metal: não se apaga uma letra. Para ter outra frase, gravas uma placa nova (o upper, o replace...), e a antiga fica como estava até ninguém precisar dela.',
+  examples: [{
+    title: 'Limpar e partir um nome',
+    code: C`
+nome = "  ana silva "
+limpo = nome.strip()
+maiusc = limpo.upper()
+print(maiusc, len(limpo))
+partes = limpo.split()
+print(partes, partes[1])`,
+    steps: [
+      { l: 1, push: 'global', obj: { o1: ['str', "'  ana silva '"] }, d: { global: { nome: ['', '@o1'] } }, n: 'Um texto com espaços a mais nas pontas, como acontece muito com o que o utilizador escreve.' },
+      { l: 2, obj: { o2: ['str', "'ana silva'"] }, d: { global: { limpo: ['', '@o2'] } }, n: H`<code>strip()</code> devolve um texto <strong>novo</strong>, sem os espaços das pontas. O <code>nome</code> continua igual.` },
+      { l: 3, obj: { o3: ['str', "'ANA SILVA'"] }, d: { global: { maiusc: ['', '@o3'] } }, n: H`<code>upper()</code> também cria um texto novo, em maiúsculas.` },
+      { l: 4, o: 'ANA SILVA 9\n', n: H`"ana silva" tem 9 caracteres (o espaço do meio conta). Não há <code>'\0'</code> para descontar.` },
+      { l: 5, obj: { o4: ['list', ["'ana'", "'silva'"]] }, d: { global: { partes: ['', '@o4'] } }, n: H`<code>split()</code> parte o texto pelos espaços e devolve uma lista de palavras.` },
+      { l: 6, o: "['ana', 'silva'] silva\n", n: H`<code>partes[1]</code> é a segunda palavra.` },
+    ],
+  }, {
+    title: 'Texto não se muda por dentro',
+    code: C`
+s = "gato"
+t = "p" + s[1:]
+print(s, t)
+s[0] = "p"`,
+    steps: [
+      { l: 1, push: 'global', obj: { o1: ['str', "'gato'"] }, d: { global: { s: ['', '@o1'] } }, n: 'Um texto.' },
+      { l: 2, obj: { o2: ['str', "'pato'"] }, d: { global: { t: ['', '@o2'] } }, n: H`<code>s[1:]</code> é "ato", e "p" + "ato" é um texto novo: "pato".` },
+      { l: 3, o: 'gato pato\n', n: 'O s continua a ser "gato".' },
+      { l: 4, o: "TypeError: 'str' object does not support item assignment\n", n: H`Em C podias fazer <code>s[0] = 'p'</code>. Em Python, um <code>str</code> não pode ser mudado por dentro, e o programa pára com este erro.` },
+    ],
+  }],
+  mistakes: [
+    H`Tentar mudar uma letra: <em>TypeError: 'str' object does not support item assignment</em>. Cria um texto novo.`,
+    H`Chamar o método e esquecer de guardar o resultado: <code>nome.upper()</code> sozinho não muda o <code>nome</code>. É <code>nome = nome.upper()</code>.`,
+    H`Juntar texto com número: <code>"Nota: " + 15</code> dá TypeError. Usa uma f-string ou <code>str(15)</code>.`,
+    H`Comparar sem pensar nas maiúsculas: <code>"Ana" == "ana"</code> é False. Compara <code>a.lower() == b.lower()</code>.`,
+  ],
+  quiz: [
+    { q: 'O que aparece no ecrã?', code: C`
+s = "Porto"
+print(s[0], s[-1], len(s))`, opts: ['P o 5', 'P o 6', 'P t 5', 'o P 5'], ok: 0, mono: true, check: true,
+      exp: H`<code>s[0]</code> é a primeira letra e <code>s[-1]</code> a última. "Porto" tem 5 letras, sem nenhum <code>'\0'</code> a contar.` },
+    { q: 'O que aparece no ecrã?', code: C`print("utad".upper().replace("T", "-"))`, opts: ['U-AD', 'u-ad', 'UTAD', 'U-A-D'], ok: 0, mono: true, check: true,
+      exp: H`Primeiro <code>upper()</code> dá "UTAD"; depois <code>replace</code> troca o T por um hífen. Cada método trabalha sobre o texto devolvido pelo anterior.` },
+    { q: 'O que aparece no ecrã?', code: C`print("-".join(["a", "b", "c"]))`, opts: ['a-b-c', '-a-b-c-', 'abc', "['a', 'b', 'c']"], ok: 0, mono: true, check: true,
+      exp: H`O <code>join</code> cola os elementos da lista com o texto da esquerda <strong>entre</strong> eles, não nas pontas.` },
+    { q: 'O que aparece no ecrã?', code: C`
+s = "banana"
+print(s.count("an"), s.find("n"))`, opts: ['2 2', '2 3', '3 2', '1 2'], ok: 0, mono: true, check: true,
+      exp: '"an" aparece duas vezes (b-an-an-a). O primeiro n está no índice 2: b é o 0, a o 1, n o 2.' },
+    { q: 'O que aparece no ecrã?', code: C`
+a = "ola"
+b = a.upper()
+print(a)`, opts: ['ola', 'OLA', 'ola OLA', 'None'], ok: 0, mono: true, check: true,
+      exp: H`<code>upper()</code> devolve um texto novo (que fica no <code>b</code>) e não muda o original.` },
+  ],
+  exercises: [{
+    title: 'Palavra ao contrário',
+    text: 'Lê uma palavra e mostra-a ao contrário.',
+    run: 'Palavra: ⟦vila⟧aliv\n',
+    hint: H`A fatia <code>[::-1]</code> percorre o texto do fim para o princípio.`,
+    solution: C`
+palavra = input("Palavra: ")
+print(palavra[::-1])`,
+  }, {
+    title: 'Contar vogais',
+    text: 'Lê uma palavra e conta quantas vogais tem, quer estejam em maiúsculas quer em minúsculas.',
+    run: 'Palavra: ⟦Engenharia⟧Vogais: 5\n',
+    hint: H`Percorre <code>palavra.lower()</code> com um for e testa <code>if letra in "aeiou":</code>.`,
+    solution: C`
+palavra = input("Palavra: ")
+vogais = 0
+for letra in palavra.lower():
+    if letra in "aeiou":
+        vogais += 1
+print("Vogais:", vogais)`,
+  }],
+});
+
+// ---------------------------------------------------------------- 9
+LESSONS.push({
+  id: 9,
+  title: 'Dicionários',
+  short: 'chave → valor, get, in, items() e contar coisas',
+  body: H`
+<p>Um <strong>dicionário</strong> guarda pares <strong>chave → valor</strong>: <code>notas = {"Ana": 17, "Rui": 9}</code>. Numa lista chegas a um valor pela posição (<code>[0]</code>); num dicionário chegas pela chave (<code>notas["Ana"]</code>).</p>
+<ul>
+<li><code>notas["Ines"] = 14</code> acrescenta um par; se a chave já existir, troca o valor. As chaves não se repetem.</li>
+<li>Pedir uma chave que não existe dá <em>KeyError</em>. Para evitar: <code>"Tiago" in notas</code>, ou <code>notas.get("Tiago", 0)</code>, que devolve 0 se não existir.</li>
+<li><code>for nome in notas:</code> percorre as chaves; <code>for nome, nota in notas.items():</code> percorre os pares.</li>
+<li>É mutável, tal como as listas (e os mesmos cuidados da lição 6 aplicam-se).</li>
+</ul>
+<p>Os pares que o <code>items()</code> dá são <strong>tuplos</strong>: <code>("Ana", 17)</code>. Um tuplo é como uma lista que não se pode mudar, escrito com parênteses.</p>`,
+  analogy: 'Um dicionário é uma agenda de contactos: procuras pelo nome (a chave) e encontras o número (o valor). Não tens de saber em que página está, e não podes ter duas entradas com o mesmo nome.',
+  examples: [{
+    title: 'Notas por nome',
+    code: C`
+notas = {"Ana": 17, "Rui": 9}
+notas["Ines"] = 14
+notas["Rui"] = 10
+print(notas["Ana"], len(notas))
+print(notas.get("Tiago", 0))
+for nome, nota in notas.items():
+    print(nome, nota)`,
+    steps: [
+      { l: 1, push: 'global', obj: { o1: ['dict', [["'Ana'", 17], ["'Rui'", 9]]] }, d: { global: { notas: ['', '@o1'] } }, n: 'Um dicionário com duas chaves (os nomes) e os seus valores (as notas).' },
+      { l: 2, obj: { o1: ['dict', [["'Ana'", 17], ["'Rui'", 9], ["'Ines'", 14]]] }, n: 'A chave "Ines" não existia: acrescenta um par novo, no mesmo objeto.' },
+      { l: 3, obj: { o1: ['dict', [["'Ana'", 17], ["'Rui'", 10], ["'Ines'", 14]]] }, n: 'A chave "Rui" já existia: troca só o valor. Continua a haver um só Rui.' },
+      { l: 4, o: '17 3\n', n: H`<code>notas["Ana"]</code> vai buscar o valor pela chave. Há 3 pares.` },
+      { l: 5, o: '0\n', n: H`Não há nenhum Tiago. <code>notas["Tiago"]</code> dava KeyError; o <code>get</code> devolve o valor por omissão, 0.` },
+      { l: 6, obj: { o2: ['str', "'Ana'"], o3: ['int', 17] }, d: { global: { nome: ['', '@o2'], nota: ['', '@o3'] } }, n: H`<code>items()</code> dá os pares por ordem de inserção. Na primeira volta, <code>nome</code> e <code>nota</code> apontam para "Ana" e 17.` },
+      { l: 7, o: 'Ana 17\n', n: 'Mostra o par.' },
+      { l: 6, obj: { o4: ['str', "'Rui'"], o5: ['int', 10] }, u: { global: { nome: '@o4', nota: '@o5' } }, n: 'Segunda volta: o par do Rui.' },
+      { l: 7, o: 'Rui 10\n', n: 'Mostra o par.' },
+      { l: 6, obj: { o6: ['str', "'Ines'"], o7: ['int', 14] }, u: { global: { nome: '@o6', nota: '@o7' } }, n: 'Terceira e última volta.' },
+      { l: 7, o: 'Ines 14\n', n: 'Mostra o par. O ciclo acaba.' },
+    ],
+  }, {
+    title: 'Contar palavras',
+    code: C`
+texto = "a b a c a"
+conta = {}
+for p in texto.split():
+    conta[p] = conta.get(p, 0) + 1
+print(conta)`,
+    steps: [
+      { l: 1, push: 'global', obj: { o1: ['str', "'a b a c a'"] }, d: { global: { texto: ['', '@o1'] } }, n: 'Um texto com palavras repetidas.' },
+      { l: 2, obj: { o2: ['dict', []] }, d: { global: { conta: ['', '@o2'] } }, n: H`<code>{}</code> é um dicionário vazio.` },
+      { l: 3, obj: { o3: ['str', "'a'"] }, d: { global: { p: ['', '@o3'] } }, n: H`<code>split()</code> dá as palavras: a, b, a, c, a. Primeira: "a".` },
+      { l: 4, obj: { o2: ['dict', [["'a'", 1]]] }, n: H`"a" ainda não é chave, por isso <code>get</code> dá 0. Guarda 0 + 1 = 1.` },
+      { l: 3, obj: { o4: ['str', "'b'"] }, u: { global: { p: '@o4' } }, n: 'Segunda palavra: "b".' },
+      { l: 4, obj: { o2: ['dict', [["'a'", 1], ["'b'", 1]]] }, n: 'Também é nova: fica com 1.' },
+      { l: 3, obj: { o5: ['str', "'a'"] }, u: { global: { p: '@o5' } }, n: 'Terceira: "a" outra vez.' },
+      { l: 4, obj: { o2: ['dict', [["'a'", 2], ["'b'", 1]]] }, n: H`Agora <code>get</code> encontra o 1 e guarda 2.` },
+      { l: 3, obj: { o6: ['str', "'c'"] }, u: { global: { p: '@o6' } }, n: 'Quarta: "c".' },
+      { l: 4, obj: { o2: ['dict', [["'a'", 2], ["'b'", 1], ["'c'", 1]]] }, n: 'Nova: fica com 1.' },
+      { l: 3, obj: { o7: ['str', "'a'"] }, u: { global: { p: '@o7' } }, n: 'Quinta e última: "a".' },
+      { l: 4, obj: { o2: ['dict', [["'a'", 3], ["'b'", 1], ["'c'", 1]]] }, n: 'O "a" passa a 3.' },
+      { l: 5, o: "{'a': 3, 'b': 1, 'c': 1}\n", n: 'O print mostra o dicionário entre chavetas, com os pares chave: valor.' },
+    ],
+  }],
+  mistakes: [
+    H`Pedir uma chave que não existe: <em>KeyError: 'Tiago'</em>. Testa com <code>in</code> ou usa <code>get</code>.`,
+    H`Esperar que <code>for x in notas:</code> dê os valores. Dá as chaves; para os pares usa <code>.items()</code>, para os valores <code>.values()</code>.`,
+    H`Usar uma lista como chave: <em>TypeError: unhashable type: 'list'</em>. As chaves têm de ser imutáveis (números, textos, tuplos).`,
+    H`Achar que <code>1 in notas</code> procura nos valores. O <code>in</code> procura nas chaves.`,
+  ],
+  quiz: [
+    { q: 'O que aparece no ecrã?', code: C`
+d = {"a": 1, "b": 2}
+d["a"] = 5
+print(d)`, opts: ["{'a': 5, 'b': 2}", "{'a': 1, 'b': 2, 'a': 5}", "{'b': 2, 'a': 5}", "{'a': 6, 'b': 2}"], ok: 0, mono: true, check: true,
+      exp: 'A chave "a" já existia, por isso só o valor muda. As chaves não se repetem e mantêm o lugar.' },
+    { q: 'O que aparece no ecrã?', code: C`
+d = {"x": 1}
+print(d["y"])`, opts: ['None', '0', "KeyError: 'y'", "{'x': 1}"], ok: 2, mono: true, check: true,
+      exp: H`Com <code>[ ]</code>, uma chave que não existe é um erro. Para ter None ou 0 em vez do erro, usa <code>d.get("y")</code> ou <code>d.get("y", 0)</code>.` },
+    { q: 'O que aparece no ecrã?', code: C`
+d = {"x": 1, "y": 2}
+print("x" in d, 1 in d)`, opts: ['True False', 'True True', 'False True', 'False False'], ok: 0, mono: true, check: true,
+      exp: H`O <code>in</code> procura nas chaves: "x" é uma chave, 1 não é (é um valor).` },
+    { q: 'O que aparece no ecrã?', code: C`
+d = {}
+d["a"] = d.get("a", 0) + 1
+d["a"] = d.get("a", 0) + 1
+print(d)`, opts: ["{'a': 2}", "{'a': 1}", "{'a': 1, 'a': 2}", "KeyError: 'a'"], ok: 0, mono: true, check: true,
+      exp: 'Da primeira vez, "a" não existe e o get dá 0, por isso fica 1. Da segunda, o get encontra o 1 e fica 2. É o padrão para contar coisas.' },
+  ],
+  exercises: [{
+    title: 'Consultar uma nota',
+    text: 'Com notas = {"Ana": 17, "Rui": 9, "Ines": 14}, lê um nome e mostra a nota dessa pessoa, ou "nao existe" se o nome não estiver no dicionário.',
+    run: 'Nome: ⟦Tiago⟧Tiago nao existe\n',
+    hint: H`<code>if nome in notas:</code> para escolher entre mostrar a nota e mostrar a mensagem.`,
+    solution: C`
+notas = {"Ana": 17, "Rui": 9, "Ines": 14}
+nome = input("Nome: ")
+if nome in notas:
+    print(nome, notas[nome])
+else:
+    print(nome, "nao existe")`,
+  }, {
+    title: 'Alunos por curso',
+    text: 'Para a lista ["LEI", "LEE", "LEI", "LEM", "LEI"], conta quantos alunos há em cada curso e mostra um curso por linha.',
+    run: 'LEI 3\nLEE 1\nLEM 1\n',
+    hint: H`O padrão do segundo exemplo: <code>conta[c] = conta.get(c, 0) + 1</code>. No fim, percorre <code>conta.items()</code>.`,
+    solution: C`
+cursos = ["LEI", "LEE", "LEI", "LEM", "LEI"]
+conta = {}
+for c in cursos:
+    conta[c] = conta.get(c, 0) + 1
+for curso, n in conta.items():
+    print(curso, n)`,
+  }],
+});
+
+// ---------------------------------------------------------------- 10
+LESSONS.push({
+  id: 10,
+  title: 'Erros e ficheiros',
+  short: 'try / except, e ler e escrever ficheiros com with open',
+  body: H`
+<p>Quando algo corre mal (converter "vinte" para inteiro, dividir por zero, abrir um ficheiro que não existe), o Python lança uma <strong>exceção</strong> e, se ninguém a apanhar, o programa pára com uma mensagem. Com <code>try</code> / <code>except</code> apanhas o erro e decides o que fazer:</p>
+<pre class="snip"><code>try:
+    idade = int(texto)
+except ValueError:
+    print("Isso nao e um numero.")</code></pre>
+<p>Para ficheiros usa-se <code>with open(...) as f:</code>. O ficheiro fecha-se sozinho no fim do bloco (não há <code>fclose</code> para esquecer):</p>
+<table class="t">
+<thead><tr><th>Python</th><th>Em C era</th></tr></thead>
+<tbody>
+<tr><td><code>with open("notas.txt", "w") as f:</code></td><td><code>FILE *f = fopen("notas.txt", "w");</code></td></tr>
+<tr><td><code>f.write("Ana 17\n")</code></td><td><code>fprintf(f, "Ana 17\n");</code></td></tr>
+<tr><td><code>for linha in f:</code></td><td>um ciclo com <code>fgets</code> ou <code>fscanf</code></td></tr>
+<tr><td>fecha no fim do bloco</td><td><code>fclose(f);</code></td></tr>
+</tbody>
+</table>
+<p>Os modos são os mesmos: <code>"r"</code> ler (o normal), <code>"w"</code> escrever (apaga o que lá estava), <code>"a"</code> acrescentar. Se o ficheiro não existir, ler dá <em>FileNotFoundError</em>.</p>`,
+  analogy: 'O try é um trapezista com rede: tenta o salto e, se cair, a rede (o except) apanha-o e o espetáculo continua. Sem rede, uma queda acaba com o espetáculo todo.',
+  examples: [{
+    title: 'Pedir até ser um número',
+    code: C`
+while True:
+    texto = input("Idade? ")
+    try:
+        idade = int(texto)
+        break
+    except ValueError:
+        print("Isso nao e um numero.")
+print("Idade:", idade)`,
+    steps: [
+      { l: 1, push: 'global', n: H`<code>while True</code> repete para sempre, até um <code>break</code>.` },
+      { l: 2, o: 'Idade? ⟦vinte⟧', obj: { o1: ['str', "'vinte'"] }, d: { global: { texto: ['', '@o1'] } }, n: 'O utilizador escreve a idade por extenso.' },
+      { l: 3, n: H`Entra no <code>try</code>: o que lá estiver vai ser "tentado".` },
+      { l: 4, n: H`<code>int("vinte")</code> não consegue converter e lança um <code>ValueError</code>. O resto do try (o break) é saltado.` },
+      { l: 6, n: H`Este <code>except</code> apanha precisamente o ValueError.` },
+      { l: 7, o: 'Isso nao e um numero.\n', n: 'Em vez de o programa parar com um erro, mostra uma mensagem e o ciclo continua.' },
+      { l: 2, o: 'Idade? ⟦20⟧', obj: { o2: ['str', "'20'"] }, u: { global: { texto: '@o2' } }, n: 'Segunda tentativa.' },
+      { l: 4, obj: { o3: ['int', 20] }, d: { global: { idade: ['', '@o3'] } }, n: 'Agora a conversão funciona.' },
+      { l: 5, n: H`O <code>break</code> sai do ciclo. O except não corre, porque não houve erro.` },
+      { l: 8, o: 'Idade: 20\n', n: 'Já fora do ciclo.' },
+    ],
+  }, {
+    title: 'Escrever e ler um ficheiro',
+    code: C`
+with open("notas.txt", "w") as f:
+    f.write("Ana 17\n")
+    f.write("Rui 9\n")
+total = 0
+with open("notas.txt") as f:
+    for linha in f:
+        nome, nota = linha.split()
+        total += int(nota)
+print("Total:", total)`,
+    steps: [
+      { l: 1, push: 'global', obj: { o1: ['ficheiro', "notas.txt, aberto para escrever ('w')"] }, d: { global: { f: ['', '@o1'] } }, n: H`Abre (ou cria) o ficheiro para escrever. O <code>f</code> aponta para o objeto ficheiro.` },
+      { l: 2, n: H`<code>write</code> escreve texto no ficheiro. Ao contrário do print, não muda de linha sozinho: o <code>\n</code> é preciso.` },
+      { l: 3, n: 'Segunda linha do ficheiro.' },
+      { l: 4, obj: { o1: ['ficheiro', 'notas.txt, fechado'], o2: ['int', 0] }, d: { global: { total: ['', '@o2'] } }, n: H`O bloco do <code>with</code> acabou, por isso o ficheiro já foi fechado e gravado.` },
+      { l: 5, obj: { o3: ['ficheiro', "notas.txt, aberto para ler ('r')"] }, u: { global: { f: '@o3' } }, n: H`Abre o mesmo ficheiro para ler (sem modo, é <code>"r"</code>).` },
+      { l: 6, obj: { o4: ['str', "'Ana 17\\n'"] }, d: { global: { linha: ['', '@o4'] } }, n: H`O <code>for</code> percorre o ficheiro linha a linha. Cada linha traz o <code>\n</code> no fim.` },
+      { l: 7, obj: { o5: ['str', "'Ana'"], o6: ['str', "'17'"] }, d: { global: { nome: ['', '@o5'], nota: ['', '@o6'] } }, n: H`<code>split()</code> parte a linha em duas palavras (e deita fora o <code>\n</code>). Uma lista de dois valores pode ser dada a dois nomes de uma vez.` },
+      { l: 8, obj: { o7: ['int', 17] }, u: { global: { total: '@o7' } }, n: H`A nota é texto ('17'): é preciso <code>int</code> antes de somar.` },
+      { l: 6, obj: { o8: ['str', "'Rui 9\\n'"] }, u: { global: { linha: '@o8' } }, n: 'A segunda linha.' },
+      { l: 7, obj: { o9: ['str', "'Rui'"], o10: ['str', "'9'"] }, u: { global: { nome: '@o9', nota: '@o10' } }, n: 'Parte-a em nome e nota.' },
+      { l: 8, obj: { o11: ['int', 26] }, u: { global: { total: '@o11' } }, n: 'total = 17 + 9 = 26' },
+      { l: 9, obj: { o3: ['ficheiro', 'notas.txt, fechado'] }, o: 'Total: 26\n', n: H`O ficheiro acabou, o ciclo e o <code>with</code> também (o ficheiro fechou-se). Mostra o total.` },
+    ],
+  }],
+  mistakes: [
+    H`Um <code>except:</code> sem tipo de erro apanha tudo, até os teus enganos (um nome mal escrito). Escreve o erro que esperas: <code>except ValueError:</code>.`,
+    H`Abrir com <code>"w"</code> um ficheiro que querias ler: o <code>"w"</code> apaga o conteúdo logo ao abrir.`,
+    H`Esquecer que cada linha lida traz o <code>\n</code> no fim. Usa <code>linha.strip()</code> ou <code>split()</code>.`,
+    H`Esquecer o <code>\n</code> no <code>write</code>: fica tudo numa linha só.`,
+    H`O ficheiro não está na pasta onde o programa corre: <em>FileNotFoundError: [Errno 2] No such file or directory: 'notas.txt'</em>.`,
+  ],
+  quiz: [
+    { q: 'O que aparece no ecrã?', code: C`
+try:
+    print(int("12a"))
+except ValueError:
+    print("erro")`, opts: ['12', 'erro', '12\nerro', "ValueError: invalid literal for int() with base 10: '12a'"], ok: 1, mono: true, check: true,
+      exp: H`"12a" não é um número, por isso o <code>int</code> lança ValueError antes de o print correr. O except apanha-o e escreve "erro".` },
+    { q: 'O que aparece no ecrã?', code: C`
+try:
+    x = 10 / 0
+    print("A")
+except ZeroDivisionError:
+    print("B")
+print("C")`, opts: ['A\nC', 'B\nC', 'A\nB\nC', 'B'], ok: 1, mono: true, check: true,
+      exp: H`A divisão por zero lança o erro logo, por isso o <code>print("A")</code> nunca corre. O except escreve B e, como o erro foi apanhado, o programa continua para o C.` },
+    { q: 'O que aparece no ecrã?', code: C`
+try:
+    v = [1, 2]
+    print(v[5])
+except ValueError:
+    print("valor")`, opts: ['valor', 'IndexError: list index out of range', 'None', '2'], ok: 1, mono: true, check: true,
+      exp: H`O erro é um <code>IndexError</code>, não um ValueError. Este except não o apanha, e o programa pára com a mensagem do erro.` },
+    { q: 'Porque é que se usa with open(...) as f: em vez de só f = open(...)?', opts: ['Porque é mais rápido a ler', 'Porque fecha o ficheiro sozinho no fim do bloco, mesmo que haja um erro', 'Porque sem with não se pode escrever', 'Porque cria o ficheiro se não existir'], ok: 1,
+      exp: H`O <code>with</code> garante que o ficheiro é fechado (e o que escreveste é gravado) quando o bloco acaba, até se houver uma exceção. É o <code>fclose</code> do C, mas automático.` },
+  ],
+  exercises: [{
+    title: 'Divisão segura',
+    text: 'Lê dois inteiros e mostra a divisão inteira do primeiro pelo segundo. Se o segundo for 0, mostra "Nao se pode dividir por zero" em vez de o programa parar.',
+    run: 'Dividendo: ⟦7⟧Divisor: ⟦0⟧Nao se pode dividir por zero\n',
+    hint: H`Põe a conta dentro de um <code>try</code> e apanha o <code>ZeroDivisionError</code>.`,
+    solution: C`
+a = int(input("Dividendo: "))
+b = int(input("Divisor: "))
+try:
+    print("Resultado:", a // b)
+except ZeroDivisionError:
+    print("Nao se pode dividir por zero")`,
+  }, {
+    title: 'Contar linhas',
+    text: 'Escreve as palavras um, dois e cinco no ficheiro palavras.txt, uma por linha. Depois lê o ficheiro e mostra quantas linhas tem e qual é a palavra mais comprida.',
+    run: 'Linhas: 3\nMais comprida: cinco\n',
+    hint: H`Escreve com um for e <code>f.write(p + "\n")</code>. Ao ler, usa <code>linha.strip()</code> e guarda a palavra se <code>len(p) &gt; len(maior)</code>.`,
+    solution: C`
+with open("palavras.txt", "w") as f:
+    for p in ["um", "dois", "cinco"]:
+        f.write(p + "\n")
+linhas = 0
+maior = ""
+with open("palavras.txt") as f:
+    for linha in f:
+        p = linha.strip()
+        linhas += 1
+        if len(p) > len(maior):
+            maior = p
+print("Linhas:", linhas)
+print("Mais comprida:", maior)`,
+  }],
+});
+
+</script>
+<script>
+(function () {
+  'use strict';
+  const $ = (s, el) => (el || document).querySelector(s);
+  const $$ = (s, el) => Array.from((el || document).querySelectorAll(s));
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+  // ---------- progresso (só neste browser) ----------
+  const STORE = COURSE.storageKey;
+  let progress = {};
+  try { progress = JSON.parse(localStorage.getItem(STORE) || '{}') || {}; } catch (e) { progress = {}; }
+  const saveProgress = () => { try { localStorage.setItem(STORE, JSON.stringify(progress)); } catch (e) { /* sem armazenamento */ } };
+  const isDone = id => !!progress[id];
+
+  // ---------- realce de sintaxe ----------
+  // Cada curso define SYNTAX: uma regex com um grupo por tipo de token e a classe CSS de cada grupo.
+  const TOK = SYNTAX.re;
+  function hlLine(line) {
+    let out = '';
+    let last = 0;
+    let m;
+    TOK.lastIndex = 0;
+    while ((m = TOK.exec(line))) {
+      if (!m[0].length) { TOK.lastIndex++; continue; }
+      out += esc(line.slice(last, m.index));
+      const group = m.findIndex((g, i) => i > 0 && g !== undefined);
+      const cls = SYNTAX.classes[group - 1];
+      out += '<span class="t-' + cls + '">' + esc(m[0]) + '</span>';
+      last = m.index + m[0].length;
+    }
+    return out + esc(line.slice(last));
+  }
+  const hlBlock = code => code.split('\n').map(hlLine).join('\n');
+  function highlightStatic(root) {
+    $$('pre.snip code', root).forEach(el => {
+      if (el.dataset.hl) return;
+      el.innerHTML = hlBlock(el.textContent);
+      el.dataset.hl = '1';
+    });
+  }
+
+  // ---------- ecrã (terminal) ----------
+  function renderTerm(s, withCaret) {
+    if (!s) return '<span class="ph">(ainda nada no ecrã)</span>';
+    const html = s.split(/(⟦[^⟧]*⟧)/).map(part => {
+      if (part.charAt(0) === '⟦') return '<span class="in">' + esc(part.slice(1, -1)) + '</span><span class="enter" aria-hidden="true">↵</span>\n';
+      return esc(part);
+    }).join('');
+    return html + (withCaret ? '<span class="caret" aria-hidden="true"></span>' : '');
+  }
+
+  // ---------- memória ----------
+  function prevValue(prevFrames, fi, frameName, varName) {
+    if (!prevFrames) return undefined;
+    const f = prevFrames[fi];
+    if (!f || f.name !== frameName) return null;
+    const v = f.vars.find(x => x.name === varName);
+    return v ? v.value : null;
+  }
+  const changed = (pv, v) => pv !== undefined && pv !== null && JSON.stringify(pv) !== JSON.stringify(v);
+
+  function scalarHtml(v) {
+    if (v === '?') return '<span class="garbage" title="lixo: valor desconhecido">?</span>';
+    const s = String(v);
+    const k = s.indexOf('→');
+    if (k > -1) return '<span class="ptr-addr">' + esc(s.slice(0, k).trim()) + '</span> <span class="ptr-arrow">' + esc(s.slice(k)) + '</span>';
+    return esc(s);
+  }
+
+  function varHtml(v, pv) {
+    const isNew = pv === null;
+    const val = v.value;
+    let cls = 'var';
+    let body = '';
+    if (Array.isArray(val) && val.length && typeof val[0] === 'object') {
+      cls += ' wide';
+      const fields = Object.keys(val[0]);
+      body = '<div class="t-wrap"><table class="mini"><thead><tr><th>índice</th>' + fields.map(f => '<th>' + esc(f) + '</th>').join('') + '</tr></thead><tbody>' +
+        val.map((row, i) => '<tr><td>[' + i + ']</td>' + fields.map(f => {
+          const c = Array.isArray(pv) && pv[i] && changed(pv[i][f], row[f]);
+          return '<td><span class="' + (c ? 'chg' : '') + '">' + scalarHtml(row[f]) + '</span></td>';
+        }).join('') + '</tr>').join('') + '</tbody></table></div>';
+    } else if (Array.isArray(val)) {
+      cls += val.length > 5 ? ' wide' : '';
+      body = '<div class="cells">' + val.map((c, i) => {
+        const ch = Array.isArray(pv) && changed(pv[i], c);
+        return '<div class="cell"><span class="cell-v' + (ch ? ' chg' : '') + '">' + scalarHtml(c) + '</span><span class="cell-i">[' + i + ']</span></div>';
+      }).join('') + '</div>';
+    } else if (val && typeof val === 'object') {
+      cls += ' wide';
+      body = '<div class="fields">' + Object.keys(val).map(f => {
+        const ch = pv && typeof pv === 'object' && changed(pv[f], val[f]);
+        return '<span class="f-name">.' + esc(f) + '</span><span><span class="' + (ch ? 'chg' : '') + '">' + scalarHtml(val[f]) + '</span></span>';
+      }).join('') + '</div>';
+    } else {
+      body = '<div class="var-val' + (changed(pv, val) ? ' chg' : '') + '">' + scalarHtml(val) + '</div>';
+    }
+    if (isNew) cls += ' is-new';
+    const addr = v.addr ? '<span title="endereço (exemplo)">@' + esc(v.addr) + '</span>' : '';
+    return '<div class="' + cls + '"><div class="var-top"><span class="var-type">' + esc(v.type) + '</span>' + addr + '</div>' +
+      '<div class="var-name">' + esc(v.name) + '</div>' + body + '</div>';
+  }
+
+  function memHtml(frames, prevFrames) {
+    if (!frames.length) return '<p class="mem-empty">O programa ainda não começou a correr.</p>';
+    return frames.map((f, fi) => {
+      const active = fi === frames.length - 1;
+      const vars = f.vars.length
+        ? '<div class="vars">' + f.vars.map(v => varHtml(v, prevValue(prevFrames, fi, f.name, v.name))).join('') + '</div>'
+        : '<p class="mem-empty">sem variáveis</p>';
+      return '<div class="frame' + (active ? ' active' : '') + '"><div class="frame-name"><span>' + esc(f.name) + '()</span>' +
+        (active && frames.length > 1 ? '<span>a correr</span>' : (!active ? '<span>em pausa</span>' : '')) + '</div>' + vars + '</div>';
+    }).join('');
+  }
+
+  // ---------- visualizador ----------
+  // Alguns cursos trocam o painel da direita (Memória + Ecrã) por outro, definido em VIZ_SIDE
+  // (por exemplo, no SQL: Base de dados + Resultado). Sem VIZ_SIDE fica o painel do C.
+  const SIDE = typeof VIZ_SIDE !== 'undefined' ? VIZ_SIDE : null;
+
+  function mountViz(host, ex, num) {
+    const steps = buildSteps(ex.steps, ex.db);
+    const lines = ex.code.split('\n');
+    const hasAddr = ex.steps.some(s => s.d && Object.values(s.d).some(vs => Object.values(vs).some(spec => spec[2])));
+    let cur = 0;
+    host.className = 'viz';
+    host.tabIndex = 0;
+    host.setAttribute('aria-label', 'Exemplo ' + num + ': ' + ex.title + '. Usa as setas esquerda e direita para avançar.');
+    host.innerHTML =
+      '<div class="viz-head">' +
+        '<div class="viz-title"><small>Exemplo ' + num + '</small><h3>' + esc(ex.title) + '</h3></div>' +
+        '<div class="viz-controls">' +
+          '<button class="btn" type="button" data-a="prev">← Anterior</button>' +
+          '<span class="viz-count" aria-live="polite"></span>' +
+          '<button class="btn btn-primary" type="button" data-a="next">Seguinte →</button>' +
+          '<button class="btn btn-ghost" type="button" data-a="reset">Recomeçar</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="viz-bar"><span></span></div>' +
+      '<div class="viz-note"><span class="viz-note-line"></span><div class="viz-note-text"></div></div>' +
+      '<div class="viz-grid">' +
+        '<div class="panel"><div class="panel-label"><span>Código</span><span>▶ = linha a correr</span></div><div class="code">' +
+          lines.map((l, i) => '<div class="ln" data-n="' + (i + 1) + '"><span class="no">' + (i + 1) + '</span><span class="arrow"></span><span class="src">' + (hlLine(l) || ' ') + '</span></div>').join('') +
+        '</div></div>' +
+        '<div class="viz-side">' + (SIDE ? SIDE.panelsHtml() :
+          '<div class="panel"><div class="panel-label"><span>Memória</span>' + (hasAddr ? '<span class="addr-note">endereços de exemplo</span>' : '<span>amarelo = mudou agora</span>') + '</div><div class="mem"></div></div>' +
+          '<div class="panel out"><div class="panel-label"><span>Ecrã</span></div><pre class="term"></pre></div>') +
+        '</div>' +
+      '</div>';
+
+    const btnPrev = $('[data-a="prev"]', host);
+    const btnNext = $('[data-a="next"]', host);
+    const count = $('.viz-count', host);
+    const bar = $('.viz-bar span', host);
+    const noteLine = $('.viz-note-line', host);
+    const noteText = $('.viz-note-text', host);
+    const mem = $('.mem', host);
+    const term = $('.term', host);
+    const codeBox = $('.code', host);
+    const lnEls = $$('.ln', host);
+
+    function render() {
+      const s = steps[cur];
+      const prev = cur > 0 ? steps[cur - 1] : null;
+      lnEls.forEach(el => {
+        const on = Number(el.dataset.n) === s.l;
+        el.classList.toggle('cur', on);
+        $('.arrow', el).textContent = on ? '▶' : '';
+      });
+      noteLine.textContent = 'linha ' + s.l;
+      noteText.innerHTML = s.n;
+      if (SIDE) {
+        SIDE.render(host, s, prev, { renderTerm, isLast: cur === steps.length - 1 });
+      } else {
+        mem.innerHTML = memHtml(s.frames, prev ? prev.frames : null);
+        term.innerHTML = renderTerm(s.out, cur < steps.length - 1);
+        term.scrollTop = term.scrollHeight;
+      }
+      count.textContent = 'Passo ' + (cur + 1) + ' de ' + steps.length;
+      bar.style.width = ((cur + 1) / steps.length * 100) + '%';
+      btnPrev.disabled = cur === 0;
+      btnNext.disabled = cur === steps.length - 1;
+      btnNext.textContent = cur === steps.length - 1 ? 'Fim' : 'Seguinte →';
+    }
+    function go(i) { cur = Math.max(0, Math.min(steps.length - 1, i)); render(); }
+    host.addEventListener('click', e => {
+      const a = e.target.closest('[data-a]');
+      if (!a) return;
+      if (a.dataset.a === 'prev') go(cur - 1);
+      if (a.dataset.a === 'next') go(cur + 1);
+      if (a.dataset.a === 'reset') go(0);
+    });
+    host.addEventListener('keydown', e => {
+      if (e.target.closest('button') && (e.key === ' ' || e.key === 'Enter')) return;
+      if (e.key === 'ArrowRight') { e.preventDefault(); go(cur + 1); }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); go(cur - 1); }
+      if (e.key === 'Home') { e.preventDefault(); go(0); }
+    });
+    render();
+    void codeBox;
+  }
+
+  // ---------- quiz ----------
+  // Uma opção de resposta. No SQL, as respostas "mono" são resultados e aparecem como tabelinhas.
+  function optionHtml(q, text) {
+    if (q.mono && SIDE && SIDE.outputHtml) return '<span class="opt-txt">' + SIDE.outputHtml(text) + '</span>';
+    return '<span class="opt-txt' + (q.mono ? ' mono' : '') + '">' + esc(text) + '</span>';
+  }
+
+  function mountQuiz(host, lesson) {
+    const qs = lesson.quiz;
+    let answers = qs.map(() => null);
+    function draw() {
+      host.innerHTML = qs.map((q, qi) =>
+        '<div class="q" data-q="' + qi + '">' +
+          '<p class="q-text"><span class="q-num">' + (qi + 1) + '/' + qs.length + '</span><span>' + esc(q.q) + '</span></p>' +
+          (q.code ? '<pre class="snip"><code>' + hlBlock(q.code) + '</code></pre>' : '') +
+          '<div class="opts" role="group" aria-label="Opções">' + q.opts.map((o, oi) =>
+            '<button class="opt" type="button" data-o="' + oi + '"><span class="opt-key">' + 'ABCD'[oi] + '</span>' + optionHtml(q, o) + '</button>'
+          ).join('') + '</div>' +
+          '<div class="q-exp" hidden></div>' +
+        '</div>'
+      ).join('') + '<div class="score" hidden></div>';
+    }
+    function answer(qi, oi) {
+      if (answers[qi] !== null) return;
+      answers[qi] = oi;
+      const q = qs[qi];
+      const box = $('[data-q="' + qi + '"]', host);
+      $$('.opt', box).forEach((b, i) => {
+        b.disabled = true;
+        if (i === q.ok) b.classList.add('right');
+        else if (i === oi) b.classList.add('wrong');
+        else b.classList.add('dim');
+      });
+      const exp = $('.q-exp', box);
+      exp.innerHTML = (oi === q.ok ? '<strong class="ok">Certo.</strong> ' : '<strong class="bad">Não é bem.</strong> A resposta é a ' + 'ABCD'[q.ok] + '. ') + q.exp;
+      exp.hidden = false;
+      if (answers.every(a => a !== null)) finish();
+    }
+    function finish() {
+      const right = answers.filter((a, i) => a === qs[i].ok).length;
+      const prevBest = progress[lesson.id] ? progress[lesson.id].best : 0;
+      progress[lesson.id] = { best: Math.max(prevBest, right), total: qs.length };
+      saveProgress();
+      renderSidebar();
+      const msg = right === qs.length ? 'Acertaste todas. Podes passar à lição seguinte.'
+        : right * 2 >= qs.length ? 'Quase. Relê as explicações das que falhaste e corre outra vez o exemplo.'
+        : 'Volta a correr o exemplo passo a passo, com calma, e tenta outra vez.';
+      const sc = $('.score', host);
+      sc.innerHTML = '<div><span class="score-num">' + right + '/' + qs.length + '</span><p>' + msg + '</p></div><button class="btn" type="button" data-retry>Repetir perguntas</button>';
+      sc.hidden = false;
+    }
+    host.addEventListener('click', e => {
+      if (e.target.closest('[data-retry]')) { answers = qs.map(() => null); draw(); return; }
+      const b = e.target.closest('.opt');
+      if (!b) return;
+      answer(Number(b.closest('[data-q]').dataset.q), Number(b.dataset.o));
+    });
+    draw();
+  }
+
+  // ---------- exercícios ----------
+  // O que o programa da solução mostra. No SQL é o resultado da consulta, como tabela.
+  function runHtml(run) {
+    if (SIDE && SIDE.outputHtml) return '<div><div class="ex-label">Resultado esperado</div>' + SIDE.outputHtml(run) + '</div>';
+    return '<div><div class="ex-label">Exemplo de execução (a amarelo, o que escreves)</div><pre class="term">' + renderTerm(run, false) + '</pre></div>';
+  }
+
+  function exHtml(ex, i) {
+    return '<article class="ex">' +
+      '<h3>Exercício ' + (i + 1) + ': ' + esc(ex.title) + '</h3>' +
+      '<p>' + esc(ex.text) + '</p>' +
+      runHtml(ex.run) +
+      '<details><summary>Ver dica</summary><div class="det-body"><p>' + ex.hint + '</p></div></details>' +
+      '<details><summary>Ver solução</summary><div class="det-body"><pre class="snip"><code>' + hlBlock(ex.solution) + '</code></pre>' +
+        '<div class="sol-tools"><button class="btn" type="button" data-copy="' + i + '">Copiar código</button></div></div></details>' +
+    '</article>';
+  }
+
+  // ---------- vistas ----------
+  const view = $('#view');
+
+  function renderHome() {
+    view.innerHTML = '';
+    view.appendChild($('#tpl-home').content.cloneNode(true));
+    const next = LESSONS.find(l => !isDone(l.id));
+    const actions = $('#hero-actions');
+    if (!Object.keys(progress).length) {
+      actions.innerHTML = '<a class="btn btn-primary" href="#licao-0">Começar pela lição 0</a><a class="btn" href="#cabula">Ver a cábula</a>';
+    } else if (next) {
+      actions.innerHTML = '<a class="btn btn-primary" href="#licao-' + next.id + '">Continuar: lição ' + next.id + '</a><a class="btn" href="#cabula">Ver a cábula</a>';
+    } else {
+      actions.innerHTML = '<a class="btn btn-primary" href="#cabula">Rever a cábula</a><a class="btn" href="#licao-0">Recomeçar as lições</a>';
+    }
+    $('#home-lessons').innerHTML = LESSONS.map(l =>
+      '<a class="card-lesson" href="#licao-' + l.id + '"><span class="nav-num">' + l.id + '</span><strong>' + esc(l.title) + '</strong><span class="s">' + esc(l.short) + '</span>' +
+      (isDone(l.id) ? '<span class="done-tag">Feita · ' + progress[l.id].best + '/' + progress[l.id].total + '</span>' : '') + '</a>'
+    ).join('');
+  }
+
+  function renderCheat() {
+    view.innerHTML = '';
+    view.appendChild($('#tpl-cheat').content.cloneNode(true));
+    highlightStatic(view);
+  }
+
+  function renderLesson(id) {
+    const L = LESSONS[id];
+    const prev = LESSONS[id - 1];
+    const next = LESSONS[id + 1];
+    view.innerHTML =
+      '<section class="lesson-head"><span class="eyebrow">Lição ' + L.id + ' de ' + (LESSONS.length - 1) + '</span><h1>' + esc(L.title) + '</h1><p class="lead">' + esc(L.short.charAt(0).toUpperCase() + L.short.slice(1)) + '.</p></section>' +
+      '<section class="prose">' + L.body + '</section>' +
+      '<aside class="analogy"><span class="analogy-label">Pensa assim</span><p>' + L.analogy + '</p></aside>' +
+      (L.db && SIDE && SIDE.dbHtml ? '<section class="section"><div class="section-head"><h2>A base de dados desta lição</h2><p>Os exemplos, as perguntas e os exercícios usam estas tabelas.</p></div>' + SIDE.dbHtml(L.db) + '</section>' : '') +
+      '<section class="section"><div class="section-head"><h2>Vê a correr</h2><p>Carrega em "Seguinte" (ou usa as setas do teclado) e acompanha a linha amarela, a memória e o ecrã.</p></div>' +
+        L.examples.map((_, i) => '<div data-viz="' + i + '"></div>').join('') + '</section>' +
+      '<section class="section"><div class="section-head"><h2>Erros comuns</h2></div><ul class="mistakes">' + L.mistakes.map(m => '<li>' + m + '</li>').join('') + '</ul></section>' +
+      '<section class="section"><div class="section-head"><h2>Testa-te</h2><p>Responde sem correr o código. Se precisares, faz a tabela de execução no papel.</p></div><div class="quiz" id="quiz"></div></section>' +
+      '<section class="section"><div class="section-head"><h2>Pratica</h2><p>Escreve o programa no computador antes de abrires a solução.</p></div><div class="exs">' + L.exercises.map(exHtml).join('') + '</div></section>' +
+      '<nav class="pager" aria-label="Navegação entre lições">' +
+        (prev ? '<a href="#licao-' + prev.id + '"><small>← Anterior</small><span>' + prev.id + '. ' + esc(prev.title) + '</span></a>' : '<a href="#inicio"><small>← Início</small><span>Como usar</span></a>') +
+        (next ? '<a class="next" href="#licao-' + next.id + '"><small>Seguinte →</small><span>' + next.id + '. ' + esc(next.title) + '</span></a>' : '<a class="next" href="#cabula"><small>Seguinte →</small><span>' + esc(COURSE.cheatTitle) + '</span></a>') +
+      '</nav>';
+    L.examples.forEach((ex, i) => mountViz($('[data-viz="' + i + '"]', view), ex, i + 1));
+    mountQuiz($('#quiz', view), L);
+    highlightStatic(view);
+    view.querySelectorAll('[data-copy]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const code = L.exercises[Number(btn.dataset.copy)].solution;
+        try {
+          await navigator.clipboard.writeText(code);
+          btn.textContent = 'Copiado';
+        } catch (e) {
+          const pre = btn.closest('.det-body').querySelector('pre');
+          const r = document.createRange();
+          r.selectNodeContents(pre);
+          const sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(r);
+          btn.textContent = 'Selecionado: usa Ctrl+C';
+        }
+        setTimeout(() => { btn.textContent = 'Copiar código'; }, 2200);
+      });
+    });
+  }
+
+  // ---------- barra lateral ----------
+  function currentKey() {
+    const h = location.hash.replace('#', '');
+    if (h === 'cabula') return 'cabula';
+    const m = h.match(/^licao-(\d+)$/);
+    if (m && LESSONS[Number(m[1])]) return 'licao-' + m[1];
+    return 'inicio';
+  }
+  function renderSidebar() {
+    const key = currentKey();
+    const done = LESSONS.filter(l => isDone(l.id)).length;
+    $('#progress').innerHTML = '<span>' + done + ' de ' + LESSONS.length + ' lições feitas</span><div class="progress-track"><div class="progress-fill" style="width:' + (done / LESSONS.length * 100) + '%"></div></div>';
+    const cur = k => (key === k ? ' aria-current="page"' : '');
+    $('#nav').innerHTML =
+      '<a href="#inicio"' + cur('inicio') + '><span class="nav-icon">~</span><span>Início</span><span></span></a>' +
+      '<div class="nav-label">Lições</div>' +
+      LESSONS.map(l => '<a href="#licao-' + l.id + '"' + cur('licao-' + l.id) + '><span class="nav-num">' + l.id + '</span><span>' + esc(l.title) + '</span><span class="nav-done">' + (isDone(l.id) ? '✓' : '') + '</span></a>').join('') +
+      '<div class="nav-label">Consulta</div>' +
+      '<a href="#cabula"' + cur('cabula') + '><span class="nav-icon">{ }</span><span>' + esc(COURSE.cheatTitle) + '</span><span></span></a>';
+  }
+
+  // ---------- menu no telemóvel ----------
+  const sidebar = $('#sidebar');
+  const menuBtn = $('#menu-btn');
+  let scrim = null;
+  function setMenu(open) {
+    sidebar.classList.toggle('open', open);
+    menuBtn.setAttribute('aria-expanded', String(open));
+    if (open && !scrim) {
+      scrim = document.createElement('div');
+      scrim.className = 'scrim';
+      scrim.addEventListener('click', () => setMenu(false));
+      document.body.appendChild(scrim);
+    } else if (!open && scrim) {
+      scrim.remove();
+      scrim = null;
+    }
+  }
+  menuBtn.addEventListener('click', () => setMenu(!sidebar.classList.contains('open')));
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') setMenu(false); });
+
+  // ---------- rotas ----------
+  function route() {
+    const key = currentKey();
+    if (key === 'cabula') renderCheat();
+    else if (key.indexOf('licao-') === 0) renderLesson(Number(key.slice(6)));
+    else renderHome();
+    renderSidebar();
+    setMenu(false);
+    window.scrollTo(0, 0);
+  }
+  window.addEventListener('hashchange', route);
+  route();
+})();
+</script>
+</body>
+</html>

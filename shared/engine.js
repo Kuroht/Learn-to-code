@@ -103,6 +103,30 @@ function checkGrid(g, where) {
   if (g.groups && g.groups.reduce((a, b) => a + b, 0) !== g.rows.length) throw new Error('groups da grelha não somam o número de linhas' + where);
 }
 
+// ---------- referências e objetos (cursos de Python, C#, ...) ----------
+// Um valor que começa por @ é uma referência para um objeto do heap: '@o1'.
+const isRef = v => typeof v === 'string' && v.charAt(0) === '@';
+
+// Todas as referências que um valor contém (o próprio valor, os elementos de uma lista, os campos de um objeto).
+function refsIn(value) {
+  if (isRef(value)) return [value.slice(1)];
+  if (Array.isArray(value)) return value.flatMap(refsIn);
+  if (value && typeof value === 'object') return Object.values(value).flatMap(refsIn);
+  return [];
+}
+
+// Os objetos a que já ninguém chega, partindo dos nomes de todos os frames.
+function unreachable(frames, heap) {
+  const seen = new Set();
+  const visit = id => {
+    if (seen.has(id) || !heap[id]) return;
+    seen.add(id);
+    refsIn(heap[id].value).forEach(visit);
+  };
+  frames.forEach(f => f.vars.forEach(v => refsIn(v.value).forEach(visit)));
+  return Object.keys(heap).filter(id => !seen.has(id));
+}
+
 // initialTables: a base de dados com que o exemplo começa ({ nome: { cols, rows } }), ou nada.
 function buildSteps(raw, initialTables) {
   let frames = [];
@@ -112,12 +136,21 @@ function buildSteps(raw, initialTables) {
   let tables = {};
   for (const [name, spec] of Object.entries(initialTables || {})) tables[name] = makeTable(spec, nextId);
   let grid = null;
+  // heap: os objetos ({ id: { type, value } }). Um objeto sem nomes aparece desbotado num passo e desaparece no seguinte.
+  let heap = {};
+  let orphans = [];
   const res = [];
   raw.forEach((s, idx) => {
     frames = JSON.parse(JSON.stringify(frames));
     tables = JSON.parse(JSON.stringify(tables));
+    heap = JSON.parse(JSON.stringify(heap));
+    orphans.forEach(id => { delete heap[id]; });
     const where = ' (passo ' + (idx + 1) + ')';
     applyTableOps(tables, s, where, nextId);
+    // obj: cria ou muda objetos: { o1: ['list', ['@o2', 3]] }
+    if (s.obj) {
+      for (const [id, spec] of Object.entries(s.obj)) heap[id] = { type: spec[0], value: JSON.parse(JSON.stringify(spec[1])) };
+    }
     if (s.g !== undefined) {
       checkGrid(s.g, where);
       grid = JSON.parse(JSON.stringify(s.g));
@@ -170,7 +203,11 @@ function buildSteps(raw, initialTables) {
       }
     }
     if (s.o) out += s.o;
-    res.push({ l: s.l, frames, out, n: s.n || '', tables, tmarks: s.tm || {}, grid, err: s.err || '' });
+    // Todas as referências têm de apontar para objetos que existem.
+    const allValues = frames.flatMap(f => f.vars.map(v => v.value)).concat(Object.values(heap).map(o => o.value));
+    allValues.flatMap(refsIn).forEach(id => { if (!heap[id]) throw new Error('referência para um objeto inexistente: @' + id + where); });
+    orphans = unreachable(frames, heap);
+    res.push({ l: s.l, frames, out, n: s.n || '', tables, tmarks: s.tm || {}, grid, err: s.err || '', heap, orphans });
   });
   return res;
 }

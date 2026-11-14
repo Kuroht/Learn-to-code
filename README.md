@@ -8,7 +8,8 @@ Each course is a single, self-contained HTML page: short lessons, a step-by-step
 |---|---|---|
 | C do Zero | `courses/c` | done |
 | SQL do Zero | `courses/sql` | done, in review |
-| Python, C#, Rust, TypeScript | | planned, in that order |
+| Python do Zero | `courses/python` | done, in review |
+| C#, Rust, TypeScript | | planned, in that order |
 
 ## Commands
 
