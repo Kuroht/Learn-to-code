@@ -1,0 +1,67 @@
+  <section class="hero">
+    <span class="eyebrow">Desenvolvimento web · depois do JavaScript</span>
+    <h1>Aprender TypeScript a ver os erros antes de correr</h1>
+    <p>Onze lições curtas, dos tipos básicos às interfaces, uniões, classes, genéricos e async/await. Em cada exemplo carregas em "Seguinte": ou o programa corre e vês as variáveis e os objetos, ou o compilador para-o antes, com o erro marcado na linha.</p>
+    <div class="hero-actions" id="hero-actions"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>Como usar</h2></div>
+    <ol class="steps">
+      <li><h3>Lê a explicação</h3><p>É curta e assume que já fizeste o JavaScript do Zero: aqui só se acrescentam os tipos.</p></li>
+      <li><h3>Corre o exemplo</h3><p>Antes de cada "Seguinte", pergunta-te: isto compila? Se não compilar, nada corre, nem as linhas certas.</p></li>
+      <li><h3>Responde às perguntas</h3><p>"O que aparece no ecrã?" e "isto compila?". As respostas com erros são as mensagens reais do compilador.</p></li>
+      <li><h3>Faz os exercícios no computador</h3><p>Escreve o ficheiro <code>.ts</code>, compila com <code>tsc</code> e corre o <code>.js</code> com o Node.</p></li>
+    </ol>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>Lições</h2><p>Segue a ordem: cada lição usa o que veio antes.</p></div>
+    <div class="grid-lessons" id="home-lessons"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>O que o TypeScript apanha (e o JavaScript não)</h2>
+      <p>Os mesmos enganos do curso de JavaScript, agora parados antes de o programa correr.</p>
+    </div>
+    <div class="two">
+      <div class="prose">
+        <p>Em JavaScript, a maior parte dos enganos não dá erro: dá um valor estranho (<code>NaN</code>, <code>undefined</code>, "53") que só descobres mais tarde, longe do sítio onde está o problema.</p>
+        <p>O TypeScript lê o programa todo antes de ele correr e diz-te a linha e o motivo. Para os erros, lê o código (<code>TS2322</code>, <code>TS2345</code>...) e a frase: quase sempre dizem o tipo que esperava e o que recebeu.</p>
+        <p>Os tipos não existem a correr. Um valor que vem de fora (um formulário, um servidor) continua a precisar de ser verificado e convertido.</p>
+      </div>
+      <div class="t-wrap">
+        <table class="t trace">
+          <thead><tr><th>Código</th><th>JavaScript</th><th>TypeScript</th></tr></thead>
+          <tbody>
+            <tr><td>soma("2", 3)</td><td>"23"</td><td>TS2345</td></tr>
+            <tr><td>area(3)</td><td>NaN</td><td>TS2554</td></tr>
+            <tr class="hl"><td>texto.toUppercase()</td><td>TypeError a correr</td><td>TS2551</td></tr>
+            <tr><td>r.nome (r pode ser undefined)</td><td>TypeError a correr</td><td>TS18048</td></tr>
+            <tr><td>dobro(4) + 1 (sem await)</td><td>"[object Promise]1"</td><td>TS2365</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="two">
+    <div class="box">
+      <h2>Onde praticar</h2>
+      <ul>
+        <li><strong>No browser, sem instalar nada:</strong> o <a href="https://www.typescriptlang.org/play">TypeScript Playground</a>, o site oficial. Mostra os erros enquanto escreves e o JavaScript que sai.</li>
+        <li><strong>No teu computador:</strong> com o Node instalado, <code>npm install -g typescript</code>. Compila com <code>tsc --strict programa.ts</code> e corre com <code>node programa.js</code>.</li>
+        <li>No VS Code, os erros aparecem sublinhados a vermelho enquanto escreves, antes até de compilares.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h2>Para quem está a explicar</h2>
+      <ul>
+        <li>Em cada exemplo, pede-lhe que diga se compila <em>antes</em> de carregar em "Seguinte".</li>
+        <li>Quando aparece um erro, leiam a mensagem juntos: "Type X is not assignable to type Y" diz exatamente o que não bate certo.</li>
+        <li>Resistam ao <code>any</code>: quase sempre há um tipo certo, e encontrá-lo ensina mais do que calar o compilador.</li>
+        <li>Lembrem-se de que as regras do JavaScript continuam todas lá: referências, <code>===</code>, a ordem do async.</li>
+      </ul>
+    </div>
+  </section>

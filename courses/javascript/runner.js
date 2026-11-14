@@ -3,32 +3,8 @@
 // nenhum programa novo. O console.log escreve exatamente como no Node (util.format).
 // Os exemplos, perguntas e exercícios das lições do DOM (viz: 'page', ask ou tests) são verificados
 // num browser sem janela, com o shared/page-check.js (o mesmo do curso de HTML).
-const vm = require('vm');
-const util = require('util');
+const { runInNode } = require('../../shared/run-js.js');
 const pageCheck = require('../../shared/page-check.js');
-
-// Corre um programa e devolve tudo o que ele escreveu. Um erro que ninguém apanhou aparece como o Node o
-// mostra na primeira linha ("TypeError: ..."). Espera pelos setTimeout e pelas Promises antes de acabar.
-async function runInNode(code) {
-  let out = '';
-  let pending = 0;
-  const context = vm.createContext({
-    console: { log: (...args) => { out += util.format(...args) + '\n'; } },
-    // Funções que o Node e os browsers dão, mas que não fazem parte da linguagem (o contexto vm não as tem).
-    structuredClone: value => structuredClone(value),
-    setTimeout: (fn, ms, ...args) => {
-      pending++;
-      return setTimeout(() => { pending--; try { fn(...args); } catch (e) { out += `${e.name}: ${e.message}\n`; } }, ms);
-    },
-  });
-  try {
-    vm.runInContext(code, context, { timeout: 3000 });
-  } catch (e) {
-    out += `${e.name}: ${e.message}\n`;
-  }
-  for (let i = 0; i < 200 && (pending > 0 || i < 3); i++) await new Promise(r => setTimeout(r, 5));
-  return out;
-}
 
 const nonAsciiWarning = (report, label, text) => {
   if (/[^\x00-\x7f]/.test(text)) report.warn(label + ': acentos no texto do programa', JSON.stringify(text));

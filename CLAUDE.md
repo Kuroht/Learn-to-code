@@ -91,6 +91,15 @@ Exercise `run` uses the same `⟦...⟧` convention. All of `o` joined together 
 - Examples after lesson 0 omit the skeleton (the browser adds it). Page text may use accents (the pages are UTF-8).
 - The default page is 800px wide with the body's 8px margin, so a block is 784px wide; keep that in mind for width claims.
 
+## TypeScript course specifics (`courses/typescript`)
+
+- The `typescript@6.0.3` dev dependency (pure JavaScript; TypeScript 7 ships a native .exe, avoid it here) type-checks each program
+  in-process with `strict`, lib es2022 + dom. If there are errors, the output is the first one (`error TS2322: ...`) and nothing runs;
+  otherwise it is transpiled and run with `shared/run-js.js` (the same runner as JavaScript).
+- An example with a type error has no frames and shows the error with `o` on its last step (the screen colours `error ...:` lines red).
+- Don't name variables like DOM globals (`name`, `status`, `length`...): lib.dom declares them and the program would not compile.
+- Copy compiler messages from a real run: literal types change them (`const x = "ola"` is type `"ola"`, `r + 1` mentions `'1'`).
+
 ## JavaScript course specifics (`courses/javascript`)
 
 - Programs run inside Node with the `vm` module (no new processes); output is `util.format`, i.e. exactly Node's console.log

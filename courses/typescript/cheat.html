@@ -1,0 +1,118 @@
+  <section class="lesson-head">
+    <span class="eyebrow">Resumo</span>
+    <h1>Cábula de TypeScript</h1>
+    <p class="lead">Tudo o que as lições ensinam, numa página. Boa para ter aberta enquanto fazes exercícios.</p>
+  </section>
+  <div class="cheat">
+    <div class="box">
+      <h3>Tipos básicos</h3>
+<pre class="snip"><code class="ts">let nome: string = "Ana";
+let idade = 19;                 // inferido: number
+const ativo: boolean = true;
+let nada: undefined;
+let qualquer: any;              // evita
+let lista: number[] = [1, 2];   // ou Array&lt;number&gt;
+let par: [string, number] = ["Ana", 17];</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Funções</h3>
+<pre class="snip"><code class="ts">function area(l: number, a: number): number {
+  return l * a;
+}
+const dobro = (x: number): number =&gt; x * 2;
+function ola(nome: string, pontos?: number): string { ... }
+function mostra(t: string): void { console.log(t); }</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Objetos</h3>
+<pre class="snip"><code class="ts">interface Aluno {
+  nome: string;
+  nota: number;
+  email?: string;           // opcional
+  readonly numero: number;  // não muda
+}
+type Ponto = { x: number; y: number };
+const a: Aluno = { nome: "Ana", nota: 17, numero: 101 };</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Uniões e estreitamento</h3>
+<pre class="snip"><code class="ts">let v: number | string;
+type Tema = "claro" | "escuro";
+
+if (typeof v === "number") { v.toFixed(2); }
+else { v.toUpperCase(); }
+
+const r = lista.find(x =&gt; x &gt; 10);  // number | undefined
+if (r !== undefined) { ... }
+r?.toFixed(1)        // undefined se não houver r
+r ?? 0               // 0 se não houver r</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Classes</h3>
+<pre class="snip"><code class="ts">interface Forma { area(): number; }
+
+class Quadrado implements Forma {
+  private lado: number;
+  readonly nome = "quadrado";
+  constructor(lado: number) { this.lado = lado; }
+  area(): number { return this.lado * this.lado; }
+}</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Genéricos e async</h3>
+<pre class="snip"><code class="ts">function primeiro&lt;T&gt;(v: T[]): T | undefined {
+  return v[0];
+}
+interface Caixa&lt;T&gt; { valor: T; }
+
+async function nota(id: number): Promise&lt;number&gt; { ... }
+async function principal(): Promise&lt;void&gt; {
+  try {
+    const n = await nota(101);
+  } catch (e) {
+    console.log((e as Error).message);
+  }
+}</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Mensagens do compilador</h3>
+      <div class="t-wrap"><table class="t">
+        <thead><tr><th>Código</th><th>Costuma ser</th></tr></thead>
+        <tbody>
+          <tr><td><code>TS2322: Type 'X' is not assignable to type 'Y'</code></td><td>guardar um valor do tipo errado numa variável ou propriedade</td></tr>
+          <tr><td><code>TS2345: Argument of type 'X' is not assignable to parameter of type 'Y'</code></td><td>chamar uma função com um argumento do tipo errado</td></tr>
+          <tr><td><code>TS2554: Expected 2 arguments, but got 1</code></td><td>argumentos a mais ou a menos</td></tr>
+          <tr><td><code>TS2339: Property 'x' does not exist on type 'Y'</code></td><td>propriedade ou método que esse tipo não tem</td></tr>
+          <tr><td><code>TS2551: ... Did you mean 'y'?</code></td><td>nome mal escrito; lê a sugestão</td></tr>
+          <tr><td><code>TS2741: Property 'x' is missing in type ...</code></td><td>falta uma propriedade obrigatória da interface</td></tr>
+          <tr><td><code>TS2353: Object literal may only specify known properties</code></td><td>propriedade que a interface não tem</td></tr>
+          <tr><td><code>TS18047</code> / <code>TS18048: 'x' is possibly 'null' / 'undefined'</code></td><td>testa antes de usar (<code>if</code>, <code>?.</code>, <code>??</code>)</td></tr>
+          <tr><td><code>TS2366: Function lacks ending return statement</code></td><td>há um caminho da função sem <code>return</code></td></tr>
+          <tr><td><code>TS2540: Cannot assign to 'x' because it is a read-only property</code></td><td>mudar um campo <code>readonly</code></td></tr>
+          <tr><td><code>TS2341: Property 'x' is private</code></td><td>mexer num campo <code>private</code> fora da classe</td></tr>
+          <tr><td><code>TS2420: Class 'X' incorrectly implements interface 'Y'</code></td><td>falta um método da interface</td></tr>
+          <tr><td><code>TS2365: Operator '+' cannot be applied to types 'Promise&lt;...&gt;' ...</code></td><td>faltou um <code>await</code></td></tr>
+          <tr><td><code>TS7006: Parameter 'x' implicitly has an 'any' type</code></td><td>falta o tipo de um parâmetro</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="box">
+      <h3>Antes de entregar</h3>
+      <ul class="checklist">
+        <li>O <code>tsc --strict</code> não dá nenhum erro.</li>
+        <li>Não há <code>any</code> (nem <code>!</code> para calar o compilador) sem uma boa razão escrita num comentário.</li>
+        <li>Todos os parâmetros das funções têm tipo.</li>
+        <li>Os objetos têm uma interface ou um type, e os valores fixos têm um tipo literal.</li>
+        <li>O que pode ser undefined (o <code>find</code>, campos opcionais) é testado antes de usar.</li>
+        <li>As funções async são esperadas com <code>await</code>, dentro de <code>try</code>/<code>catch</code>.</li>
+        <li>Os dados de fora (formulários, servidores) são convertidos e verificados: os tipos não existem a correr.</li>
+      </ul>
+    </div>
+  </div>

@@ -1,0 +1,2817 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TypeScript do Zero</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Caderno de laboratório: papel azulado, tinta azul-escura, marcador amarelo na linha que está a correr.
+     Layout: barra lateral com as lições + coluna de leitura; o visualizador alarga para código | memória + ecrã. */
+  --paper: #f2f4f8;
+  --panel: #ffffff;
+  --ink: #161d2e;
+  --muted: #586276;
+  --line: #d9dfea;
+  --accent: #2547d0;
+  --accent-ink: #ffffff;
+  --accent-soft: #e6ebfc;
+  --mark: #ffe58a;
+  --mark-edge: #d9a514;
+  --ok: #17804a;
+  --ok-soft: #e1f3e8;
+  --bad: #bf3329;
+  --bad-soft: #fbe6e3;
+  --code-bg: #f8f9fc;
+  --term-bg: #121826;
+  --term-ink: #dfe6f3;
+  --term-in: #ffd866;
+  --t-kw: #7a2bc2;
+  --t-ty: #0b7584;
+  --t-str: #a0450a;
+  --t-num: #ad1767;
+  --t-com: #737d90;
+  --t-pp: #39691a;
+  --t-fn: #2547d0;
+  --shadow: 0 1px 2px rgba(22, 29, 46, .06), 0 6px 20px rgba(22, 29, 46, .05);
+  --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0f121a;
+    --panel: #161b25;
+    --ink: #e6e9f1;
+    --muted: #98a1b4;
+    --line: #283041;
+    --accent: #8ea5ff;
+    --accent-ink: #0f121a;
+    --accent-soft: #1d2645;
+    --mark: rgba(255, 210, 60, .2);
+    --mark-edge: #e9bd3a;
+    --ok: #4cc47f;
+    --ok-soft: rgba(76, 196, 127, .14);
+    --bad: #ff7d70;
+    --bad-soft: rgba(255, 125, 112, .14);
+    --code-bg: #121620;
+    --term-bg: #0a0d14;
+    --t-kw: #c79bf2;
+    --t-ty: #63d3e2;
+    --t-str: #f4a46d;
+    --t-num: #ff8cc4;
+    --t-com: #7e899f;
+    --t-pp: #a8d873;
+    --t-fn: #8ea5ff;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 6px 20px rgba(0, 0, 0, .25);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0f121a;
+  --panel: #161b25;
+  --ink: #e6e9f1;
+  --muted: #98a1b4;
+  --line: #283041;
+  --accent: #8ea5ff;
+  --accent-ink: #0f121a;
+  --accent-soft: #1d2645;
+  --mark: rgba(255, 210, 60, .2);
+  --mark-edge: #e9bd3a;
+  --ok: #4cc47f;
+  --ok-soft: rgba(76, 196, 127, .14);
+  --bad: #ff7d70;
+  --bad-soft: rgba(255, 125, 112, .14);
+  --code-bg: #121620;
+  --term-bg: #0a0d14;
+  --t-kw: #c79bf2;
+  --t-ty: #63d3e2;
+  --t-str: #f4a46d;
+  --t-num: #ff8cc4;
+  --t-com: #7e899f;
+  --t-pp: #a8d873;
+  --t-fn: #8ea5ff;
+  --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 6px 20px rgba(0, 0, 0, .25);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 17px/1.6 var(--font-body);
+}
+a { color: var(--accent); text-underline-offset: 3px; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+h1, h2, h3, h4 { font-family: var(--font-display); line-height: 1.15; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(2rem, 1.5rem + 2vw, 2.9rem); font-weight: 800; letter-spacing: -.02em; }
+h2 { font-size: 1.55rem; font-weight: 800; letter-spacing: -.01em; }
+h3 { font-size: 1.15rem; font-weight: 600; }
+h4 { font-size: 1.05rem; font-weight: 600; }
+p { margin: 0; }
+code, pre, kbd { font-family: var(--font-mono); font-size: .88em; }
+/* Sem ligaduras: quem aprende tem de ver === e => tal como se escrevem, não como um só símbolo. */
+code, pre, kbd, .code, .term, .var, .name, .obj, .grid, .opt-txt.mono { font-variant-ligatures: none; }
+:not(pre) > code {
+  background: var(--accent-soft);
+  padding: .08em .35em;
+  border-radius: 5px;
+  white-space: nowrap;
+}
+
+/* ---------- estrutura ---------- */
+.app { display: grid; grid-template-columns: 276px minmax(0, 1fr); min-height: 100vh; }
+.sidebar {
+  position: sticky; top: 0; height: 100vh; overflow-y: auto;
+  background: var(--panel); border-right: 1px solid var(--line);
+  padding: 22px 14px 28px; display: flex; flex-direction: column; gap: 18px;
+}
+.brand { display: flex; align-items: baseline; gap: 8px; padding: 0 10px; text-decoration: none; color: var(--ink); }
+.brand-mark {
+  font-family: var(--font-mono); font-weight: 600; font-size: .95rem;
+  background: var(--ink); color: var(--panel); padding: 2px 7px; border-radius: 6px;
+}
+.brand-name { font-family: var(--font-display); font-weight: 800; font-size: 1.35rem; letter-spacing: -.01em; }
+.progress { padding: 0 10px; display: grid; gap: 6px; font-size: .85rem; color: var(--muted); }
+.progress-track { height: 6px; background: var(--line); border-radius: 99px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--ok); border-radius: 99px; transition: width .3s; }
+.nav { display: grid; gap: 2px; }
+.nav-label { font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); padding: 10px 10px 4px; }
+.nav a {
+  display: grid; grid-template-columns: 26px minmax(0, 1fr) auto; align-items: center; gap: 8px;
+  padding: 7px 10px; border-radius: 8px; color: var(--ink); text-decoration: none; font-size: .95rem; line-height: 1.3;
+}
+.nav a:hover { background: var(--paper); }
+.nav a[aria-current="page"] { background: var(--accent-soft); color: var(--accent); font-weight: 700; }
+.nav-num {
+  font-family: var(--font-mono); font-size: .78rem; color: var(--muted); text-align: center;
+  border: 1px solid var(--line); border-radius: 6px; padding: 1px 0;
+}
+.nav a[aria-current="page"] .nav-num { border-color: var(--accent); color: var(--accent); }
+.nav-done { color: var(--ok); font-size: .85rem; font-weight: 700; }
+.nav-icon { width: 26px; text-align: center; color: var(--muted); font-family: var(--font-mono); font-size: .8rem; }
+
+main { padding: 36px clamp(16px, 4vw, 52px) 96px; min-width: 0; }
+.content { max-width: 1060px; margin: 0 auto; display: grid; gap: 40px; grid-template-columns: minmax(0, 1fr); }
+/* As grelhas de dentro também não podem crescer com uma linha de código comprida (o pre tem scroll próprio). */
+.section, .quiz, .q, .exs, .ex, .det-body { grid-template-columns: minmax(0, 1fr); }
+.prose { max-width: 68ch; display: grid; gap: 14px; }
+.prose ul { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
+
+.topbar { display: none; }
+
+/* ---------- tabelas ---------- */
+.t-wrap { overflow-x: auto; }
+table.t { border-collapse: collapse; width: 100%; font-size: .93rem; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.t th, .t td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.t th { font-size: .78rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); background: var(--code-bg); }
+.t tr:last-child td { border-bottom: 0; }
+.t td code { white-space: nowrap; }
+
+/* ---------- código ---------- */
+pre { margin: 0; }
+pre.snip {
+  background: var(--code-bg); border: 1px solid var(--line); border-radius: 10px;
+  padding: 12px 14px; overflow-x: auto; line-height: 1.55;
+}
+.t-kw { color: var(--t-kw); font-weight: 600; }
+.t-ty { color: var(--t-ty); font-weight: 600; }
+.t-str { color: var(--t-str); }
+.t-num { color: var(--t-num); }
+.t-com { color: var(--t-com); font-style: italic; }
+.t-pp { color: var(--t-pp); }
+.t-fn { color: var(--t-fn); }
+
+/* ---------- cabeçalho da lição ---------- */
+.lesson-head { display: grid; gap: 10px; }
+.eyebrow { font-family: var(--font-mono); font-size: .82rem; color: var(--accent); font-weight: 600; letter-spacing: .02em; }
+.lead { font-size: 1.15rem; color: var(--muted); max-width: 60ch; }
+.analogy {
+  max-width: 68ch; background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--mark-edge);
+  border-radius: 10px; padding: 14px 18px; display: grid; gap: 4px;
+}
+.analogy-label { font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+.section { display: grid; gap: 16px; }
+.section-head { display: grid; gap: 4px; }
+.section-head p { color: var(--muted); }
+
+/* ---------- visualizador ---------- */
+.viz {
+  background: var(--panel); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow);
+  padding: 16px; display: grid; gap: 12px;
+}
+.viz:focus-visible { outline-offset: 4px; border-radius: 14px; }
+.viz-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; }
+.viz-title { display: grid; gap: 2px; }
+.viz-title small { font-family: var(--font-mono); color: var(--muted); font-size: .78rem; }
+.viz-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.viz-count { font-family: var(--font-mono); font-size: .82rem; color: var(--muted); min-width: 9.5em; text-align: center; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.btn {
+  font: inherit; font-size: .92rem; font-weight: 700; cursor: pointer;
+  border: 1px solid var(--line); background: var(--panel); color: var(--ink);
+  padding: 7px 14px; border-radius: 9px; line-height: 1.2;
+}
+.btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+.btn:disabled { opacity: .45; cursor: default; }
+.btn-primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn-primary:hover:not(:disabled) { color: var(--accent-ink); filter: brightness(1.08); }
+.btn-ghost { border-color: transparent; color: var(--muted); }
+.viz-bar { height: 4px; background: var(--line); border-radius: 99px; overflow: hidden; }
+.viz-bar span { display: block; height: 100%; background: var(--accent); transition: width .2s; }
+.viz-note {
+  background: var(--accent-soft); border-radius: 10px; padding: 12px 14px; min-height: 3.4em;
+  display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; align-items: start;
+}
+.viz-note code { background: var(--panel); }
+.viz-note-line { font-family: var(--font-mono); font-size: .78rem; font-weight: 600; color: var(--accent); background: var(--panel); border-radius: 6px; padding: 2px 7px; margin-top: 2px; white-space: nowrap; }
+.viz-grid { display: grid; grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr); gap: 12px; align-items: start; }
+.viz-side { display: grid; gap: 12px; }
+.panel { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--code-bg); }
+.panel-label {
+  font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .09em; color: var(--muted);
+  padding: 7px 12px; border-bottom: 1px solid var(--line); background: var(--panel);
+  display: flex; justify-content: space-between; gap: 8px;
+}
+.code { overflow-x: auto; padding: 8px 0; font-family: var(--font-mono); font-size: .86rem; line-height: 1.65; }
+.ln { display: grid; grid-template-columns: 2.6em 1.3em minmax(0, 1fr); white-space: pre; min-width: max-content; padding-right: 14px; }
+.ln .no { text-align: right; color: var(--t-com); opacity: .8; user-select: none; }
+.ln .arrow { text-align: center; color: var(--mark-edge); user-select: none; }
+.ln.cur { background: var(--mark); box-shadow: inset 3px 0 0 var(--mark-edge); }
+.ln.cur .no { color: var(--ink); opacity: 1; font-weight: 600; }
+
+.mem { padding: 10px; display: grid; gap: 10px; min-height: 92px; }
+.mem-empty { color: var(--muted); font-size: .9rem; padding: 6px 4px; }
+.frame { border: 1px dashed var(--line); border-radius: 9px; padding: 8px; display: grid; gap: 8px; background: var(--panel); }
+.frame.active { border: 1px solid var(--accent); }
+.frame-name { font-family: var(--font-mono); font-size: .78rem; font-weight: 600; color: var(--muted); display: flex; justify-content: space-between; }
+.frame.active .frame-name { color: var(--accent); }
+.vars { display: flex; flex-wrap: wrap; gap: 8px; }
+.var {
+  border: 1px solid var(--line); border-radius: 8px; padding: 6px 9px 7px; background: var(--code-bg);
+  display: grid; gap: 2px; min-width: 76px; max-width: 100%;
+}
+.var.wide { flex-basis: 100%; }
+.var-top { display: flex; justify-content: space-between; gap: 10px; font-family: var(--font-mono); font-size: .7rem; color: var(--muted); }
+.var-type { color: var(--t-ty); }
+.var-name { font-family: var(--font-mono); font-weight: 600; font-size: .9rem; }
+.var-val { font-family: var(--font-mono); font-size: 1.05rem; font-variant-numeric: tabular-nums; border-radius: 5px; padding: 0 3px; margin: 0 -3px; overflow-wrap: anywhere; }
+.chg { background: var(--mark); box-shadow: 0 0 0 2px var(--mark-edge); }
+.var.is-new { border-color: var(--accent); }
+.garbage { color: var(--muted); font-style: italic; }
+.ptr-addr { color: var(--t-num); }
+.ptr-arrow { color: var(--accent); font-size: .9rem; font-weight: 600; }
+.cells { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 2px; }
+.cell { display: grid; text-align: center; min-width: 2.7em; }
+.cell-v { font-family: var(--font-mono); font-size: .92rem; border: 1px solid var(--line); background: var(--panel); border-radius: 5px; padding: 2px 4px; }
+.cell-i { font-family: var(--font-mono); font-size: .66rem; color: var(--muted); }
+.fields { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 10px; font-family: var(--font-mono); font-size: .88rem; margin-top: 2px; }
+.fields .f-name { color: var(--muted); }
+.mini { border-collapse: collapse; font-family: var(--font-mono); font-size: .84rem; margin-top: 4px; }
+.mini th, .mini td { border: 1px solid var(--line); padding: 2px 8px; text-align: left; }
+.mini th { font-weight: 600; color: var(--muted); font-size: .72rem; background: var(--panel); }
+.addr-note { font-size: .74rem; color: var(--muted); }
+
+.term {
+  background: var(--term-bg); color: var(--term-ink); font-family: var(--font-mono); font-size: .86rem;
+  line-height: 1.6; padding: 10px 14px; white-space: pre-wrap; overflow-wrap: anywhere; min-height: 4.8em; max-height: 15em; overflow-y: auto;
+}
+.term .in { color: var(--term-in); font-weight: 600; }
+.term .err-line { color: #ff8a7a; font-weight: 600; }
+.term .enter { color: var(--term-in); opacity: .55; font-size: .8em; margin-left: 2px; }
+.term .caret { display: inline-block; width: .55em; height: 1.05em; background: var(--term-ink); opacity: .55; vertical-align: text-bottom; }
+.term .ph { color: #7e899f; font-style: italic; }
+.panel.out { background: var(--term-bg); border-color: var(--term-bg); }
+.panel.out .panel-label { background: var(--term-bg); color: #9aa6bd; border-color: #263046; }
+
+/* ---------- erros comuns ---------- */
+.mistakes { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; max-width: 76ch; }
+.mistakes li { background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--bad); border-radius: 9px; padding: 10px 14px; }
+
+/* ---------- quiz ---------- */
+.quiz { display: grid; gap: 14px; }
+.q { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: grid; gap: 12px; }
+.q-text { font-weight: 700; display: flex; gap: 10px; align-items: baseline; }
+.q-num { font-family: var(--font-mono); font-size: .78rem; color: var(--muted); font-weight: 400; white-space: nowrap; }
+.opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 8px; }
+.opt {
+  font: inherit; text-align: left; cursor: pointer; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; align-items: start;
+  border: 1px solid var(--line); background: var(--code-bg); color: var(--ink); border-radius: 9px; padding: 9px 12px;
+}
+.opt:hover:not(:disabled) { border-color: var(--accent); }
+.opt:disabled { cursor: default; }
+.opt-key { font-family: var(--font-mono); font-size: .78rem; font-weight: 600; color: var(--muted); border: 1px solid var(--line); border-radius: 5px; padding: 0 6px; margin-top: 2px; background: var(--panel); }
+.opt-txt.mono { font-family: var(--font-mono); font-size: .9rem; white-space: pre; overflow-x: auto; }
+.opt.right { border-color: var(--ok); background: var(--ok-soft); }
+.opt.right .opt-key { border-color: var(--ok); color: var(--ok); }
+.opt.wrong { border-color: var(--bad); background: var(--bad-soft); }
+.opt.wrong .opt-key { border-color: var(--bad); color: var(--bad); }
+.opt.dim { opacity: .55; }
+.q-exp { border-radius: 9px; padding: 10px 14px; background: var(--code-bg); border: 1px solid var(--line); }
+.q-exp strong.ok { color: var(--ok); }
+.q-exp strong.bad { color: var(--bad); }
+.score {
+  background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;
+}
+.score-num { font-family: var(--font-display); font-weight: 800; font-size: 1.6rem; font-variant-numeric: tabular-nums; }
+
+/* ---------- exercícios ---------- */
+.exs { display: grid; gap: 14px; }
+.ex { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: grid; gap: 12px; }
+.ex-label { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .09em; color: var(--muted); margin-bottom: 4px; }
+.ex .term { border-radius: 9px; max-height: none; min-height: 0; }
+details { border: 1px solid var(--line); border-radius: 9px; background: var(--code-bg); }
+summary { cursor: pointer; padding: 9px 14px; font-weight: 700; color: var(--accent); }
+details[open] summary { border-bottom: 1px solid var(--line); }
+.det-body { padding: 12px 14px; display: grid; gap: 10px; }
+.det-body pre.snip { background: var(--panel); }
+.sol-tools { display: flex; justify-content: flex-end; }
+
+/* ---------- navegação entre lições ---------- */
+.pager { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; border-top: 1px solid var(--line); padding-top: 24px; }
+.pager a {
+  display: grid; gap: 2px; text-decoration: none; color: var(--ink); background: var(--panel);
+  border: 1px solid var(--line); border-radius: 10px; padding: 10px 16px; min-width: 220px;
+}
+.pager a:hover { border-color: var(--accent); }
+.pager small { color: var(--muted); font-size: .8rem; }
+.pager .next { text-align: right; margin-left: auto; }
+
+/* ---------- início ---------- */
+.hero { display: grid; gap: 16px; padding-top: 8px; }
+.hero p { font-size: 1.15rem; color: var(--muted); max-width: 58ch; }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.hero-actions .btn { padding: 10px 18px; font-size: 1rem; text-decoration: none; display: inline-block; }
+.steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; counter-reset: s; }
+.steps li { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; display: grid; gap: 6px; counter-increment: s; align-content: start; }
+.steps li::before { content: counter(s); font-family: var(--font-mono); font-weight: 600; font-size: .8rem; color: var(--accent); border: 1px solid var(--accent); border-radius: 6px; width: 1.8em; text-align: center; }
+.steps p { color: var(--muted); font-size: .95rem; }
+.grid-lessons { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; }
+.card-lesson {
+  display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 12px; text-decoration: none; color: var(--ink);
+  background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px; align-content: start;
+}
+.card-lesson:hover { border-color: var(--accent); }
+.card-lesson .nav-num { grid-row: span 2; width: 28px; height: 24px; line-height: 20px; }
+.card-lesson strong { font-family: var(--font-display); font-weight: 600; font-size: 1.02rem; line-height: 1.25; }
+.card-lesson span.s { color: var(--muted); font-size: .88rem; line-height: 1.35; }
+.card-lesson .done-tag { grid-column: 2; font-size: .78rem; font-weight: 700; color: var(--ok); }
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; align-items: start; }
+.box { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; display: grid; gap: 10px; }
+.box ul { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
+.trace td, .trace th { font-family: var(--font-mono); font-size: .84rem; text-align: center; }
+.trace td:last-child, .trace th:last-child { text-align: left; }
+.trace tr.hl td { background: var(--mark); }
+
+/* ---------- cábula ---------- */
+.cheat { columns: 2 380px; column-gap: 14px; }
+.cheat .box { break-inside: avoid; margin-bottom: 14px; }
+.cheat h3 { font-size: 1.05rem; }
+.cheat .t { font-size: .86rem; }
+.checklist { list-style: none; padding: 0 !important; }
+.checklist li { padding-left: 1.6em; position: relative; }
+.checklist li::before { content: ""; position: absolute; left: 0; top: .3em; width: .95em; height: .95em; border: 2px solid var(--muted); border-radius: 3px; }
+
+/* ---------- telemóvel ---------- */
+@media (max-width: 960px) {
+  .app { grid-template-columns: minmax(0, 1fr); }
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    position: sticky; top: 0; z-index: 20; background: var(--panel); border-bottom: 1px solid var(--line); padding: 10px 16px;
+  }
+  .sidebar {
+    position: fixed; z-index: 30; left: 0; top: 0; width: min(300px, 86vw); height: 100%;
+    transform: translateX(-102%); transition: transform .2s; box-shadow: var(--shadow);
+  }
+  .sidebar.open { transform: none; }
+  .scrim { position: fixed; inset: 0; background: rgba(10, 13, 20, .45); z-index: 25; }
+  main { padding-top: 24px; }
+}
+@media (max-width: 820px) {
+  .viz-grid { grid-template-columns: minmax(0, 1fr); }
+  .viz-controls { width: 100%; }
+  .viz-count { min-width: 0; flex: 1; }
+}
+/* Num ecrã estreito, nada pode alargar a página: as tabelas do texto ganham scroll próprio
+   e o código no meio das frases pode partir a linha. */
+@media (max-width: 600px) {
+  table.t { display: block; overflow-x: auto; }
+  :not(pre) > code { white-space: normal; overflow-wrap: anywhere; }
+  .t td code { white-space: nowrap; }
+}
+@media (max-width: 480px) {
+  body { font-size: 16px; }
+  .viz { padding: 12px; }
+  .pager a { min-width: 0; flex: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; scroll-behavior: auto !important; }
+}
+</style>
+<style>
+/* ---------- visualizador de referências (Python, C#, ...) ---------- */
+/* Usa as variáveis do template, por isso funciona nos temas claro e escuro. */
+.names { display: flex; flex-wrap: wrap; gap: 6px; }
+.name { display: flex; align-items: baseline; gap: 8px; border: 1px solid var(--line); border-radius: 8px; padding: 4px 9px; background: var(--code-bg); font-family: var(--font-mono); max-width: 100%; }
+.name.is-new { border-color: var(--accent); }
+.name .var-type { font-size: .7rem; }
+.name .var-name { font-size: .9rem; }
+.name > span:last-child { font-size: .95rem; overflow-wrap: anywhere; }
+.ref { display: inline-block; font-family: var(--font-mono); font-size: .78rem; font-weight: 600; border-radius: 5px; padding: 0 5px; border: 1.5px solid currentColor; white-space: nowrap; }
+.ref-c0 { color: var(--t-fn); }
+.ref-c1 { color: var(--t-str); }
+.ref-c2 { color: var(--t-ty); }
+.ref-c3 { color: var(--t-num); }
+.ref-c4 { color: var(--t-kw); }
+.ref-c5 { color: var(--t-pp); }
+.ref.chg, .name .chg, .obj .chg { background: var(--mark); box-shadow: 0 0 0 2px var(--mark-edge); border-radius: 4px; }
+.objs { display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-start; }
+.obj { border: 1px solid var(--line); border-radius: 8px; padding: 6px 9px 7px; background: var(--panel); display: grid; gap: 4px; min-width: 70px; max-width: 100%; }
+.obj.is-new { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.obj.orphan { opacity: .5; border-style: dashed; }
+.obj-top { display: flex; gap: 8px; align-items: baseline; justify-content: space-between; }
+.obj-top .var-type { font-family: var(--font-mono); font-size: .7rem; }
+.obj .var-val { font-size: 1rem; }
+.obj .cells .cell-v { min-width: 2.2em; }
+.obj-empty { font-family: var(--font-mono); font-size: .8rem; color: var(--muted); font-style: italic; }
+.orphan-note { font-size: .7rem; color: var(--muted); font-style: italic; }
+.mini.kv td { font-family: var(--font-mono); }
+.inline-struct { font-size: .88rem; }
+.inline-struct .f-name { color: var(--muted); }
+.inline-struct .sep { color: var(--muted); }
+.name .moved { color: var(--muted); font-style: italic; text-decoration: line-through; text-decoration-color: var(--bad); }
+.name:has(.moved) { border-style: dashed; opacity: .75; }
+</style>
+<style>
+:root { --accent: #1f5c99; --accent-soft: #e3eef9; --t-fn: #1f5c99; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --accent: #7fb6ef; --accent-soft: #172a3e; --t-fn: #7fb6ef; } }
+:root[data-theme="dark"] { --accent: #7fb6ef; --accent-soft: #172a3e; --t-fn: #7fb6ef; }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <a class="brand" href="#inicio"><span class="brand-mark">.ts</span><span class="brand-name">TypeScript do Zero</span></a>
+    <button class="btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="sidebar">Lições</button>
+  </header>
+  <aside class="sidebar" id="sidebar" aria-label="Lições">
+    <a class="brand" href="#inicio"><span class="brand-mark">.ts</span><span class="brand-name">TypeScript do Zero</span></a>
+    <div class="progress" id="progress"></div>
+    <nav class="nav" id="nav"></nav>
+  </aside>
+  <main id="main" tabindex="-1">
+    <noscript><p>Esta página precisa de JavaScript para funcionar.</p></noscript>
+    <div class="content" id="view"></div>
+  </main>
+</div>
+
+<template id="tpl-home">
+  <section class="hero">
+    <span class="eyebrow">Desenvolvimento web · depois do JavaScript</span>
+    <h1>Aprender TypeScript a ver os erros antes de correr</h1>
+    <p>Onze lições curtas, dos tipos básicos às interfaces, uniões, classes, genéricos e async/await. Em cada exemplo carregas em "Seguinte": ou o programa corre e vês as variáveis e os objetos, ou o compilador para-o antes, com o erro marcado na linha.</p>
+    <div class="hero-actions" id="hero-actions"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>Como usar</h2></div>
+    <ol class="steps">
+      <li><h3>Lê a explicação</h3><p>É curta e assume que já fizeste o JavaScript do Zero: aqui só se acrescentam os tipos.</p></li>
+      <li><h3>Corre o exemplo</h3><p>Antes de cada "Seguinte", pergunta-te: isto compila? Se não compilar, nada corre, nem as linhas certas.</p></li>
+      <li><h3>Responde às perguntas</h3><p>"O que aparece no ecrã?" e "isto compila?". As respostas com erros são as mensagens reais do compilador.</p></li>
+      <li><h3>Faz os exercícios no computador</h3><p>Escreve o ficheiro <code>.ts</code>, compila com <code>tsc</code> e corre o <code>.js</code> com o Node.</p></li>
+    </ol>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>Lições</h2><p>Segue a ordem: cada lição usa o que veio antes.</p></div>
+    <div class="grid-lessons" id="home-lessons"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>O que o TypeScript apanha (e o JavaScript não)</h2>
+      <p>Os mesmos enganos do curso de JavaScript, agora parados antes de o programa correr.</p>
+    </div>
+    <div class="two">
+      <div class="prose">
+        <p>Em JavaScript, a maior parte dos enganos não dá erro: dá um valor estranho (<code>NaN</code>, <code>undefined</code>, "53") que só descobres mais tarde, longe do sítio onde está o problema.</p>
+        <p>O TypeScript lê o programa todo antes de ele correr e diz-te a linha e o motivo. Para os erros, lê o código (<code>TS2322</code>, <code>TS2345</code>...) e a frase: quase sempre dizem o tipo que esperava e o que recebeu.</p>
+        <p>Os tipos não existem a correr. Um valor que vem de fora (um formulário, um servidor) continua a precisar de ser verificado e convertido.</p>
+      </div>
+      <div class="t-wrap">
+        <table class="t trace">
+          <thead><tr><th>Código</th><th>JavaScript</th><th>TypeScript</th></tr></thead>
+          <tbody>
+            <tr><td>soma("2", 3)</td><td>"23"</td><td>TS2345</td></tr>
+            <tr><td>area(3)</td><td>NaN</td><td>TS2554</td></tr>
+            <tr class="hl"><td>texto.toUppercase()</td><td>TypeError a correr</td><td>TS2551</td></tr>
+            <tr><td>r.nome (r pode ser undefined)</td><td>TypeError a correr</td><td>TS18048</td></tr>
+            <tr><td>dobro(4) + 1 (sem await)</td><td>"[object Promise]1"</td><td>TS2365</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="two">
+    <div class="box">
+      <h2>Onde praticar</h2>
+      <ul>
+        <li><strong>No browser, sem instalar nada:</strong> o <a href="https://www.typescriptlang.org/play">TypeScript Playground</a>, o site oficial. Mostra os erros enquanto escreves e o JavaScript que sai.</li>
+        <li><strong>No teu computador:</strong> com o Node instalado, <code>npm install -g typescript</code>. Compila com <code>tsc --strict programa.ts</code> e corre com <code>node programa.js</code>.</li>
+        <li>No VS Code, os erros aparecem sublinhados a vermelho enquanto escreves, antes até de compilares.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h2>Para quem está a explicar</h2>
+      <ul>
+        <li>Em cada exemplo, pede-lhe que diga se compila <em>antes</em> de carregar em "Seguinte".</li>
+        <li>Quando aparece um erro, leiam a mensagem juntos: "Type X is not assignable to type Y" diz exatamente o que não bate certo.</li>
+        <li>Resistam ao <code>any</code>: quase sempre há um tipo certo, e encontrá-lo ensina mais do que calar o compilador.</li>
+        <li>Lembrem-se de que as regras do JavaScript continuam todas lá: referências, <code>===</code>, a ordem do async.</li>
+      </ul>
+    </div>
+  </section>
+</template>
+
+<template id="tpl-cheat">
+  <section class="lesson-head">
+    <span class="eyebrow">Resumo</span>
+    <h1>Cábula de TypeScript</h1>
+    <p class="lead">Tudo o que as lições ensinam, numa página. Boa para ter aberta enquanto fazes exercícios.</p>
+  </section>
+  <div class="cheat">
+    <div class="box">
+      <h3>Tipos básicos</h3>
+<pre class="snip"><code class="ts">let nome: string = "Ana";
+let idade = 19;                 // inferido: number
+const ativo: boolean = true;
+let nada: undefined;
+let qualquer: any;              // evita
+let lista: number[] = [1, 2];   // ou Array&lt;number&gt;
+let par: [string, number] = ["Ana", 17];</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Funções</h3>
+<pre class="snip"><code class="ts">function area(l: number, a: number): number {
+  return l * a;
+}
+const dobro = (x: number): number =&gt; x * 2;
+function ola(nome: string, pontos?: number): string { ... }
+function mostra(t: string): void { console.log(t); }</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Objetos</h3>
+<pre class="snip"><code class="ts">interface Aluno {
+  nome: string;
+  nota: number;
+  email?: string;           // opcional
+  readonly numero: number;  // não muda
+}
+type Ponto = { x: number; y: number };
+const a: Aluno = { nome: "Ana", nota: 17, numero: 101 };</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Uniões e estreitamento</h3>
+<pre class="snip"><code class="ts">let v: number | string;
+type Tema = "claro" | "escuro";
+
+if (typeof v === "number") { v.toFixed(2); }
+else { v.toUpperCase(); }
+
+const r = lista.find(x =&gt; x &gt; 10);  // number | undefined
+if (r !== undefined) { ... }
+r?.toFixed(1)        // undefined se não houver r
+r ?? 0               // 0 se não houver r</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Classes</h3>
+<pre class="snip"><code class="ts">interface Forma { area(): number; }
+
+class Quadrado implements Forma {
+  private lado: number;
+  readonly nome = "quadrado";
+  constructor(lado: number) { this.lado = lado; }
+  area(): number { return this.lado * this.lado; }
+}</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Genéricos e async</h3>
+<pre class="snip"><code class="ts">function primeiro&lt;T&gt;(v: T[]): T | undefined {
+  return v[0];
+}
+interface Caixa&lt;T&gt; { valor: T; }
+
+async function nota(id: number): Promise&lt;number&gt; { ... }
+async function principal(): Promise&lt;void&gt; {
+  try {
+    const n = await nota(101);
+  } catch (e) {
+    console.log((e as Error).message);
+  }
+}</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Mensagens do compilador</h3>
+      <div class="t-wrap"><table class="t">
+        <thead><tr><th>Código</th><th>Costuma ser</th></tr></thead>
+        <tbody>
+          <tr><td><code>TS2322: Type 'X' is not assignable to type 'Y'</code></td><td>guardar um valor do tipo errado numa variável ou propriedade</td></tr>
+          <tr><td><code>TS2345: Argument of type 'X' is not assignable to parameter of type 'Y'</code></td><td>chamar uma função com um argumento do tipo errado</td></tr>
+          <tr><td><code>TS2554: Expected 2 arguments, but got 1</code></td><td>argumentos a mais ou a menos</td></tr>
+          <tr><td><code>TS2339: Property 'x' does not exist on type 'Y'</code></td><td>propriedade ou método que esse tipo não tem</td></tr>
+          <tr><td><code>TS2551: ... Did you mean 'y'?</code></td><td>nome mal escrito; lê a sugestão</td></tr>
+          <tr><td><code>TS2741: Property 'x' is missing in type ...</code></td><td>falta uma propriedade obrigatória da interface</td></tr>
+          <tr><td><code>TS2353: Object literal may only specify known properties</code></td><td>propriedade que a interface não tem</td></tr>
+          <tr><td><code>TS18047</code> / <code>TS18048: 'x' is possibly 'null' / 'undefined'</code></td><td>testa antes de usar (<code>if</code>, <code>?.</code>, <code>??</code>)</td></tr>
+          <tr><td><code>TS2366: Function lacks ending return statement</code></td><td>há um caminho da função sem <code>return</code></td></tr>
+          <tr><td><code>TS2540: Cannot assign to 'x' because it is a read-only property</code></td><td>mudar um campo <code>readonly</code></td></tr>
+          <tr><td><code>TS2341: Property 'x' is private</code></td><td>mexer num campo <code>private</code> fora da classe</td></tr>
+          <tr><td><code>TS2420: Class 'X' incorrectly implements interface 'Y'</code></td><td>falta um método da interface</td></tr>
+          <tr><td><code>TS2365: Operator '+' cannot be applied to types 'Promise&lt;...&gt;' ...</code></td><td>faltou um <code>await</code></td></tr>
+          <tr><td><code>TS7006: Parameter 'x' implicitly has an 'any' type</code></td><td>falta o tipo de um parâmetro</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="box">
+      <h3>Antes de entregar</h3>
+      <ul class="checklist">
+        <li>O <code>tsc --strict</code> não dá nenhum erro.</li>
+        <li>Não há <code>any</code> (nem <code>!</code> para calar o compilador) sem uma boa razão escrita num comentário.</li>
+        <li>Todos os parâmetros das funções têm tipo.</li>
+        <li>Os objetos têm uma interface ou um type, e os valores fixos têm um tipo literal.</li>
+        <li>O que pode ser undefined (o <code>find</code>, campos opcionais) é testado antes de usar.</li>
+        <li>As funções async são esperadas com <code>await</code>, dentro de <code>try</code>/<code>catch</code>.</li>
+        <li>Os dados de fora (formulários, servidores) são convertidos e verificados: os tipos não existem a correr.</li>
+      </ul>
+    </div>
+  </div>
+</template>
+
+<script>
+const COURSE = {"slug":"typescript","title":"TypeScript do Zero","storageKey":"typescriptdozero-progresso-v1","cheatTitle":"Cábula de TypeScript","vizLabels":{"names":"Variáveis","objects":"Objetos","orphan":"sem variáveis: vai ser apagado"},"viz":"refs"};
+// Realce de sintaxe para TypeScript. Cada grupo da regex corresponde, pela ordem, a uma classe em "classes".
+const SYNTAX = {
+  re: /(\/\/.*$)|("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|`(?:\\.|[^`\\])*`)|\b(number|string|boolean|void|any|unknown|never|undefined|null|true|false|NaN|Promise|Array|Math|JSON|console)\b|\b(let|const|var|function|return|if|else|for|of|in|while|do|switch|case|break|continue|new|class|extends|implements|super|this|typeof|instanceof|async|await|try|catch|throw|type|interface|private|public|protected|readonly|as|keyof|enum|static|default)\b|\b(\d+(?:\.\d+)?)\b|\b([A-Za-z_$][\w$]*)(?=\(|<\w+>\()/g,
+  classes: ['com', 'str', 'ty', 'kw', 'num', 'fn'],
+};
+
+// ===== Visualizador de referências (Python, e mais tarde C# e TypeScript) =====
+// Troca o painel "Memória" por dois: "Nomes" (os frames, com as variáveis) e "Objetos" (o heap).
+// Uma variável que aponta para um objeto mostra "→ #1"; o objeto tem a etiqueta "#1" da mesma cor.
+// Assim, dois nomes a apontar para a mesma lista veem-se logo. Só entra nas páginas com viz: 'refs'.
+
+// Cada visualizador regista-se em VIZ_MODES com o seu nome; um curso (ou um exemplo) escolhe qual usa.
+if (typeof VIZ_MODES === 'undefined') var VIZ_MODES = {};
+VIZ_MODES.refs = (function () {
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const isRef = v => typeof v === 'string' && v.charAt(0) === '@';
+  // Os textos dos painéis: por omissão os do Python; um curso pode trocá-los em course.js (vizLabels).
+  // moved: o valor que marca uma variável que já não se pode usar (Rust); orphan: a nota de um objeto sem dono.
+  const LABELS = Object.assign({ names: 'Nomes', objects: 'Objetos', moved: null, orphan: 'sem nomes: vai ser apagado' },
+    typeof COURSE !== 'undefined' && COURSE.vizLabels ? COURSE.vizLabels : {});
+
+  // A etiqueta de um objeto: o id sem o "o" ('o3' → '#3'), com uma de seis cores.
+  function chip(id, changed, arrow) {
+    const n = parseInt(id.replace(/\D/g, ''), 10) || 0;
+    return '<span class="ref ref-c' + (n % 6) + (changed ? ' chg' : '') + '">' + (arrow ? '→ ' : '') + '#' + esc(id.replace(/^o/, '')) + '</span>';
+  }
+
+  // Um valor dentro de uma variável ou de um objeto: uma referência vira etiqueta, um struct do C#
+  // (um objeto guardado na própria variável) mostra os campos, e o resto aparece tal e qual.
+  function valueHtml(v, changed) {
+    if (isRef(v)) return chip(v.slice(1), changed, true);
+    if (v && typeof v === 'object' && !Array.isArray(v)) {
+      return '<span class="inline-struct' + (changed ? ' chg' : '') + '">' +
+        Object.keys(v).map(k => '<span class="f-name">' + esc(k) + '</span> ' + valueHtml(v[k], false)).join('<span class="sep">, </span>') + '</span>';
+    }
+    // Um array guardado na própria variável (por exemplo um array do Rust na pilha): [a, b, c].
+    if (Array.isArray(v)) return '<span class="' + (changed ? 'chg' : '') + '">[' + v.map(x => valueHtml(x, false)).join(', ') + ']</span>';
+    if (LABELS.moved && v === LABELS.moved) return '<span class="moved' + (changed ? ' chg' : '') + '">' + esc(v) + '</span>';
+    return '<span class="' + (changed ? 'chg' : '') + '">' + esc(v) + '</span>';
+  }
+  const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+
+  // ---------- Nomes ----------
+  function namesHtml(frames, prevFrames) {
+    if (!frames.length) return '<p class="mem-empty">O programa ainda não começou a correr.</p>';
+    return frames.map((f, fi) => {
+      const active = fi === frames.length - 1;
+      const prev = prevFrames && prevFrames[fi] && prevFrames[fi].name === f.name ? prevFrames[fi] : null;
+      const vars = f.vars.length
+        ? '<div class="names">' + f.vars.map(v => {
+          const old = prev ? prev.vars.find(x => x.name === v.name) : undefined;
+          const isNew = prevFrames && !old;
+          return '<div class="name' + (isNew ? ' is-new' : '') + '">' +
+            (v.type ? '<span class="var-type">' + esc(v.type) + '</span>' : '') +
+            '<span class="var-name">' + esc(v.name) + '</span>' + valueHtml(v.value, old && !same(old.value, v.value)) + '</div>';
+        }).join('') + '</div>'
+        : '<p class="mem-empty">sem nomes</p>';
+      // O frame de topo chama-se "global" (Python) ou "Main" (C#); os das funções levam () no fim.
+      const label = f.name === 'global' || !/^\w+$/.test(f.name) ? f.name : f.name + '()';
+      return '<div class="frame' + (active ? ' active' : '') + '"><div class="frame-name"><span>' + esc(label) + '</span>' +
+        (active && frames.length > 1 ? '<span>a correr</span>' : (!active ? '<span>em pausa</span>' : '')) + '</div>' + vars + '</div>';
+    }).join('');
+  }
+
+  // ---------- Objetos ----------
+  // O corpo de um objeto depende do tipo: lista/tuplo (caixas com índice), dicionário (chave → valor),
+  // objeto com campos (C#), ou um valor simples (int, str, ...).
+  function objectBody(obj, old) {
+    const v = obj.value;
+    const prevAt = k => (old && old.type === obj.type && old.value ? old.value[k] : undefined);
+    if (Array.isArray(v) && (obj.type === 'dict' || /^Dictionary/.test(obj.type))) {
+      if (!v.length) return '<span class="obj-empty">vazio</span>';
+      const oldMap = {};
+      if (old && Array.isArray(old.value)) old.value.forEach(([k, x]) => { oldMap[JSON.stringify(k)] = x; });
+      return '<div class="t-wrap"><table class="mini kv"><tbody>' + v.map(([k, x]) => {
+        const before = oldMap[JSON.stringify(k)];
+        const changed = old && (before === undefined || !same(before, x));
+        return '<tr><td>' + valueHtml(k, false) + '</td><td>' + valueHtml(x, changed) + '</td></tr>';
+      }).join('') + '</tbody></table></div>';
+    }
+    if (Array.isArray(v)) {
+      if (!v.length) return '<span class="obj-empty">vazia</span>';
+      return '<div class="cells">' + v.map((x, i) => {
+        const before = prevAt(i);
+        const changed = old && (before === undefined || !same(before, x));
+        return '<div class="cell"><span class="cell-v">' + valueHtml(x, changed) + '</span><span class="cell-i">[' + i + ']</span></div>';
+      }).join('') + '</div>';
+    }
+    if (v && typeof v === 'object') {
+      return '<div class="fields">' + Object.keys(v).map(k => {
+        const before = prevAt(k);
+        return '<span class="f-name">' + esc(k) + '</span><span>' + valueHtml(v[k], old && !same(before, v[k])) + '</span>';
+      }).join('') + '</div>';
+    }
+    return '<div class="var-val">' + valueHtml(v, old && !same(old.value, v)) + '</div>';
+  }
+
+  function heapHtml(heap, orphans, prevHeap) {
+    const ids = Object.keys(heap);
+    if (!ids.length) return '<p class="mem-empty">Ainda não há objetos.</p>';
+    return '<div class="objs">' + ids.map(id => {
+      const obj = heap[id];
+      const old = prevHeap ? prevHeap[id] : undefined;
+      const isNew = prevHeap && !old;
+      const orphan = orphans.includes(id);
+      return '<div class="obj' + (isNew ? ' is-new' : '') + (orphan ? ' orphan' : '') + '">' +
+        '<div class="obj-top">' + chip(id, false, false) + '<span class="var-type">' + esc(obj.type) + '</span></div>' +
+        objectBody(obj, old) +
+        (orphan ? '<span class="orphan-note">' + esc(LABELS.orphan) + '</span>' : '') + '</div>';
+    }).join('') + '</div>';
+  }
+
+  return {
+    panelsHtml() {
+      return '<div class="panel"><div class="panel-label"><span>' + esc(LABELS.names) + '</span><span>→ #n = aponta para o objeto #n</span></div><div class="mem names-box"></div></div>' +
+        '<div class="panel"><div class="panel-label"><span>' + esc(LABELS.objects) + '</span><span>amarelo = mudou agora</span></div><div class="mem heap-box"></div></div>' +
+        '<div class="panel out"><div class="panel-label"><span>Ecrã</span></div><pre class="term"></pre></div>';
+    },
+    // helpers vem do template: renderTerm (o ecrã) e isLast (se é o último passo).
+    render(host, step, prev, helpers) {
+      host.querySelector('.names-box').innerHTML = namesHtml(step.frames, prev ? prev.frames : null);
+      host.querySelector('.heap-box').innerHTML = heapHtml(step.heap, step.orphans, prev ? prev.heap : null);
+      const term = host.querySelector('.term');
+      term.innerHTML = helpers.renderTerm(step.out, !helpers.isLast);
+      term.scrollTop = term.scrollHeight;
+    },
+  };
+})();
+
+
+</script>
+<script>
+// ===== Motor do visualizador: transforma a lista de passos de um exemplo em fotografias da memória. =====
+// É partilhado por todos os cursos e corre tanto na página como nos testes (shared/check.js).
+function parseVarPath(key) {
+  const m = key.match(/^([A-Za-z_]\w*)(.*)$/);
+  if (!m) throw new Error('caminho inválido: ' + key);
+  const path = [];
+  const re = /\[(\d+)\]|\.([A-Za-z_]\w*)/g;
+  let t;
+  let consumed = 0;
+  while ((t = re.exec(m[2]))) {
+    path.push(t[1] !== undefined ? Number(t[1]) : t[2]);
+    consumed += t[0].length;
+  }
+  if (consumed !== m[2].length) throw new Error('caminho inválido: ' + key);
+  return { name: m[1], path };
+}
+
+// ---------- tabelas (cursos de SQL) ----------
+// Uma coluna escreve-se como no CREATE TABLE: ['numero', 'INTEGER PRIMARY KEY'] ou ['curso', 'INTEGER REFERENCES cursos(id)'].
+function parseColumn(spec) {
+  const [name, def] = spec;
+  const fk = /REFERENCES\s+(\w+)\s*\((\w+)\)/i.exec(def);
+  return {
+    name,
+    def,
+    type: def.split(/\s+/)[0].toUpperCase(),
+    pk: /PRIMARY\s+KEY/i.test(def),
+    fk: fk ? fk[1] + '.' + fk[2] : null,
+  };
+}
+
+// Transforma { cols, key?, rows? } numa tabela do motor. Cada linha leva um id interno,
+// para o visualizador saber que linha é qual mesmo depois de outras serem apagadas.
+function makeTable(spec, nextId) {
+  const cols = spec.cols.map(parseColumn);
+  (spec.key || []).forEach(k => {
+    const col = cols.find(c => c.name === k);
+    if (!col) throw new Error('chave com coluna inexistente: ' + k);
+    col.pk = true;
+  });
+  const table = { cols, rows: [] };
+  (spec.rows || []).forEach(cells => addRow(table, cells, nextId));
+  return table;
+}
+
+function addRow(table, cells, nextId) {
+  if (cells.length !== table.cols.length) throw new Error('linha com ' + cells.length + ' valores numa tabela com ' + table.cols.length + ' colunas');
+  table.rows.push({ id: nextId(), cells: cells.slice() });
+}
+
+// Aplica as operações de tabelas de um passo: create, ins, upd, del, drop.
+function applyTableOps(tables, s, where, nextId) {
+  const find = name => {
+    if (!tables[name]) throw new Error('tabela inexistente: ' + name + where);
+    return tables[name];
+  };
+  if (s.create) {
+    for (const [name, spec] of Object.entries(s.create)) {
+      if (tables[name]) throw new Error('tabela repetida: ' + name + where);
+      tables[name] = makeTable(spec, nextId);
+    }
+  }
+  if (s.ins) {
+    for (const [name, rows] of Object.entries(s.ins)) rows.forEach(cells => addRow(find(name), cells, nextId));
+  }
+  if (s.upd) {
+    for (const [name, changes] of Object.entries(s.upd)) {
+      const t = find(name);
+      for (const [index, sets] of Object.entries(changes)) {
+        const row = t.rows[Number(index)];
+        if (!row) throw new Error('linha inexistente: ' + name + '[' + index + ']' + where);
+        for (const [col, value] of Object.entries(sets)) {
+          const c = t.cols.findIndex(x => x.name === col);
+          if (c < 0) throw new Error('coluna inexistente: ' + name + '.' + col + where);
+          row.cells[c] = value;
+        }
+      }
+    }
+  }
+  if (s.del) {
+    for (const [name, indexes] of Object.entries(s.del)) {
+      const t = find(name);
+      indexes.forEach(i => { if (!t.rows[i]) throw new Error('apagar linha inexistente: ' + name + '[' + i + ']' + where); });
+      t.rows = t.rows.filter((_, i) => !indexes.includes(i));
+    }
+  }
+  if (s.drop) s.drop.forEach(name => { find(name); delete tables[name]; });
+  // tm: marcas que só valem neste passo, por exemplo as linhas que o WHERE de um UPDATE encontrou.
+  if (s.tm) {
+    for (const [name, marks] of Object.entries(s.tm)) {
+      const t = find(name);
+      Object.keys(marks).forEach(i => { if (!t.rows[i]) throw new Error('marca em linha inexistente: ' + name + '[' + i + ']' + where); });
+    }
+  }
+}
+
+// g: a grelha de trabalho de uma consulta (o que o FROM, o WHERE, o GROUP BY... já construíram).
+function checkGrid(g, where) {
+  if (g === null) return;
+  if (!Array.isArray(g.cols) || !Array.isArray(g.rows)) throw new Error('grelha sem cols ou rows' + where);
+  g.rows.forEach(r => { if (r.length !== g.cols.length) throw new Error('linha da grelha com ' + r.length + ' valores e ' + g.cols.length + ' colunas' + where); });
+  if (g.marks && g.marks.length !== g.rows.length) throw new Error('marks da grelha com tamanho diferente das linhas' + where);
+  if (g.groups && g.groups.reduce((a, b) => a + b, 0) !== g.rows.length) throw new Error('groups da grelha não somam o número de linhas' + where);
+}
+
+// ---------- referências e objetos (cursos de Python, C#, ...) ----------
+// Um valor que começa por @ é uma referência para um objeto do heap: '@o1'.
+const isRef = v => typeof v === 'string' && v.charAt(0) === '@';
+
+// Todas as referências que um valor contém (o próprio valor, os elementos de uma lista, os campos de um objeto).
+function refsIn(value) {
+  if (isRef(value)) return [value.slice(1)];
+  if (Array.isArray(value)) return value.flatMap(refsIn);
+  if (value && typeof value === 'object') return Object.values(value).flatMap(refsIn);
+  return [];
+}
+
+// Os objetos a que já ninguém chega, partindo dos nomes de todos os frames.
+function unreachable(frames, heap) {
+  const seen = new Set();
+  const visit = id => {
+    if (seen.has(id) || !heap[id]) return;
+    seen.add(id);
+    refsIn(heap[id].value).forEach(visit);
+  };
+  frames.forEach(f => f.vars.forEach(v => refsIn(v.value).forEach(visit)));
+  return Object.keys(heap).filter(id => !seen.has(id));
+}
+
+// initialTables: a base de dados com que o exemplo começa ({ nome: { cols, rows } }), ou nada.
+function buildSteps(raw, initialTables) {
+  let frames = [];
+  let out = '';
+  let lastId = 0;
+  const nextId = () => ++lastId;
+  let tables = {};
+  for (const [name, spec] of Object.entries(initialTables || {})) tables[name] = makeTable(spec, nextId);
+  let grid = null;
+  // heap: os objetos ({ id: { type, value } }). Um objeto sem nomes aparece desbotado num passo e desaparece no seguinte.
+  let heap = {};
+  let orphans = [];
+  // acts: as ações feitas na página até aqui (cliques, texto escrito), para o visualizador as repetir.
+  let acts = [];
+  const res = [];
+  raw.forEach((s, idx) => {
+    frames = JSON.parse(JSON.stringify(frames));
+    tables = JSON.parse(JSON.stringify(tables));
+    heap = JSON.parse(JSON.stringify(heap));
+    orphans.forEach(id => { delete heap[id]; });
+    const where = ' (passo ' + (idx + 1) + ')';
+    applyTableOps(tables, s, where, nextId);
+    if (s.act) acts = acts.concat([s.act]);
+    // obj: cria ou muda objetos: { o1: ['list', ['@o2', 3]] }
+    if (s.obj) {
+      for (const [id, spec] of Object.entries(s.obj)) heap[id] = { type: spec[0], value: JSON.parse(JSON.stringify(spec[1])) };
+    }
+    if (s.g !== undefined) {
+      checkGrid(s.g, where);
+      grid = JSON.parse(JSON.stringify(s.g));
+    }
+    const findFrame = name => {
+      for (let i = frames.length - 1; i >= 0; i--) if (frames[i].name === name) return frames[i];
+      throw new Error('frame inexistente: ' + name + where);
+    };
+    if (s.pop) {
+      if (!frames.length) throw new Error('pop sem frames' + where);
+      frames.pop();
+    }
+    if (s.push) frames.push({ name: s.push, vars: [] });
+    if (s.x) {
+      for (const [fn, names] of Object.entries(s.x)) {
+        const f = findFrame(fn);
+        names.forEach(n => {
+          if (!f.vars.some(v => v.name === n)) throw new Error('apagar variável inexistente: ' + n + where);
+        });
+        f.vars = f.vars.filter(v => !names.includes(v.name));
+      }
+    }
+    if (s.d) {
+      for (const [fn, vars] of Object.entries(s.d)) {
+        const f = findFrame(fn);
+        for (const [name, spec] of Object.entries(vars)) {
+          if (f.vars.some(v => v.name === name)) throw new Error('variável repetida: ' + name + where);
+          const [type, value, addr] = spec;
+          f.vars.push({ name, type, value: JSON.parse(JSON.stringify(value)), addr: addr || null });
+        }
+      }
+    }
+    if (s.u) {
+      for (const [fn, sets] of Object.entries(s.u)) {
+        const f = findFrame(fn);
+        for (const [key, value] of Object.entries(sets)) {
+          const { name, path } = parseVarPath(key);
+          const v = f.vars.find(x => x.name === name);
+          if (!v) throw new Error('atualizar variável inexistente: ' + name + where);
+          if (!path.length) { v.value = value; continue; }
+          let target = v.value;
+          for (let i = 0; i < path.length - 1; i++) {
+            target = target[path[i]];
+            if (target === undefined) throw new Error('caminho inexistente: ' + key + where);
+          }
+          const last = path[path.length - 1];
+          if (target[last] === undefined) throw new Error('caminho inexistente: ' + key + where);
+          target[last] = value;
+        }
+      }
+    }
+    if (s.o) out += s.o;
+    // Todas as referências têm de apontar para objetos que existem.
+    const allValues = frames.flatMap(f => f.vars.map(v => v.value)).concat(Object.values(heap).map(o => o.value));
+    allValues.flatMap(refsIn).forEach(id => { if (!heap[id]) throw new Error('referência para um objeto inexistente: @' + id + where); });
+    orphans = unreachable(frames, heap);
+    // sel, box, chk e width são do curso de HTML: o visualizador da página lê-os de cada passo.
+    res.push({ l: s.l, frames, out, n: s.n || '', tables, tmarks: s.tm || {}, grid, err: s.err || '', heap, orphans, sel: s.sel || null, box: s.box || null, width: s.width || null, acts });
+  });
+  return res;
+}
+
+if (typeof module !== 'undefined') module.exports = { buildSteps, parseVarPath, makeTable };
+
+</script>
+<script>
+// ===== TypeScript do Zero — conteúdo das lições (parte 1) =====
+// Formato dos passos: o do visualizador de referências (ver o curso de JavaScript).
+// Um exemplo com um erro de tipos não chega a correr: não tem frames (push) e o último passo mostra o erro
+// do compilador no ecrã, com o: 'error TS2345: ...\n'. O check confirma que o compilador dá esse erro.
+// No código, ‵ quer dizer ` e ¤{ quer dizer ${ (o J troca-os). No texto H`...`, usa &#96; e &#36;.
+const C = (s, ...v) => String.raw(s, ...v).replace(/^\n/, '').replace(/\n\s*$/, '');
+const H = (s, ...v) => String.raw(s, ...v);
+const J = (s, ...v) => C(s, ...v).replace(/‵/g, '`').replace(/¤\{/g, '${');
+const LESSONS = [];
+
+// ---------------------------------------------------------------- 0
+LESSONS.push({
+  id: 0,
+  title: 'Porquê TypeScript',
+  short: 'JavaScript com tipos: o erro aparece antes de o programa correr',
+  body: H`
+<p>Lembras-te de que, em JavaScript, <code>"5" + 3</code> dava "53" sem nenhum aviso, e de que uma função chamada com os argumentos errados dava <code>NaN</code> em silêncio? O <strong>TypeScript</strong> é JavaScript com <strong>tipos</strong>: escreves o tipo de cada variável e parâmetro, e um <strong>compilador</strong> (o <code>tsc</code>) verifica tudo antes de o programa correr.</p>
+<ul>
+<li>Os tipos escrevem-se depois de dois pontos: <code>let idade: number = 19;</code>, <code>function soma(a: number, b: number): number</code>.</li>
+<li>Se algo não bater certo, o compilador dá um erro (com um código, como <code>TS2345</code>) e o programa <strong>não corre</strong>. É como no C e no C#.</li>
+<li>Se estiver tudo certo, o compilador tira os tipos e dá JavaScript normal, que corre no browser ou no Node. Os tipos só existem antes de correr.</li>
+<li>Instala-se com <code>npm install -g typescript</code>; compila-se com <code>tsc programa.ts</code> e corre-se o <code>programa.js</code> que aparece.</li>
+</ul>`,
+  analogy: 'O TypeScript é um revisor que lê o teu trabalho antes da entrega. O JavaScript entregava tudo e só descobrias o erro quando o professor corrigia; o TypeScript devolve-to logo, com a linha marcada.',
+  examples: [{
+    title: 'O erro é apanhado antes de correr',
+    code: J`
+function soma(a: number, b: number): number {
+  return a + b;
+}
+
+console.log(soma(2, 3));
+console.log(soma("2", 3));`,
+    steps: [
+      { l: 1, n: H`A função diz que recebe dois <code>number</code> e devolve um <code>number</code>.` },
+      { l: 5, n: H`<code>soma(2, 3)</code> está certo: dois números.` },
+      { l: 6, o: "error TS2345: Argument of type 'string' is not assignable to parameter of type 'number'.\n", n: H`Mas <code>"2"</code> é texto. O compilador recusa, e o programa <strong>não chega a correr</strong>: nem a linha 5, que estava certa, escreve nada (repara que a memória continua vazia). Em JavaScript isto dava "23" sem aviso.` },
+    ],
+  }, {
+    title: 'Corrigido, já corre',
+    code: J`
+function soma(a: number, b: number): number {
+  return a + b;
+}
+
+console.log(soma(2, 3));
+console.log(soma(Number("2"), 3));`,
+    steps: [
+      { l: 1, push: 'global', obj: { o1: ['function', 'soma(a: number, b: number): number'] }, d: { global: { soma: ['function', '@o1'] } }, n: 'Sem erros de tipos, o programa compila e corre.' },
+      { l: 1, push: 'soma', d: { soma: { a: ['number', '2'], b: ['number', '3'] } }, n: H`<code>soma(2, 3)</code>.` },
+      { l: 5, pop: true, o: '5\n', n: 'Devolve 5.' },
+      { l: 1, push: 'soma', d: { soma: { a: ['number', '2'], b: ['number', '3'] } }, n: H`<code>Number("2")</code> converte o texto em número antes da chamada: agora o tipo bate certo.` },
+      { l: 6, pop: true, o: '5\n', n: 'O resultado certo.' },
+    ],
+  }],
+  mistakes: [
+    H`Achar que os tipos existem a correr: o TypeScript tira-os todos ao compilar. Um <code>number</code> que vem de um formulário continua a ser texto se não o converteres.`,
+    H`Ignorar os erros do compilador e correr o JavaScript na mesma: o objetivo é corrigi-los.`,
+    H`Usar <code>any</code> para calar o compilador (lição 1): perde-se toda a verificação.`,
+    H`Confundir o ficheiro <code>.ts</code> (o que escreves) com o <code>.js</code> (o que o compilador gera e o que corre).`,
+  ],
+  quiz: [
+    { q: 'O que acontece com este programa?', code: J`
+let x: number = 5;
+x = "cinco";
+console.log(x);`, opts: ['cinco', '5', "error TS2322: Type 'string' is not assignable to type 'number'.", 'NaN'], ok: 2, mono: true, check: true,
+      exp: H`<code>x</code> é um <code>number</code>, e o compilador não deixa guardar lá um texto. Em JavaScript, aparecia "cinco".` },
+    { q: 'O que aparece no ecrã? (a primeira linha está certa)', code: J`
+console.log("antes");
+const n: number = "x";
+console.log(n);`, opts: ['antes', "antes\nerror TS2322: Type 'string' is not assignable to type 'number'.", "error TS2322: Type 'string' is not assignable to type 'number'.", 'antes\nx'], ok: 2, mono: true, check: true,
+      exp: 'O compilador verifica o ficheiro todo antes de qualquer coisa correr. Com um erro, nada corre: nem o "antes".' },
+    { q: 'O que aparece no ecrã?', code: J`
+const nota: number = 17;
+console.log(nota + 1);`, opts: ['18', '171', "error TS2322: Type 'number' is not assignable to type 'string'.", 'nota + 1'], ok: 0, mono: true, check: true,
+      exp: 'Os tipos batem certo: compila e corre como JavaScript normal.' },
+    { q: 'Depois de compilado, o que acontece aos tipos (: number, : string...)?', opts: ['Ficam no JavaScript e são verificados a correr', 'Desaparecem: o JavaScript gerado não tem tipos', 'Passam a ser comentários', 'Tornam o programa mais rápido'], ok: 1,
+      exp: 'Os tipos servem só ao compilador. O JavaScript que corre é igual ao que escreverias à mão, sem tipos.' },
+  ],
+  exercises: [{
+    title: 'Função dobro',
+    text: 'Escreve a função dobro(n: number): number e mostra dobro(4) e dobro(10).',
+    run: '8\n20\n',
+    hint: H`<code>function dobro(n: number): number { return n * 2; }</code>`,
+    solution: J`
+function dobro(n: number): number {
+  return n * 2;
+}
+
+console.log(dobro(4));
+console.log(dobro(10));`,
+  }, {
+    title: 'Média de três',
+    text: 'Escreve media(a: number, b: number, c: number): number e mostra a média de 12, 15 e 14 com 2 casas decimais.',
+    run: 'Media: 13.67\n',
+    hint: H`Devolve <code>(a + b + c) / 3</code> e usa <code>toFixed(2)</code> ao mostrar.`,
+    solution: J`
+function media(a: number, b: number, c: number): number {
+  return (a + b + c) / 3;
+}
+
+console.log("Media:", media(12, 15, 14).toFixed(2));`,
+  }],
+});
+
+// ---------------------------------------------------------------- 1
+LESSONS.push({
+  id: 1,
+  title: 'Tipos básicos e inferência',
+  short: 'string, number, boolean, o tipo que o compilador adivinha, e any',
+  body: H`
+<table class="t">
+<thead><tr><th>Tipo</th><th>Valores</th></tr></thead>
+<tbody>
+<tr><td><code>number</code></td><td>todos os números (inteiros e reais, como em JavaScript)</td></tr>
+<tr><td><code>string</code></td><td>texto</td></tr>
+<tr><td><code>boolean</code></td><td><code>true</code> e <code>false</code></td></tr>
+<tr><td><code>any</code></td><td>qualquer coisa, sem verificação nenhuma (evita)</td></tr>
+</tbody>
+</table>
+<ul>
+<li>Não precisas de escrever o tipo sempre: em <code>let idade = 19;</code> o compilador <strong>infere</strong> que é <code>number</code>, e a partir daí trata-a como tal.</li>
+<li>Escreve os tipos onde o compilador não os consegue adivinhar (parâmetros de funções) e onde ajudam a ler.</li>
+<li>O compilador também conhece os métodos de cada tipo: escrever <code>texto.toUppercase()</code> (com o C minúsculo) é um erro antes de correr, com uma sugestão do nome certo.</li>
+<li><code>any</code> desliga a verificação para aquela variável. É uma porta de saída, não uma solução.</li>
+</ul>`,
+  analogy: 'A inferência é como um colega que vê o que pões numa caixa e lhe cola a etiqueta sozinho: se puseste livros, a etiqueta diz "livros", e daí para a frente avisa-te se tentares meter lá um sapato.',
+  examples: [{
+    title: 'Tipos escritos e tipos inferidos',
+    code: J`
+let nome: string = "Rita";
+let idade = 19;
+const ativo: boolean = true;
+idade = idade + 1;
+console.log(nome, idade, ativo);
+console.log(typeof idade);`,
+    steps: [
+      { l: 1, push: 'global', d: { global: { nome: ['string', '"Rita"'] } }, n: H`O tipo escrito à mão: <code>: string</code>.` },
+      { l: 2, d: { global: { idade: ['number', '19'] } }, n: H`Sem tipo escrito, o compilador infere <code>number</code> a partir do 19.` },
+      { l: 3, d: { global: { ativo: ['boolean', 'true'] } }, n: 'Um booleano.' },
+      { l: 4, u: { global: { idade: '20' } }, n: 'number + number é um number: tudo certo.' },
+      { l: 5, o: 'Rita 20 true\n', n: 'Corre como JavaScript.' },
+      { l: 6, o: 'number\n', n: H`O <code>typeof</code> é do JavaScript e corre a correr; os tipos do TypeScript já não existem nessa altura, mas aqui coincidem.` },
+    ],
+  }, {
+    title: 'A inferência também protege',
+    code: J`
+let pontos = 10;
+pontos = pontos + 5;
+pontos = "dez";`,
+    steps: [
+      { l: 1, n: H`Ninguém escreveu o tipo, mas o compilador infere <code>number</code>.` },
+      { l: 2, n: 'Somar um número a um number: certo.' },
+      { l: 3, o: "error TS2322: Type 'string' is not assignable to type 'number'.\n", n: H`Guardar um texto numa variável que é number é um erro, mesmo sem nunca teres escrito <code>: number</code>. Em JavaScript isto passava, e o problema só aparecia mais tarde.` },
+    ],
+  }],
+  mistakes: [
+    H`Usar <code>any</code> quando o compilador se queixa: o erro deixa de aparecer, mas o problema continua lá.`,
+    H`Escrever os tipos com maiúscula (<code>String</code>, <code>Number</code>): usa sempre <code>string</code>, <code>number</code>, <code>boolean</code>.`,
+    H`Achar que <code>let x;</code> sem valor nem tipo fica com um tipo útil: fica <code>any</code>. Dá-lhe um tipo.`,
+    H`Nomes mal escritos de métodos: <em>error TS2551: Property 'toUppercase' does not exist on type 'string'. Did you mean 'toUpperCase'?</em> Lê a sugestão.`,
+  ],
+  quiz: [
+    { q: 'O que acontece com este programa?', code: J`
+let total = 0;
+total = "zero";
+console.log(total);`, opts: ['zero', '0', "error TS2322: Type 'string' is not assignable to type 'number'.", 'undefined'], ok: 2, mono: true, check: true,
+      exp: H`O compilador inferiu <code>number</code> a partir do 0, por isso um texto não pode entrar.` },
+    { q: 'O que aparece no ecrã?', code: J`
+let v: any = 5;
+v = "texto";
+console.log(v.toUpperCase());`, opts: ['TEXTO', "error TS2322: Type 'string' is not assignable to type 'number'.", 'texto', "error TS2339: Property 'toUpperCase' does not exist on type 'any'."], ok: 0, mono: true, check: true,
+      exp: H`Com <code>any</code>, o compilador não verifica nada: aceita a mudança de tipo e qualquer método. Aqui calhou funcionar.` },
+    { q: 'O que acontece com este programa?', code: J`
+let texto = "ola";
+console.log(texto.toUppercase());`, opts: ['OLA', 'ola', "error TS2551: Property 'toUppercase' does not exist on type 'string'. Did you mean 'toUpperCase'?", 'TypeError: texto.toUppercase is not a function'], ok: 2, mono: true, check: true,
+      exp: H`O compilador sabe que métodos tem um texto, apanha o nome mal escrito e até sugere o certo. Em JavaScript só davas por isso a correr, com um TypeError.` },
+    { q: 'O que aparece no ecrã?', code: J`
+const n: number = 7 / 2;
+console.log(n);`, opts: ['3', '3.5', "error TS2322: Type 'number' is not assignable to type 'int'.", '4'], ok: 1, mono: true, check: true,
+      exp: H`Em TypeScript, como em JavaScript, só há <code>number</code>: 7 / 2 dá 3.5.` },
+  ],
+  exercises: [{
+    title: 'Ficha de aluno',
+    text: 'Cria as variáveis nome (string), numero (number) e inscrito (boolean) com tipos escritos, e mostra-as numa linha.',
+    run: 'Ana 2026123 true\n',
+    hint: H`<code>const nome: string = "Ana";</code>, e o mesmo para as outras.`,
+    solution: J`
+const nome: string = "Ana";
+const numero: number = 2026123;
+const inscrito: boolean = true;
+console.log(nome, numero, inscrito);`,
+  }, {
+    title: 'Converter com tipos',
+    text: 'Tens texto = "42" (como viria de um formulário). Cria valor: number com o número correspondente e mostra o dobro.',
+    run: 'Dobro: 84\n',
+    hint: H`<code>const valor: number = Number(texto);</code>. Sem o <code>Number</code>, o compilador não deixava.`,
+    solution: J`
+const texto: string = "42";
+const valor: number = Number(texto);
+console.log("Dobro:", valor * 2);`,
+  }],
+});
+
+// ---------------------------------------------------------------- 2
+LESSONS.push({
+  id: 2,
+  title: 'Funções com tipos',
+  short: 'tipos dos parâmetros e do resultado, parâmetros opcionais e void',
+  body: H`
+<pre class="snip"><code>function area(largura: number, altura: number): number {
+  return largura * altura;
+}
+const dobro = (x: number): number =&gt; x * 2;</code></pre>
+<ul>
+<li>Os parâmetros levam sempre tipo (o compilador não os consegue adivinhar). O tipo do resultado vem depois dos parênteses, e também pode ser inferido.</li>
+<li>Chamar com argumentos a mais ou a menos é um erro: <em>error TS2554: Expected 2 arguments, but got 1.</em></li>
+<li>Um parâmetro <strong>opcional</strong> leva <code>?</code>: <code>function ola(nome: string, pontos?: number)</code>. Lá dentro pode ser <code>undefined</code>.</li>
+<li>Uma função que não devolve nada tem resultado <code>void</code>.</li>
+<li>Se prometes um <code>number</code>, todos os caminhos têm de devolver um: o compilador avisa se faltar um <code>return</code>.</li>
+</ul>`,
+  analogy: 'A assinatura de uma função tipada é a etiqueta de uma tomada: diz que ficha entra (os parâmetros) e que corrente sai (o resultado). O compilador não te deixa ligar a ficha errada.',
+  examples: [{
+    title: 'Um parâmetro opcional',
+    code: J`
+function saudacao(nome: string, pontos?: number): string {
+  if (pontos === undefined) {
+    return "Ola, " + nome;
+  }
+  return ‵Ola, ¤{nome}: ¤{pontos} pontos‵;
+}
+console.log(saudacao("Ana"));
+console.log(saudacao("Rui", 12));`,
+    steps: [
+      { l: 1, push: 'global', obj: { o1: ['function', 'saudacao(nome: string, pontos?: number): string'] }, d: { global: { saudacao: ['function', '@o1'] } }, n: H`O <code>?</code> diz que <code>pontos</code> pode não ser dado.` },
+      { l: 1, push: 'saudacao', d: { saudacao: { nome: ['string', '"Ana"'], pontos: ['number | undefined', 'undefined'] } }, n: H`Sem o segundo argumento, <code>pontos</code> fica <code>undefined</code>. O tipo dele, lá dentro, é <code>number | undefined</code>.` },
+      { l: 3, n: 'O if trata o caso de não haver pontos.' },
+      { l: 7, pop: true, o: 'Ola, Ana\n', n: 'Devolve só a saudação.' },
+      { l: 1, push: 'saudacao', d: { saudacao: { nome: ['string', '"Rui"'], pontos: ['number | undefined', '12'] } }, n: 'Agora com pontos.' },
+      { l: 5, n: 'Passa o if e devolve o texto completo.' },
+      { l: 8, pop: true, o: 'Ola, Rui: 12 pontos\n', n: 'As duas chamadas são válidas.' },
+    ],
+  }, {
+    title: 'Argumentos a menos',
+    code: J`
+function area(largura: number, altura: number): number {
+  return largura * altura;
+}
+console.log(area(3));`,
+    steps: [
+      { l: 1, n: 'A função precisa de dois números.' },
+      { l: 4, o: 'error TS2554: Expected 2 arguments, but got 1.\n', n: H`Em JavaScript, <code>area(3)</code> dava NaN em silêncio (a altura ficava undefined). O TypeScript não deixa: ou passas os dois, ou marcas a altura como opcional.` },
+    ],
+  }],
+  mistakes: [
+    H`Esquecer o tipo de um parâmetro: com <code>strict</code>, dá <em>error TS7006: Parameter 'x' implicitly has an 'any' type.</em>`,
+    H`Esquecer um <code>return</code> num dos caminhos: <em>error TS2366: Function lacks ending return statement...</em>`,
+    H`Usar um parâmetro opcional sem tratar o caso <code>undefined</code>.`,
+    H`Pôr os parâmetros opcionais antes dos obrigatórios: os opcionais vão no fim.`,
+  ],
+  quiz: [
+    { q: 'O que acontece com este programa?', code: J`
+function sinal(x: number): string {
+  if (x > 0) {
+    return "positivo";
+  }
+}
+console.log(sinal(3));`, opts: ['positivo', 'undefined', "error TS2366: Function lacks ending return statement and return type does not include 'undefined'.", 'error TS2554: Expected 2 arguments, but got 1.'], ok: 2, mono: true, check: true,
+      exp: 'Se x não for positivo, a função chega ao fim sem devolver nada, e prometeu sempre uma string. O compilador obriga a tratar esse caso.' },
+    { q: 'O que aparece no ecrã?', code: J`
+const dobro = (x: number): number => x * 2;
+console.log(dobro(4), dobro(dobro(1)));`, opts: ['8 4', '8 2', '4 4', 'error TS2554: Expected 1 arguments, but got 2.'], ok: 0, mono: true, check: true,
+      exp: 'dobro(4) = 8 e dobro(dobro(1)) = dobro(2) = 4. Os tipos batem certo.' },
+    { q: 'O que acontece com este programa?', code: J`
+function ola(nome: string): string {
+  return "Ola, " + nome;
+}
+console.log(ola(42));`, opts: ['Ola, 42', "error TS2345: Argument of type 'number' is not assignable to parameter of type 'string'.", 'Ola, nome', 'NaN'], ok: 1, mono: true, check: true,
+      exp: H`O parâmetro é <code>string</code> e recebeu um número. Em JavaScript dava "Ola, 42"; aqui é um erro, porque provavelmente não era isso que querias.` },
+    { q: 'O que aparece no ecrã?', code: J`
+function mostra(texto: string): void {
+  console.log("-> " + texto);
+}
+const r = mostra("ola");
+console.log(r);`, opts: ['-> ola\nundefined', '-> ola\nvoid', '-> ola', 'undefined'], ok: 0, mono: true, check: true,
+      exp: H`Uma função <code>void</code> não devolve nada; a correr, isso é <code>undefined</code>.` },
+  ],
+  exercises: [{
+    title: 'Função ehPar',
+    text: 'Escreve ehPar(n: number): boolean e usa-a para classificar os números de 1 a 4.',
+    run: '1: impar\n2: par\n3: impar\n4: par\n',
+    hint: H`<code>const ehPar = (n: number): boolean =&gt; n % 2 === 0;</code>`,
+    solution: J`
+const ehPar = (n: number): boolean => n % 2 === 0;
+
+for (let i = 1; i <= 4; i++) {
+  console.log(‵¤{i}: ¤{ehPar(i) ? "par" : "impar"}‵);
+}`,
+  }, {
+    title: 'Preço com desconto opcional',
+    text: 'Escreve preco(valor: number, desconto?: number): number, que aplica a percentagem de desconto se ela for dada. Mostra preco(50) e preco(50, 20).',
+    run: '50\n40\n',
+    hint: H`Se <code>desconto === undefined</code>, devolve o valor; senão, <code>valor * (1 - desconto / 100)</code>.`,
+    solution: J`
+function preco(valor: number, desconto?: number): number {
+  if (desconto === undefined) {
+    return valor;
+  }
+  return valor * (1 - desconto / 100);
+}
+
+console.log(preco(50));
+console.log(preco(50, 20));`,
+  }],
+});
+
+// ---------------------------------------------------------------- 3
+LESSONS.push({
+  id: 3,
+  title: 'Arrays e tuplos',
+  short: 'number[], métodos com tipos e pares com tipos fixos',
+  body: H`
+<ul>
+<li>Um array de números é <code>number[]</code> (ou <code>Array&lt;number&gt;</code>); de textos, <code>string[]</code>. Só aceita elementos desse tipo.</li>
+<li>Os métodos sabem os tipos: <code>notas.map(n =&gt; n.toFixed(1))</code> dá um <code>string[]</code>, e o compilador sabe-o sem lho dizeres.</li>
+<li>Dentro de um <code>filter</code> ou <code>map</code>, o parâmetro da função seta já tem o tipo dos elementos: não precisas de o escrever.</li>
+<li>Um <strong>tuplo</strong> é um array de tamanho fixo em que cada posição tem o seu tipo: <code>const par: [string, number] = ["Ana", 17];</code>.</li>
+<li>Os arrays continuam a ser objetos no heap: <code>const b = a</code> partilha o mesmo array, como em JavaScript.</li>
+</ul>`,
+  analogy: 'Um number[] é uma caixa de ovos: só leva ovos, quantos couberem. Um tuplo [string, number] é uma caixa de almoço com dois compartimentos de formas diferentes: um para a sandes, outro para a fruta.',
+  examples: [{
+    title: 'Métodos que sabem os tipos',
+    code: J`
+const notas: number[] = [12, 17, 9];
+notas.push(15);
+const positivas = notas.filter((n) => n >= 10);
+const textos = positivas.map((n) => ‵nota ¤{n}‵);
+console.log(positivas, textos);`,
+    steps: [
+      { l: 1, push: 'global', obj: { o1: ['number[]', ['12', '17', '9']] }, d: { global: { notas: ['number[]', '@o1'] } }, n: 'Um array que só aceita números.' },
+      { l: 2, obj: { o1: ['number[]', ['12', '17', '9', '15']] }, n: H`<code>push(15)</code>: um number, certo.` },
+      { l: 3, obj: { o2: ['number[]', ['12', '17', '15']] }, d: { global: { positivas: ['number[]', '@o2'] } }, n: H`O <code>filter</code> de um <code>number[]</code> dá um <code>number[]</code>. Dentro da seta, <code>n</code> já é number sem o escreveres.` },
+      { l: 4, obj: { o3: ['string[]', ['"nota 12"', '"nota 17"', '"nota 15"']] }, d: { global: { textos: ['string[]', '@o3'] } }, n: H`O <code>map</code> que devolve texto dá um <code>string[]</code>: o compilador inferiu-o.` },
+      { l: 5, o: "[ 12, 17, 15 ] [ 'nota 12', 'nota 17', 'nota 15' ]\n", n: 'A correr, é JavaScript normal.' },
+    ],
+  }, {
+    title: 'O tipo errado não entra',
+    code: J`
+const nomes: string[] = ["Ana", "Rui"];
+nomes.push("Ines");
+nomes.push(3);`,
+    steps: [
+      { l: 1, n: H`Um <code>string[]</code>.` },
+      { l: 2, n: 'Um texto: certo.' },
+      { l: 3, o: "error TS2345: Argument of type 'number' is not assignable to parameter of type 'string'.\n", n: H`Um número num array de textos é recusado. Em JavaScript entrava, e um <code>toUpperCase()</code> mais à frente rebentava.` },
+    ],
+  }],
+  mistakes: [
+    H`Criar um array vazio sem tipo (<code>const v = [];</code>) e depois estranhar os erros: escreve <code>const v: number[] = [];</code>.`,
+    H`Confundir <code>string[]</code> (array de textos) com <code>[string]</code> (tuplo com um só texto).`,
+    H`Aceder a um índice que pode não existir e usar o resultado como se existisse: <code>v[10]</code> continua a dar undefined a correr.`,
+    H`Esperar que o tipo impeça o <code>push</code> num array <code>const</code>: só impede o tipo errado. Para um array que não muda, usa <code>readonly number[]</code>.`,
+  ],
+  quiz: [
+    { q: 'O que aparece no ecrã?', code: J`
+const par: [string, number] = ["Ana", 17];
+console.log(par[0], par[1] + 1);`, opts: ['Ana 18', 'Ana 171', 'error TS2322', '[ Ana, 17 ] 1'], ok: 0, mono: true, check: true,
+      exp: H`No tuplo, a posição 0 é texto e a 1 é número: <code>par[1] + 1</code> é uma soma, 18.` },
+    { q: 'O que acontece com este programa?', code: J`
+const par: [string, number] = ["Ana", "17"];
+console.log(par);`, opts: ["[ 'Ana', '17' ]", "error TS2322: Type 'string' is not assignable to type 'number'.", "[ 'Ana', 17 ]", 'error TS2345'], ok: 1, mono: true, check: true,
+      exp: 'A segunda posição do tuplo tem de ser um number, e "17" é texto.' },
+    { q: 'O que aparece no ecrã?', code: J`
+const v = [1, 2, 3];
+const t = v.map((x) => x.toFixed(1));
+console.log(t);`, opts: ["[ '1.0', '2.0', '3.0' ]", '[ 1, 2, 3 ]', '[ 1.0, 2.0, 3.0 ]', 'error TS2339'], ok: 0, mono: true, check: true,
+      exp: H`<code>toFixed</code> devolve texto, por isso o resultado é um <code>string[]</code> (e o Node mostra os textos entre plicas).` },
+    { q: 'O que acontece com este programa?', code: J`
+const notas: number[] = [];
+notas.push(12);
+notas.push("treze");
+console.log(notas.length);`, opts: ['2', '1', "error TS2345: Argument of type 'string' is not assignable to parameter of type 'number'.", '0'], ok: 2, mono: true, check: true,
+      exp: H`O array é <code>number[]</code>, por isso o compilador recusa o texto. Como há um erro, nada corre.` },
+  ],
+  exercises: [{
+    title: 'Média de um array',
+    text: 'Escreve media(v: number[]): number e mostra a média de [12, 8, 15, 9, 18].',
+    run: 'Media: 12.4\n',
+    hint: H`<code>v.reduce((s, x) =&gt; s + x, 0) / v.length</code>.`,
+    solution: J`
+function media(v: number[]): number {
+  return v.reduce((s, x) => s + x, 0) / v.length;
+}
+
+console.log("Media:", media([12, 8, 15, 9, 18]));`,
+  }, {
+    title: 'Nomes e tamanhos',
+    text: 'Com nomes: string[] = ["Ana", "Rui", "Ines"], cria um array de tuplos [string, number] com cada nome e o seu número de letras, e mostra-o.',
+    run: "[ [ 'Ana', 3 ], [ 'Rui', 3 ], [ 'Ines', 4 ] ]\n",
+    hint: H`<code>const pares: [string, number][] = nomes.map((n) =&gt; [n, n.length]);</code>`,
+    solution: J`
+const nomes: string[] = ["Ana", "Rui", "Ines"];
+const pares: [string, number][] = nomes.map((n) => [n, n.length]);
+console.log(pares);`,
+  }],
+});
+
+// ===== TypeScript do Zero — conteúdo das lições (parte 2) =====
+
+// ---------------------------------------------------------------- 4
+LESSONS.push({
+  id: 4,
+  title: 'Objetos e interfaces',
+  short: 'interface, type, propriedades opcionais e o que o compilador verifica',
+  body: H`
+<p>Em JavaScript, um objeto podia ter qualquer forma. Em TypeScript descreves a forma com uma <strong>interface</strong> (ou um <code>type</code>, quase igual), e o compilador verifica cada objeto:</p>
+<pre class="snip"><code>interface Aluno {
+  nome: string;
+  nota: number;
+  email?: string;   // opcional
+}</code></pre>
+<ul>
+<li>Um objeto do tipo <code>Aluno</code> tem de ter todas as propriedades obrigatórias, com os tipos certos.</li>
+<li>Escrever uma propriedade que não está na interface, ou ler uma mal escrita, é um erro antes de correr.</li>
+<li>Uma propriedade com <code>?</code> pode faltar; ler uma que falta dá <code>undefined</code>, como em JavaScript.</li>
+<li><code>type Aluno = { nome: string; nota: number };</code> faz o mesmo. Usa um ou outro, mas sê consistente.</li>
+<li>A interface desaparece ao compilar: é só uma descrição para o compilador.</li>
+</ul>`,
+  analogy: 'Uma interface é o formulário em branco com os campos obrigatórios marcados com asterisco. O compilador é o funcionário que não aceita um formulário com um campo obrigatório vazio, ou com um campo que nem existe no impresso.',
+  examples: [{
+    title: 'Uma interface com um campo opcional',
+    code: J`
+interface Aluno {
+  nome: string;
+  nota: number;
+  email?: string;
+}
+
+const a: Aluno = { nome: "Ana", nota: 17 };
+const b: Aluno = { nome: "Rui", nota: 9, email: "rui@exemplo.pt" };
+console.log(a.nome, a.email);
+console.log(b.email);`,
+    steps: [
+      { l: 1, push: 'global', n: 'A interface descreve a forma de um aluno. Não cria nada a correr.' },
+      { l: 7, obj: { o1: ['Aluno', { nome: '"Ana"', nota: '17' }] }, d: { global: { a: ['Aluno', '@o1'] } }, n: H`Tem o nome e a nota; o email é opcional e pode faltar.` },
+      { l: 8, obj: { o2: ['Aluno', { nome: '"Rui"', nota: '9', email: '"rui@exemplo.pt"' }] }, d: { global: { b: ['Aluno', '@o2'] } }, n: 'Este tem o email.' },
+      { l: 9, o: 'Ana undefined\n', n: H`Ler o email que falta dá <code>undefined</code>. O compilador sabe que <code>a.email</code> é <code>string | undefined</code>.` },
+      { l: 10, o: 'rui@exemplo.pt\n', n: 'O do Rui.' },
+    ],
+  }, {
+    title: 'Falta uma propriedade',
+    code: J`
+interface Aluno {
+  nome: string;
+  nota: number;
+}
+
+const c: Aluno = { nome: "Ines" };`,
+    steps: [
+      { l: 1, n: 'Um aluno tem de ter nome e nota.' },
+      { l: 6, o: "error TS2741: Property 'nota' is missing in type '{ nome: string; }' but required in type 'Aluno'.\n", n: 'Falta a nota, que é obrigatória. O compilador diz qual é e onde foi declarada.' },
+    ],
+  }],
+  mistakes: [
+    H`Esquecer uma propriedade obrigatória: <em>error TS2741: Property 'nota' is missing...</em>`,
+    H`Escrever uma propriedade que não está na interface: <em>error TS2353: Object literal may only specify known properties...</em>`,
+    H`Usar uma propriedade opcional como se existisse sempre: trata o caso de ser undefined.`,
+    H`Separar as propriedades da interface com vírgulas e esquecer o tipo: dentro da interface é <code>nome: string;</code>.`,
+  ],
+  quiz: [
+    { q: 'O que acontece com este programa?', code: J`
+interface Aluno {
+  nome: string;
+  nota: number;
+}
+const a: Aluno = { nome: "Ana", nota: 17, curso: "LEI" };
+console.log(a.nome);`, opts: ['Ana', "error TS2353: Object literal may only specify known properties, and 'curso' does not exist in type 'Aluno'.", "error TS2741: Property 'curso' is missing in type 'Aluno'.", 'LEI'], ok: 1, mono: true, check: true,
+      exp: H`A interface não tem <code>curso</code>. Provavelmente é um engano (ou falta acrescentá-lo à interface), e o compilador avisa.` },
+    { q: 'O que acontece com este programa?', code: J`
+interface Aluno {
+  nome: string;
+  nota: number;
+}
+const a: Aluno = { nome: "Ana", nota: 17 };
+console.log(a.notas);`, opts: ['17', 'undefined', "error TS2551: Property 'notas' does not exist on type 'Aluno'. Did you mean 'nota'?", 'NaN'], ok: 2, mono: true, check: true,
+      exp: 'Em JavaScript, a.notas dava undefined sem aviso. O compilador conhece as propriedades de um Aluno e sugere a certa.' },
+    { q: 'O que aparece no ecrã?', code: J`
+type Ponto = { x: number; y: number };
+function soma(p: Ponto): number {
+  return p.x + p.y;
+}
+console.log(soma({ x: 3, y: 4 }));`, opts: ['7', '34', "error TS2345: Argument of type '{ x: number; y: number; }' is not assignable to parameter of type 'Ponto'.", 'undefined'], ok: 0, mono: true, check: true,
+      exp: H`O objeto tem exatamente a forma de um Ponto, por isso é aceite (não precisa de ser "declarado" como Ponto antes).` },
+    { q: 'Qual é a diferença entre nome: string e nome?: string numa interface?', opts: ['Nenhuma', 'Com ? a propriedade pode faltar, e o seu tipo passa a incluir undefined', 'Com ? a propriedade não pode mudar', 'Com ? é um número'], ok: 1,
+      exp: H`O <code>?</code> torna a propriedade opcional. Quem a lê tem de contar com <code>undefined</code>.` },
+  ],
+  exercises: [{
+    title: 'Produtos',
+    text: 'Define a interface Produto (nome: string, preco: number, qtd: number) e mostra o valor total de [Caneta 0.8 × 10, Caderno 2.5 × 4, Mochila 25 × 1].',
+    run: 'Total: 43\n',
+    hint: H`<code>const produtos: Produto[] = [...]</code> e um <code>reduce</code> ou um for...of.`,
+    solution: J`
+interface Produto {
+  nome: string;
+  preco: number;
+  qtd: number;
+}
+
+const produtos: Produto[] = [
+  { nome: "Caneta", preco: 0.8, qtd: 10 },
+  { nome: "Caderno", preco: 2.5, qtd: 4 },
+  { nome: "Mochila", preco: 25, qtd: 1 },
+];
+const total = produtos.reduce((s, p) => s + p.preco * p.qtd, 0);
+console.log("Total:", total);`,
+  }, {
+    title: 'Quem passou',
+    text: 'Com a interface Aluno (nome, nota) e a turma [Ana 17, Rui 9, Ines 14], escreve aprovado(a: Aluno): boolean e mostra os nomes dos aprovados.',
+    run: "[ 'Ana', 'Ines' ]\n",
+    hint: H`<code>turma.filter(aprovado).map((a) =&gt; a.nome)</code>`,
+    solution: J`
+interface Aluno {
+  nome: string;
+  nota: number;
+}
+
+const aprovado = (a: Aluno): boolean => a.nota >= 10;
+
+const turma: Aluno[] = [
+  { nome: "Ana", nota: 17 },
+  { nome: "Rui", nota: 9 },
+  { nome: "Ines", nota: 14 },
+];
+console.log(turma.filter(aprovado).map((a) => a.nome));`,
+  }],
+});
+
+// ---------------------------------------------------------------- 5
+LESSONS.push({
+  id: 5,
+  title: 'Uniões e estreitamento',
+  short: 'number | string, typeof, valores que podem ser undefined e tipos literais',
+  body: H`
+<p>Um valor que pode ser de vários tipos escreve-se com uma <strong>união</strong>: <code>number | string</code>. O compilador só te deixa usar o que é comum a todos os tipos da união, até provares qual é.</p>
+<ul>
+<li>Um <code>if (typeof valor === "number")</code> <strong>estreita</strong> o tipo: lá dentro, o compilador sabe que é um number; depois, que é uma string.</li>
+<li>Muitas funções podem não encontrar nada e devolvem <code>T | undefined</code> (o <code>find</code>, por exemplo). Usar o resultado sem testar é um erro: <em>'r' is possibly 'undefined'</em>. É o "apontador nulo" do C, apanhado antes de correr.</li>
+<li><code>r?.length</code> só lê se <code>r</code> existir (senão dá undefined), e <code>r ?? "nada"</code> dá um valor por omissão.</li>
+<li>Uma união de textos fixos é um <strong>tipo literal</strong>: <code>type Tema = "claro" | "escuro";</code> só aceita esses dois valores.</li>
+</ul>`,
+  analogy: 'Uma variável number | string é uma caixa fechada que pode ter uma maçã ou uma laranja. Não a podes descascar como laranja sem primeiro espreitar lá para dentro: o typeof é o espreitar.',
+  examples: [{
+    title: 'Estreitar com typeof',
+    code: J`
+function descreve(valor: number | string): string {
+  if (typeof valor === "number") {
+    return "numero com dobro " + valor * 2;
+  }
+  return "texto com " + valor.length + " letras";
+}
+console.log(descreve(21));
+console.log(descreve("ola"));`,
+    steps: [
+      { l: 1, push: 'global', obj: { o1: ['function', 'descreve(valor: number | string): string'] }, d: { global: { descreve: ['function', '@o1'] } }, n: H`O parâmetro pode ser um número ou um texto.` },
+      { l: 1, push: 'descreve', d: { descreve: { valor: ['number | string', '21'] } }, n: H`<code>descreve(21)</code>.` },
+      { l: 3, n: H`Dentro do <code>if (typeof valor === "number")</code>, o compilador sabe que é um number, por isso deixa fazer <code>valor * 2</code>.` },
+      { l: 7, pop: true, o: 'numero com dobro 42\n', n: 'Devolve o texto.' },
+      { l: 1, push: 'descreve', d: { descreve: { valor: ['number | string', '"ola"'] } }, n: 'Agora um texto.' },
+      { l: 5, n: H`Depois do if, só pode ser uma string: o compilador deixa usar <code>valor.length</code>. Fora destes testes, nem um nem outro era permitido.` },
+      { l: 8, pop: true, o: 'texto com 3 letras\n', n: 'Os dois casos tratados, sem erros.' },
+    ],
+  }, {
+    title: 'Pode ser undefined',
+    code: J`
+function procura(nomes: string[], letra: string): string | undefined {
+  return nomes.find((n) => n.startsWith(letra));
+}
+const r = procura(["Ana", "Rui"], "Z");
+console.log(r.toUpperCase());`,
+    steps: [
+      { l: 1, n: H`O <code>find</code> pode não encontrar nada, por isso a função devolve <code>string | undefined</code>.` },
+      { l: 4, n: H`<code>r</code> é <code>string | undefined</code>.` },
+      { l: 5, o: "error TS18048: 'r' is possibly 'undefined'.\n", n: H`Usar <code>r</code> como texto sem testar é recusado. Em JavaScript, isto só falhava a correr, com "Cannot read properties of undefined". A correção: <code>if (r !== undefined)</code>, ou <code>r?.toUpperCase()</code>.` },
+    ],
+  }],
+  mistakes: [
+    H`Usar um método de um só dos tipos da união sem estreitar: <em>error TS2339: Property 'toFixed' does not exist on type 'string | number'.</em>`,
+    H`Ignorar o <em>possibly 'undefined'</em> com um <code>!</code> (<code>r!.length</code>): calas o compilador, mas o erro a correr continua possível.`,
+    H`Escrever um valor fora de um tipo literal (<code>"azul"</code> num <code>Tema</code>).`,
+    H`Testar com <code>if (r)</code> quando um 0 ou um "" são valores válidos: são falsy. Compara com <code>!== undefined</code>.`,
+  ],
+  quiz: [
+    { q: 'O que acontece com este programa?', code: J`
+type Tema = "claro" | "escuro";
+let t: Tema = "claro";
+t = "azul";
+console.log(t);`, opts: ['azul', 'claro', "error TS2322: Type '\"azul\"' is not assignable to type 'Tema'.", 'escuro'], ok: 2, mono: true, check: true,
+      exp: H`Um <code>Tema</code> só pode ser "claro" ou "escuro". Um engano de escrita num destes valores é apanhado logo.` },
+    { q: 'O que aparece no ecrã?', code: J`
+function tamanho(t: string | undefined): number {
+  if (t === undefined) {
+    return 0;
+  }
+  return t.length;
+}
+console.log(tamanho("ola"), tamanho(undefined));`, opts: ['3 0', '3 undefined', "error TS18048: 't' is possibly 'undefined'.", '3 NaN'], ok: 0, mono: true, check: true,
+      exp: H`Depois do <code>if</code> que trata o undefined, o compilador sabe que <code>t</code> é uma string: compila e corre.` },
+    { q: 'O que acontece com este programa?', code: J`
+function arredonda(v: number | string): string {
+  return v.toFixed(1);
+}
+console.log(arredonda(2.345));`, opts: ['2.3', '2.345', "error TS2339: Property 'toFixed' does not exist on type 'string | number'.", "error TS2345: Argument of type 'number' is not assignable to parameter of type 'string'."], ok: 2, mono: true, check: true,
+      exp: H`<code>toFixed</code> só existe nos números, e <code>v</code> pode ser texto. Primeiro estreita com <code>typeof v === "number"</code>.` },
+    { q: 'O que aparece no ecrã?', code: J`
+const nomes: string[] = ["Ana", "Rui"];
+const r = nomes.find((n) => n.startsWith("Z"));
+console.log(r?.length, r ?? "nenhum");`, opts: ['undefined nenhum', '0 nenhum', "error TS18048: 'r' is possibly 'undefined'.", 'null nenhum'], ok: 0, mono: true, check: true,
+      exp: H`<code>r?.length</code> só lê se <code>r</code> existir; como não existe, dá undefined. <code>r ?? "nenhum"</code> dá o valor por omissão quando r é undefined (ou null).` },
+  ],
+  exercises: [{
+    title: 'Formatar um valor',
+    text: 'Escreve formata(v: number | string): string, que mostra os números com 2 casas decimais e os textos em maiúsculas. Mostra formata(3.14159) e formata("ola").',
+    run: '3.14\nOLA\n',
+    hint: H`<code>if (typeof v === "number") return v.toFixed(2);</code> e depois <code>return v.toUpperCase();</code>.`,
+    solution: J`
+function formata(v: number | string): string {
+  if (typeof v === "number") {
+    return v.toFixed(2);
+  }
+  return v.toUpperCase();
+}
+
+console.log(formata(3.14159));
+console.log(formata("ola"));`,
+  }, {
+    title: 'Trocar de tema',
+    text: 'Define type Tema = "claro" | "escuro" e escreve troca(t: Tema): Tema, que devolve o outro tema. Mostra troca("claro") e troca(troca("claro")).',
+    run: 'escuro\nclaro\n',
+    hint: H`<code>return t === "claro" ? "escuro" : "claro";</code>`,
+    solution: J`
+type Tema = "claro" | "escuro";
+
+function troca(t: Tema): Tema {
+  return t === "claro" ? "escuro" : "claro";
+}
+
+console.log(troca("claro"));
+console.log(troca(troca("claro")));`,
+  }],
+});
+
+// ---------------------------------------------------------------- 6
+LESSONS.push({
+  id: 6,
+  title: 'Referências e readonly',
+  short: 'objetos partilhados, cópias e propriedades que não podem mudar',
+  body: H`
+<p>Os tipos não mudam a forma como os objetos funcionam a correr: continuam a ser <strong>referências</strong>, como em JavaScript. <code>const q = p</code> dá um segundo nome ao mesmo objeto, e uma função que recebe um objeto pode mudá-lo.</p>
+<p>O que o TypeScript acrescenta é a possibilidade de dizer que algo <strong>não deve mudar</strong>, e de o compilador o garantir:</p>
+<ul>
+<li><code>readonly</code> numa propriedade: só se pode dar valor ao criar o objeto. Mudar depois é um erro.</li>
+<li><code>readonly number[]</code> (ou <code>ReadonlyArray&lt;number&gt;</code>): um array sem <code>push</code>, <code>pop</code> nem <code>sort</code>.</li>
+<li><code>Readonly&lt;Aluno&gt;</code> torna todas as propriedades de um tipo readonly.</li>
+</ul>
+<p>Uma função que recebe um <code>readonly</code> promete não mudar os teus dados, e o compilador obriga-a a cumprir.</p>`,
+  analogy: 'Passar um objeto a uma função é emprestar o caderno. readonly é emprestá-lo plastificado: pode ser lido à vontade, mas ninguém lhe consegue escrever por cima.',
+  examples: [{
+    title: 'Um objeto, dois nomes, e uma cópia',
+    code: J`
+interface Ponto {
+  x: number;
+  y: number;
+}
+const p: Ponto = { x: 1, y: 2 };
+const q = p;
+q.x = 10;
+const r: Ponto = { ...p };
+r.y = 20;
+console.log(p, r);`,
+    steps: [
+      { l: 5, push: 'global', obj: { o1: ['Ponto', { x: '1', y: '2' }] }, d: { global: { p: ['Ponto', '@o1'] } }, n: 'Um ponto, no heap.' },
+      { l: 6, d: { global: { q: ['Ponto', '@o1'] } }, n: H`<code>q = p</code>: um segundo nome para o mesmo objeto. Os tipos não mudam isto.` },
+      { l: 7, obj: { o1: ['Ponto', { x: '10', y: '2' }] }, n: H`Mudar através do <code>q</code> muda o objeto do <code>p</code>.` },
+      { l: 8, obj: { o2: ['Ponto', { x: '10', y: '2' }] }, d: { global: { r: ['Ponto', '@o2'] } }, n: H`<code>{ ...p }</code> cria um objeto novo com as mesmas propriedades.` },
+      { l: 9, obj: { o2: ['Ponto', { x: '10', y: '20' }] }, n: 'Mudar a cópia não mexe no original.' },
+      { l: 10, o: '{ x: 10, y: 2 } { x: 10, y: 20 }\n', n: 'O p tem o x mudado pelo q; o r é independente.' },
+    ],
+  }, {
+    title: 'readonly não deixa mudar',
+    code: J`
+interface Config {
+  readonly versao: number;
+  nome: string;
+}
+const c: Config = { versao: 1, nome: "app" };
+c.nome = "site";
+c.versao = 2;`,
+    steps: [
+      { l: 2, n: H`<code>versao</code> só pode receber valor quando o objeto é criado.` },
+      { l: 5, n: 'Criar o objeto com os dois valores: certo.' },
+      { l: 6, n: H`Mudar o <code>nome</code> é permitido.` },
+      { l: 7, o: "error TS2540: Cannot assign to 'versao' because it is a read-only property.\n", n: H`Mudar a <code>versao</code> não. Atenção: isto só existe para o compilador; a correr, o JavaScript deixaria.` },
+    ],
+  }],
+  mistakes: [
+    H`Achar que os tipos fazem cópias: <code>const q: Ponto = p</code> continua a ser o mesmo objeto.`,
+    H`Achar que <code>readonly</code> protege a correr: é só uma verificação do compilador.`,
+    H`Esquecer que <code>{ ...p }</code> é uma cópia rasa: objetos dentro de objetos continuam partilhados.`,
+    H`Confundir <code>const</code> (a variável não aponta para outro objeto) com <code>readonly</code> (a propriedade não muda).`,
+  ],
+  quiz: [
+    { q: 'O que aparece no ecrã?', code: J`
+interface Aluno {
+  nome: string;
+  nota: number;
+}
+function aumenta(a: Aluno): void {
+  a.nota += 1;
+}
+const x: Aluno = { nome: "Rui", nota: 9 };
+aumenta(x);
+console.log(x.nota);`, opts: ['9', '10', "error TS2540: Cannot assign to 'nota' because it is a read-only property.", 'undefined'], ok: 1, mono: true, check: true,
+      exp: 'A função recebe uma referência para o mesmo objeto e muda-o. Os tipos não impedem isso (a não ser que uses readonly).' },
+    { q: 'O que acontece com este programa?', code: J`
+const notas: readonly number[] = [12, 15];
+notas.push(18);
+console.log(notas.length);`, opts: ['3', '2', "error TS2339: Property 'push' does not exist on type 'readonly number[]'.", "error TS2540: Cannot assign to 'notas' because it is a read-only property."], ok: 2, mono: true, check: true,
+      exp: H`Um <code>readonly number[]</code> simplesmente não tem os métodos que mudam o array. Pode ser lido (<code>notas[0]</code>, <code>map</code>, <code>filter</code>), mas não mudado.` },
+    { q: 'O que aparece no ecrã?', code: J`
+const a = { n: 1 };
+const b = { n: 1 };
+console.log(a === b, a.n === b.n);`, opts: ['true true', 'false true', 'false false', 'true false'], ok: 1, mono: true, check: true,
+      exp: 'São dois objetos diferentes (=== compara referências), com propriedades iguais (=== entre números compara valores).' },
+    { q: 'O que aparece no ecrã?', code: J`
+interface Ponto {
+  readonly x: number;
+}
+const p: Ponto = { x: 1 };
+const q: Ponto = { ...p, x: 5 };
+console.log(p.x, q.x);`, opts: ['1 5', '5 5', "error TS2540: Cannot assign to 'x' because it is a read-only property.", '1 1'], ok: 0, mono: true, check: true,
+      exp: H`Não se muda o <code>x</code> do p: cria-se um objeto <strong>novo</strong>, com as propriedades do p e um x diferente. É a forma normal de "mudar" dados readonly.` },
+  ],
+  exercises: [{
+    title: 'Dar bónus sem estragar',
+    text: 'Com a interface Aluno (nome, nota), escreve comBonus(a: Readonly<Aluno>, bonus: number): Aluno, que devolve um aluno novo com a nota aumentada, sem mudar o original. Mostra os dois.',
+    run: "{ nome: 'Rui', nota: 9 } { nome: 'Rui', nota: 11 }\n",
+    hint: H`<code>return { ...a, nota: a.nota + bonus };</code>. Com <code>Readonly</code>, o compilador nem te deixava fazer <code>a.nota += bonus</code>.`,
+    solution: J`
+interface Aluno {
+  nome: string;
+  nota: number;
+}
+
+function comBonus(a: Readonly<Aluno>, bonus: number): Aluno {
+  return { ...a, nota: a.nota + bonus };
+}
+
+const rui: Aluno = { nome: "Rui", nota: 9 };
+const novo = comBonus(rui, 2);
+console.log(rui, novo);`,
+  }, {
+    title: 'Soma sem mudar',
+    text: 'Escreve soma(v: readonly number[]): number e mostra a soma de [4, 8, 15]. A função não pode mudar o array (o compilador garante-o).',
+    run: '27\n',
+    hint: H`<code>v.reduce((s, x) =&gt; s + x, 0)</code> funciona num array readonly: não o muda.`,
+    solution: J`
+function soma(v: readonly number[]): number {
+  return v.reduce((s, x) => s + x, 0);
+}
+
+console.log(soma([4, 8, 15]));`,
+  }],
+});
+
+// ---------------------------------------------------------------- 7
+LESSONS.push({
+  id: 7,
+  title: 'Classes com tipos',
+  short: 'propriedades tipadas, private, readonly e implements',
+  body: H`
+<p>As classes são as do JavaScript, com tipos e com controlo de acesso, como no C#:</p>
+<pre class="snip"><code>class Conta {
+  titular: string;
+  private saldo: number = 0;
+
+  constructor(titular: string) {
+    this.titular = titular;
+  }
+  depositar(valor: number): void {
+    this.saldo += valor;
+  }
+}</code></pre>
+<ul>
+<li>As propriedades declaram-se no topo da classe, com o tipo.</li>
+<li><code>private</code>: só o código da classe lhe pode mexer. <code>readonly</code>: só se dá valor no constructor.</li>
+<li><code>class Quadrado implements Forma</code> promete cumprir uma interface; se faltar um método, não compila.</li>
+<li>Como os tipos, o <code>private</code> só existe para o compilador. (O JavaScript moderno tem campos realmente privados, com <code>#saldo</code>.)</li>
+</ul>`,
+  analogy: 'Uma classe com private é uma caixa multibanco: tens botões públicos (depositar, ver o saldo), mas não tens acesso ao cofre lá dentro. O compilador é o segurança que não te deixa abrir a parte de trás.',
+  examples: [{
+    title: 'Uma conta com saldo privado',
+    code: J`
+class Conta {
+  titular: string;
+  private saldo: number = 0;
+
+  constructor(titular: string) {
+    this.titular = titular;
+  }
+
+  depositar(valor: number): void {
+    this.saldo += valor;
+  }
+
+  verSaldo(): number {
+    return this.saldo;
+  }
+}
+
+const c = new Conta("Ana");
+c.depositar(50);
+c.depositar(20);
+console.log(c.titular, c.verSaldo());`,
+    steps: [
+      { l: 1, push: 'global', obj: { o1: ['class', 'Conta'] }, d: { global: { Conta: ['class', '@o1'] } }, n: 'A classe, com as propriedades declaradas e tipadas no topo.' },
+      { l: 5, obj: { o2: ['Conta', { titular: 'undefined', saldo: '0' }] }, push: 'constructor', d: { constructor: { this: ['Conta', '@o2'], titular: ['string', '"Ana"'] } }, n: H`<code>new Conta("Ana")</code> cria o objeto (o saldo já começa em 0, pelo <code>= 0</code>) e corre o constructor.` },
+      { l: 6, obj: { o2: ['Conta', { titular: '"Ana"', saldo: '0' }] }, n: 'O titular fica guardado.' },
+      { l: 18, pop: true, d: { global: { c: ['Conta', '@o2'] } }, n: 'A conta pronta.' },
+      { l: 10, push: 'depositar', d: { depositar: { this: ['Conta', '@o2'], valor: ['number', '50'] } }, n: H`Dentro da classe, o código pode mexer no <code>saldo</code> privado.` },
+      { l: 10, obj: { o2: ['Conta', { titular: '"Ana"', saldo: '50' }] }, n: 'saldo = 50' },
+      { l: 20, pop: true, push: 'depositar', d: { depositar: { this: ['Conta', '@o2'], valor: ['number', '20'] } }, n: 'Segundo depósito.' },
+      { l: 10, obj: { o2: ['Conta', { titular: '"Ana"', saldo: '70' }] }, n: 'saldo = 70' },
+      { l: 21, pop: true, o: 'Ana 70\n', n: H`Fora da classe, o saldo só se lê através do método público <code>verSaldo()</code>.` },
+    ],
+  }, {
+    title: 'Mexer no que é privado',
+    code: J`
+class Conta {
+  private saldo: number = 0;
+
+  depositar(valor: number): void {
+    this.saldo += valor;
+  }
+}
+
+const c = new Conta();
+c.saldo = 1000000;`,
+    steps: [
+      { l: 2, n: H`O saldo é <code>private</code>.` },
+      { l: 9, n: 'Uma conta nova.' },
+      { l: 10, o: "error TS2341: Property 'saldo' is private and only accessible within class 'Conta'.\n", n: 'Fora da classe, não se pode mudar o saldo diretamente: só através dos métodos, que podem validar o que entra.' },
+    ],
+  }],
+  mistakes: [
+    H`Esquecer de declarar a propriedade no topo da classe: <em>error TS2339: Property 'titular' does not exist on type 'Conta'.</em>`,
+    H`Declarar uma propriedade sem valor e sem a preencher no constructor: com strict, <em>error TS2564: Property ... has no initializer</em>.`,
+    H`Mexer num campo private fora da classe: <em>error TS2341</em>.`,
+    H`Escrever <code>implements</code> e esquecer um método da interface: <em>error TS2420: Class ... incorrectly implements interface ...</em>`,
+  ],
+  quiz: [
+    { q: 'O que acontece com este programa?', code: J`
+interface Forma {
+  area(): number;
+}
+class Quadrado implements Forma {
+  constructor(private lado: number) {}
+}
+console.log(new Quadrado(2));`, opts: ['Quadrado { lado: 2 }', "error TS2420: Class 'Quadrado' incorrectly implements interface 'Forma'.", '4', "error TS2341: Property 'lado' is private and only accessible within class 'Quadrado'."], ok: 1, mono: true, check: true,
+      exp: H`O Quadrado promete cumprir a interface Forma, mas não tem o método <code>area()</code>. (O <code>private lado</code> no constructor é um atalho que declara e preenche a propriedade.)` },
+    { q: 'O que acontece com este programa?', code: J`
+class Aluno {
+  readonly numero: number;
+  constructor(numero: number) {
+    this.numero = numero;
+  }
+}
+const a = new Aluno(101);
+a.numero = 102;`, opts: ['(nada)', "error TS2540: Cannot assign to 'numero' because it is a read-only property.", "error TS2341: Property 'numero' is private and only accessible within class 'Aluno'.", '102'], ok: 1, mono: true, check: true,
+      exp: H`Um campo <code>readonly</code> só pode receber valor no constructor. Depois, é só para ler.` },
+    { q: 'O que aparece no ecrã?', code: J`
+class Contador {
+  private valor: number = 0;
+  mais(): void {
+    this.valor++;
+  }
+  ler(): number {
+    return this.valor;
+  }
+}
+const k = new Contador();
+k.mais();
+k.mais();
+console.log(k.ler());`, opts: ['2', '0', "error TS2341: Property 'valor' is private and only accessible within class 'Contador'.", 'undefined'], ok: 0, mono: true, check: true,
+      exp: H`O <code>valor</code> é privado, mas os métodos da própria classe podem usá-lo. Por fora, lê-se com <code>ler()</code>.` },
+    { q: 'O que acontece a um campo private quando o TypeScript é compilado para JavaScript?', opts: ['Fica escondido a correr', 'Passa a ser um campo normal: o private só existia para o compilador', 'É apagado', 'Passa a readonly'], ok: 1,
+      exp: H`Tal como os tipos, o <code>private</code> é uma verificação do compilador. Para um campo escondido mesmo a correr, o JavaScript tem a sintaxe <code>#campo</code>.` },
+  ],
+  exercises: [{
+    title: 'Formas',
+    text: 'Define a interface Forma com area(): number e as classes Retangulo (largura, altura) e Quadrado (lado) que a cumprem. Mostra a soma das áreas de um retângulo 3 × 4 e de um quadrado 2 × 2, guardados num Forma[].',
+    run: 'Area total: 16\n',
+    hint: H`<code>class Quadrado implements Forma</code>, com um constructor e o método <code>area()</code>. Depois um reduce sobre o <code>Forma[]</code>.`,
+    solution: J`
+interface Forma {
+  area(): number;
+}
+
+class Retangulo implements Forma {
+  constructor(private largura: number, private altura: number) {}
+  area(): number {
+    return this.largura * this.altura;
+  }
+}
+
+class Quadrado implements Forma {
+  constructor(private lado: number) {}
+  area(): number {
+    return this.lado * this.lado;
+  }
+}
+
+const formas: Forma[] = [new Retangulo(3, 4), new Quadrado(2)];
+const total = formas.reduce((s, f) => s + f.area(), 0);
+console.log("Area total:", total);`,
+  }, {
+    title: 'Pilha',
+    text: 'Escreve a classe Pilha com um array privado de números e os métodos empilhar(n), desempilhar() (que devolve number | undefined) e tamanho(). Empilha 1, 2 e 3, desempilha um e mostra o que saiu e o tamanho.',
+    run: 'Saiu: 3\nTamanho: 2\n',
+    hint: H`<code>private itens: number[] = [];</code> e <code>desempilhar(): number | undefined { return this.itens.pop(); }</code>.`,
+    solution: J`
+class Pilha {
+  private itens: number[] = [];
+
+  empilhar(n: number): void {
+    this.itens.push(n);
+  }
+
+  desempilhar(): number | undefined {
+    return this.itens.pop();
+  }
+
+  tamanho(): number {
+    return this.itens.length;
+  }
+}
+
+const p = new Pilha();
+p.empilhar(1);
+p.empilhar(2);
+p.empilhar(3);
+console.log("Saiu:", p.desempilhar());
+console.log("Tamanho:", p.tamanho());`,
+  }],
+});
+
+// ===== TypeScript do Zero — conteúdo das lições (parte 3) =====
+
+// ---------------------------------------------------------------- 8
+LESSONS.push({
+  id: 8,
+  title: 'Genéricos',
+  short: 'funções e tipos que servem para qualquer tipo, sem perder a verificação',
+  body: H`
+<p>Uma função que devolve o primeiro elemento de um array serve para números, textos ou alunos. Com <code>any</code> perdias os tipos; com um <strong>genérico</strong> não:</p>
+<pre class="snip"><code>function primeiro&lt;T&gt;(lista: T[]): T | undefined {
+  return lista[0];
+}</code></pre>
+<ul>
+<li><code>&lt;T&gt;</code> é um "tipo em branco", preenchido em cada chamada: com <code>primeiro([1, 2])</code>, o T é <code>number</code> e o resultado é <code>number | undefined</code>.</li>
+<li>Normalmente o compilador descobre o T sozinho; também o podes escrever: <code>primeiro&lt;string&gt;(nomes)</code>.</li>
+<li>Os tipos também podem ser genéricos: <code>interface Caixa&lt;T&gt; { valor: T }</code>. Já usaste vários sem saber: <code>Array&lt;number&gt;</code> (o mesmo que <code>number[]</code>) e <code>Promise&lt;number&gt;</code> (lição 9).</li>
+</ul>`,
+  analogy: 'Um genérico é uma forma de bolos com a etiqueta em branco: serve para massa de chocolate ou de laranja, e o bolo que sai tem o sabor da massa que puseste. Com any, saía um bolo sem etiqueta, e ninguém sabia o que era.',
+  examples: [{
+    title: 'Uma função genérica',
+    code: J`
+function primeiro<T>(lista: T[]): T | undefined {
+  return lista[0];
+}
+
+const n = primeiro([12, 17, 9]);
+const s = primeiro(["Ana", "Rui"]);
+console.log(n, s);
+console.log(primeiro([]));`,
+    steps: [
+      { l: 1, push: 'global', obj: { o1: ['function', 'primeiro<T>(lista: T[]): T | undefined'] }, d: { global: { primeiro: ['function', '@o1'] } }, n: H`<code>T</code> é preenchido em cada chamada.` },
+      { l: 1, obj: { o2: ['number[]', ['12', '17', '9']] }, push: 'primeiro', d: { primeiro: { lista: ['number[]', '@o2'] } }, n: H`Com um array de números, o compilador conclui que T é <code>number</code>.` },
+      { l: 5, pop: true, d: { global: { n: ['number | undefined', '12'] } }, n: H`Por isso <code>n</code> é <code>number | undefined</code>, sem precisares de dizer nada.` },
+      { l: 1, obj: { o3: ['string[]', ['"Ana"', '"Rui"']] }, push: 'primeiro', d: { primeiro: { lista: ['string[]', '@o3'] } }, n: H`Agora T é <code>string</code>: a mesma função, outro tipo.` },
+      { l: 6, pop: true, d: { global: { s: ['string | undefined', '"Ana"'] } }, n: H`<code>s</code> é <code>string | undefined</code>.` },
+      { l: 7, o: '12 Ana\n', n: 'A correr, é JavaScript normal.' },
+      { l: 8, o: 'undefined\n', n: H`Num array vazio não há primeiro elemento: é por isso que o tipo inclui <code>undefined</code>.` },
+    ],
+  }, {
+    title: 'Um tipo genérico',
+    code: J`
+interface Caixa<T> {
+  valor: T;
+}
+const a: Caixa<number> = { valor: 5 };
+const b: Caixa<string> = { valor: "ola" };
+const c: Caixa<number> = { valor: "cinco" };`,
+    steps: [
+      { l: 1, n: H`Uma Caixa guarda um valor de um tipo à escolha.` },
+      { l: 4, n: H`<code>Caixa&lt;number&gt;</code>: o valor tem de ser um número.` },
+      { l: 5, n: H`<code>Caixa&lt;string&gt;</code>: um texto.` },
+      { l: 6, o: "error TS2322: Type 'string' is not assignable to type 'number'.\n", n: 'Uma caixa de números com um texto lá dentro é recusada. A verificação continua a funcionar, para qualquer tipo.' },
+    ],
+  }],
+  mistakes: [
+    H`Usar <code>any</code> onde um genérico servia: perdes a verificação e a ajuda do editor.`,
+    H`Esquecer o <code>&lt;T&gt;</code> a seguir ao nome da função e usar <code>T</code> nos parâmetros: <em>error TS2304: Cannot find name 'T'.</em>`,
+    H`Esquecer que <code>primeiro(lista)</code> pode dar undefined.`,
+    H`Escrever genéricos complicados cedo demais: usa-os quando a mesma função serve mesmo para vários tipos.`,
+  ],
+  quiz: [
+    { q: 'O que acontece com este programa?', code: J`
+function primeiro<T>(lista: T[]): T | undefined {
+  return lista[0];
+}
+const x = primeiro<string>([1, 2]);
+console.log(x);`, opts: ['1', "error TS2322: Type 'number' is not assignable to type 'string'.", "'1'", 'undefined'], ok: 1, mono: true, check: true,
+      exp: H`Escreveste <code>&lt;string&gt;</code>, por isso a lista tinha de ser de textos, e tem números.` },
+    { q: 'O que aparece no ecrã?', code: J`
+function ultimo<T>(lista: T[]): T | undefined {
+  return lista[lista.length - 1];
+}
+console.log(ultimo([4, 8, 15]), ultimo(["a", "b"]));`, opts: ['15 b', '4 a', 'undefined undefined', "error TS2322: Type 'string' is not assignable to type 'number'."], ok: 0, mono: true, check: true,
+      exp: 'Em cada chamada o T é um tipo diferente (number, depois string), e a mesma função serve para os dois.' },
+    { q: 'O que aparece no ecrã?', code: J`
+const notas: Array<number> = [12, 15];
+notas.push(18);
+console.log(notas);`, opts: ['[ 12, 15, 18 ]', "error TS2315: Type 'Array' is not generic.", '[ 12, 15 ]', '3'], ok: 0, mono: true, check: true,
+      exp: H`<code>Array&lt;number&gt;</code> é exatamente o mesmo que <code>number[]</code>, escrito como tipo genérico.` },
+    { q: 'O que acontece com este programa?', code: J`
+function primeiro<T>(lista: T[]): T | undefined {
+  return lista[0];
+}
+const n = primeiro([10, 20]);
+console.log(n + 1);`, opts: ['11', "error TS18048: 'n' is possibly 'undefined'.", 'NaN', '101'], ok: 1, mono: true, check: true,
+      exp: H`O resultado é <code>number | undefined</code>: com uma lista vazia seria undefined, e <code>undefined + 1</code> dava NaN. O compilador obriga a tratar esse caso.` },
+  ],
+  exercises: [{
+    title: 'Contém',
+    text: 'Escreve contem<T>(lista: T[], x: T): boolean e mostra contem([1, 2, 3], 2) e contem(["a", "b"], "z").',
+    run: 'true false\n',
+    hint: H`O corpo é <code>return lista.includes(x);</code>.`,
+    solution: J`
+function contem<T>(lista: T[], x: T): boolean {
+  return lista.includes(x);
+}
+
+console.log(contem([1, 2, 3], 2), contem(["a", "b"], "z"));`,
+  }, {
+    title: 'Pares',
+    text: 'Define interface Par<A, B> { primeiro: A; segundo: B } e uma função trocar<A, B>(p: Par<A, B>): Par<B, A>. Mostra o resultado de trocar o par { primeiro: "Ana", segundo: 17 }.',
+    run: "{ primeiro: 17, segundo: 'Ana' }\n",
+    hint: H`Um tipo pode ter dois parâmetros genéricos. A função devolve <code>{ primeiro: p.segundo, segundo: p.primeiro }</code>.`,
+    solution: J`
+interface Par<A, B> {
+  primeiro: A;
+  segundo: B;
+}
+
+function trocar<A, B>(p: Par<A, B>): Par<B, A> {
+  return { primeiro: p.segundo, segundo: p.primeiro };
+}
+
+console.log(trocar({ primeiro: "Ana", segundo: 17 }));`,
+  }],
+});
+
+// ---------------------------------------------------------------- 9
+LESSONS.push({
+  id: 9,
+  title: 'Esperar sem bloquear: async e await',
+  short: 'Promise, async, await, a ordem do que aparece e try/catch',
+  body: H`
+<p>Muitas coisas demoram: pedir dados a um servidor, ler um ficheiro, esperar um temporizador. O JavaScript não fica parado à espera: regista o que fazer quando acabar e continua com o resto. O resultado "que há de vir" é uma <strong>Promise</strong>.</p>
+<ul>
+<li>Uma função <code>async</code> devolve sempre uma <code>Promise</code>. Em TypeScript, o tipo diz o que vem lá dentro: <code>Promise&lt;number&gt;</code>.</li>
+<li>Dentro de uma função <code>async</code>, <code>await</code> espera pela Promise e dá o valor. A função fica em pausa nesse ponto, e o resto do programa continua a correr.</li>
+<li>Por isso a ordem do que aparece no ecrã não é a ordem das linhas: o que vem depois de um <code>await</code> aparece mais tarde.</li>
+<li>Uma Promise que falha trata-se com <code>try</code> / <code>catch</code> à volta do <code>await</code>.</li>
+<li>Esquecer o <code>await</code> é um erro clássico; o TypeScript apanha-o, porque uma <code>Promise&lt;number&gt;</code> não é um <code>number</code>.</li>
+</ul>`,
+  analogy: 'Uma Promise é o talão de levantamento de uma lavandaria. Deixas a roupa, ficas com o talão e vais à tua vida. O await é voltar à lavandaria e esperar ao balcão até a roupa estar pronta, mas sem impedir os outros clientes de serem atendidos.',
+  examples: [{
+    title: 'O que vem depois do await aparece mais tarde',
+    code: J`
+function esperar(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function principal(): Promise<void> {
+  console.log("a comecar");
+  await esperar(100);
+  console.log("passaram 100 ms");
+}
+
+principal();
+console.log("isto aparece antes");`,
+    steps: [
+      { l: 1, push: 'global', obj: { o1: ['function', 'esperar(ms: number): Promise<void>'], o2: ['function', 'principal(): Promise<void>'] }, d: { global: { esperar: ['function', '@o1'], principal: ['function', '@o2'] } }, n: H`<code>esperar</code> devolve uma Promise que só fica pronta passados <code>ms</code> milissegundos.` },
+      { l: 5, push: 'principal', n: H`Chama <code>principal()</code>.` },
+      { l: 6, o: 'a comecar\n', n: 'A primeira linha corre logo.' },
+      { l: 7, pop: true, n: H`<code>await esperar(100)</code>: a função fica <strong>em pausa</strong> à espera da Promise, e devolve o controlo a quem a chamou. O programa não fica bloqueado.` },
+      { l: 12, o: 'isto aparece antes\n', n: 'Por isso esta linha, que vem depois no código, corre já.' },
+      { l: 8, push: 'principal', o: 'passaram 100 ms\n', n: H`Passados 100 ms a Promise fica pronta e a função continua a partir do <code>await</code>.` },
+    ],
+  }, {
+    title: 'Uma Promise que falha',
+    code: J`
+function buscarNota(numero: number): Promise<number> {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (numero === 101) {
+        resolve(17);
+      } else {
+        reject(new Error("aluno nao existe"));
+      }
+    }, 50);
+  });
+}
+
+async function mostra(numero: number): Promise<void> {
+  try {
+    const nota = await buscarNota(numero);
+    console.log(numero, "->", nota);
+  } catch (e) {
+    console.log(numero, "->", (e as Error).message);
+  }
+}
+
+async function principal(): Promise<void> {
+  await mostra(101);
+  await mostra(999);
+}
+principal();`,
+    steps: [
+      { l: 1, push: 'global', n: H`<code>buscarNota</code> finge um pedido a um servidor: passados 50 ms, dá a nota (<code>resolve</code>) ou um erro (<code>reject</code>).` },
+      { l: 23, push: 'principal', n: H`<code>principal</code> espera por cada <code>mostra</code>, uma de cada vez.` },
+      { l: 15, push: 'mostra', d: { mostra: { numero: ['number', '101'] } }, n: H`<code>await buscarNota(101)</code>: espera.` },
+      { l: 16, d: { mostra: { nota: ['number', '17'] } }, o: '101 -> 17\n', n: H`A Promise ficou pronta com 17. Como <code>buscarNota</code> devolve <code>Promise&lt;number&gt;</code>, o compilador sabe que <code>nota</code> é um number.` },
+      { l: 24, pop: true, n: 'A primeira chamada acabou; agora a segunda.' },
+      { l: 15, push: 'mostra', d: { mostra: { numero: ['number', '999'] } }, n: 'Espera outra vez.' },
+      { l: 18, o: '999 -> aluno nao existe\n', n: H`Desta vez a Promise falhou: o <code>await</code> lança o erro, e o <code>catch</code> apanha-o. Em TypeScript, o erro do catch é <code>unknown</code>, por isso diz-se que é um <code>Error</code> (<code>as Error</code>) para ler a mensagem.` },
+    ],
+  }],
+  mistakes: [
+    H`Esquecer o <code>await</code>: ficas com uma Promise em vez do valor. O TypeScript costuma avisar (por exemplo, em <code>r + 1</code>: <em>error TS2365: Operator '+' cannot be applied to types 'Promise&lt;number&gt;' and '1'</em>).`,
+    H`Usar <code>await</code> fora de uma função <code>async</code>.`,
+    H`Esperar que o código depois da chamada de uma função async espere por ela: não espera, a não ser que lhe faças <code>await</code>.`,
+    H`Não tratar os erros: um <code>await</code> que falha sem <code>try</code>/<code>catch</code> rebenta a função toda.`,
+  ],
+  quiz: [
+    { q: 'O que aparece no ecrã?', code: J`
+console.log("1");
+setTimeout(() => console.log("2"), 0);
+console.log("3");`, opts: ['1\n2\n3', '1\n3\n2', '2\n1\n3', '1\n3'], ok: 1, mono: true, check: true,
+      exp: H`Mesmo com 0 ms, o <code>setTimeout</code> só corre a função depois de acabar o código que está a correr. O "3" aparece antes do "2".` },
+    { q: 'O que acontece com este programa?', code: J`
+async function dobro(x: number): Promise<number> {
+  return x * 2;
+}
+const r = dobro(4);
+console.log(r + 1);`, opts: ['9', '[object Promise]1', "error TS2365: Operator '+' cannot be applied to types 'Promise<number>' and '1'.", 'NaN'], ok: 2, mono: true, check: true,
+      exp: H`Faltou o <code>await</code>: <code>r</code> é uma <code>Promise&lt;number&gt;</code>, não um número. Em JavaScript aparecia "[object Promise]1"; o TypeScript não deixa.` },
+    { q: 'O que aparece no ecrã?', code: J`
+async function dobro(x: number): Promise<number> {
+  return x * 2;
+}
+async function principal(): Promise<void> {
+  const r = await dobro(4);
+  console.log(r + 1);
+}
+principal();`, opts: ['9', '8', "error TS2365: Operator '+' cannot be applied to types 'Promise<number>' and '1'.", '5'], ok: 0, mono: true, check: true,
+      exp: H`Com <code>await</code>, <code>r</code> é o número 8 que estava dentro da Promise: 8 + 1 = 9.` },
+    { q: 'O que aparece no ecrã?', code: J`
+async function f(): Promise<void> {
+  console.log("A");
+  await Promise.resolve();
+  console.log("B");
+}
+f();
+console.log("C");`, opts: ['A\nB\nC', 'A\nC\nB', 'C\nA\nB', 'A\nC'], ok: 1, mono: true, check: true,
+      exp: H`O "A" aparece logo. O <code>await</code> põe a função em pausa (mesmo com uma Promise já pronta), o "C" corre, e só depois a função continua e escreve o "B".` },
+  ],
+  exercises: [{
+    title: 'Contagem decrescente',
+    text: 'Usando a função esperar(ms) do exemplo, escreve uma função async que mostra 3, 2 e 1, esperando 10 ms entre cada número, e no fim "partida!".',
+    run: '3\n2\n1\npartida!\n',
+    hint: H`Um <code>for</code> de 3 até 1, com <code>console.log(i)</code> e <code>await esperar(10)</code> lá dentro.`,
+    solution: J`
+function esperar(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function contagem(): Promise<void> {
+  for (let i = 3; i >= 1; i--) {
+    console.log(i);
+    await esperar(10);
+  }
+  console.log("partida!");
+}
+
+contagem();`,
+  }, {
+    title: 'Somar dois valores que demoram',
+    text: 'Escreve valorDepois(v: number): Promise<number>, que devolve v passados 20 ms. Numa função async, espera por valorDepois(10) e por valorDepois(20) e mostra a soma.',
+    run: 'Total: 30\n',
+    hint: H`<code>new Promise((resolve) =&gt; setTimeout(() =&gt; resolve(v), 20))</code>. Depois, <code>const a = await valorDepois(10);</code>.`,
+    solution: J`
+function valorDepois(v: number): Promise<number> {
+  return new Promise((resolve) => setTimeout(() => resolve(v), 20));
+}
+
+async function principal(): Promise<void> {
+  const a = await valorDepois(10);
+  const b = await valorDepois(20);
+  console.log("Total:", a + b);
+}
+
+principal();`,
+  }],
+});
+
+// ---------------------------------------------------------------- 10
+LESSONS.push({
+  id: 10,
+  title: 'Juntar tudo: uma lista de tarefas',
+  short: 'tipos literais, interfaces, arrays de objetos e funções num programa pequeno',
+  body: H`
+<p>Esta lição junta o curso num programa pequeno, do género que vais escrever em React mais tarde: uma lista de tarefas.</p>
+<ul>
+<li>Um <strong>tipo literal</strong> para o estado: <code>type Estado = "por fazer" | "feita";</code>. Um engano de escrita ("feito") é apanhado pelo compilador.</li>
+<li>Uma <strong>interface</strong> para a forma de cada tarefa.</li>
+<li>Um <strong>array de objetos</strong>, partilhado por várias funções (referências!).</li>
+<li>Funções com tipos nos parâmetros e no resultado, e o <code>find</code>, que pode devolver undefined.</li>
+</ul>
+<p>Repara que quase todas as linhas usam alguma coisa das lições anteriores, e que o compilador apanharia logo os enganos mais comuns.</p>`,
+  analogy: 'Os tipos de um programa são como as plantas de uma casa: não fazem a casa, mas mostram onde fica cada coisa e impedem que alguém ponha uma porta onde devia estar uma janela.',
+  examples: [{
+    title: 'Tarefas com tipos',
+    code: J`
+type Estado = "por fazer" | "feita";
+
+interface Tarefa {
+  id: number;
+  titulo: string;
+  estado: Estado;
+}
+
+const tarefas: Tarefa[] = [];
+
+function adicionar(titulo: string): Tarefa {
+  const t: Tarefa = { id: tarefas.length + 1, titulo, estado: "por fazer" };
+  tarefas.push(t);
+  return t;
+}
+
+function concluir(id: number): void {
+  const t = tarefas.find((x) => x.id === id);
+  if (t !== undefined) {
+    t.estado = "feita";
+  }
+}
+
+adicionar("Estudar TypeScript");
+adicionar("Fazer o exercicio");
+concluir(1);
+const porFazer = tarefas.filter((t) => t.estado === "por fazer");
+console.log(porFazer.map((t) => t.titulo));
+console.log(tarefas.length, "tarefas");`,
+    steps: [
+      { l: 9, push: 'global', obj: { o1: ['Tarefa[]', []] }, d: { global: { tarefas: ['Tarefa[]', '@o1'] } }, n: H`Os tipos (Estado e Tarefa) não existem a correr. O array começa vazio, e só aceita objetos com a forma de uma Tarefa.` },
+      { l: 12, obj: { o2: ['Tarefa', { id: '1', titulo: '"Estudar TypeScript"', estado: '"por fazer"' }] }, push: 'adicionar', d: { adicionar: { titulo: ['string', '"Estudar TypeScript"'], t: ['Tarefa', '@o2'] } }, n: H`<code>adicionar</code> cria uma tarefa. <code>{ titulo }</code> é um atalho para <code>{ titulo: titulo }</code>.` },
+      { l: 13, obj: { o1: ['Tarefa[]', ['@o2']] }, n: 'E guarda-a no array partilhado.' },
+      { l: 25, pop: true, obj: { o3: ['Tarefa', { id: '2', titulo: '"Fazer o exercicio"', estado: '"por fazer"' }], o1: ['Tarefa[]', ['@o2', '@o3']] }, n: 'A segunda tarefa, da mesma forma.' },
+      { l: 18, push: 'concluir', d: { concluir: { id: ['number', '1'], t: ['Tarefa | undefined', '@o2'] } }, n: H`<code>find</code> devolve <code>Tarefa | undefined</code>. Encontrou a tarefa 1: <code>t</code> aponta para o mesmo objeto que está no array.` },
+      { l: 20, obj: { o2: ['Tarefa', { id: '1', titulo: '"Estudar TypeScript"', estado: '"feita"' }] }, n: H`Depois do <code>if (t !== undefined)</code>, o compilador deixa mudar o estado. E só aceita "por fazer" ou "feita".` },
+      { l: 27, pop: true, obj: { o4: ['Tarefa[]', ['@o3']] }, d: { global: { porFazer: ['Tarefa[]', '@o4'] } }, n: H`O <code>filter</code> dá um array novo com as que faltam. Repara que guarda a mesma referência (#3), não uma cópia.` },
+      { l: 28, o: "[ 'Fazer o exercicio' ]\n", n: 'Os títulos das tarefas por fazer.' },
+      { l: 29, o: '2 tarefas\n', n: 'O array original continua com as duas.' },
+    ],
+  }],
+  mistakes: [
+    H`Escrever um estado que não existe (<code>"feito"</code>): <em>error TS2820: Type '"feito"' is not assignable to type 'Estado'. Did you mean '"feita"'?</em> (o compilador até sugere o valor certo)`,
+    H`Usar o resultado do <code>find</code> sem testar: <em>'t' is possibly 'undefined'</em>.`,
+    H`Esquecer que <code>filter</code> e <code>find</code> devolvem referências para os mesmos objetos: mudar um muda-o no array original.`,
+    H`Usar o tamanho do array como id depois de apagar tarefas: os ids podem repetir-se. Guarda um contador à parte.`,
+  ],
+  quiz: [
+    { q: 'O que acontece com este programa?', code: J`
+type Estado = "por fazer" | "feita";
+interface Tarefa {
+  titulo: string;
+  estado: Estado;
+}
+const t: Tarefa = { titulo: "Estudar", estado: "por fazer" };
+t.estado = "feito";`, opts: ['(nada)', "error TS2820: Type '\"feito\"' is not assignable to type 'Estado'. Did you mean '\"feita\"'?", "error TS2540: Cannot assign to 'estado' because it is a read-only property.", 'feito'], ok: 1, mono: true, check: true,
+      exp: H`"feito" não é um dos valores do tipo Estado. Num programa grande, um engano destes podia passar meses sem ninguém reparar.` },
+    { q: 'O que acontece com este programa?', code: J`
+interface Tarefa {
+  id: number;
+  feita: boolean;
+}
+const tarefas: Tarefa[] = [{ id: 1, feita: false }];
+const t = tarefas.find((x) => x.id === 7);
+t.feita = true;`, opts: ['(nada)', "error TS18048: 't' is possibly 'undefined'.", "TypeError: Cannot set properties of undefined (setting 'feita')", 'true'], ok: 1, mono: true, check: true,
+      exp: H`Não há nenhuma tarefa 7, e o compilador sabe que isso pode acontecer. Em JavaScript, isto rebentava a correr com o TypeError (a opção C).` },
+    { q: 'O que aparece no ecrã?', code: J`
+interface Tarefa {
+  titulo: string;
+  feita: boolean;
+}
+const lista: Tarefa[] = [
+  { titulo: "A", feita: true },
+  { titulo: "B", feita: false },
+  { titulo: "C", feita: true },
+];
+const feitas = lista.filter((t) => t.feita).length;
+console.log(‵¤{feitas} de ¤{lista.length}‵);`, opts: ['2 de 3', '1 de 3', '3 de 3', 'error TS2339'], ok: 0, mono: true, check: true,
+      exp: H`O <code>filter</code> fica com as duas feitas (A e C), e <code>length</code> conta-as.` },
+    { q: 'O que aparece no ecrã?', code: J`
+interface Tarefa {
+  titulo: string;
+  feita: boolean;
+}
+const lista: Tarefa[] = [{ titulo: "A", feita: false }];
+const t = lista[0];
+t.feita = true;
+console.log(lista[0].feita);`, opts: ['true', 'false', "error TS18048: 't' is possibly 'undefined'.", 'undefined'], ok: 0, mono: true, check: true,
+      exp: H`<code>t</code> é uma referência para o mesmo objeto que está no array. Mudar <code>t.feita</code> muda-o lá.` },
+  ],
+  exercises: [{
+    title: 'Contar por estado',
+    text: 'Com o tipo Estado e a interface Tarefa da lição, escreve contar(lista: Tarefa[], estado: Estado): number. Para as tarefas [A por fazer, B feita, C feita], mostra quantas estão feitas e quantas por fazer.',
+    run: 'feitas: 2\npor fazer: 1\n',
+    hint: H`<code>lista.filter((t) =&gt; t.estado === estado).length</code>.`,
+    solution: J`
+type Estado = "por fazer" | "feita";
+
+interface Tarefa {
+  titulo: string;
+  estado: Estado;
+}
+
+function contar(lista: Tarefa[], estado: Estado): number {
+  return lista.filter((t) => t.estado === estado).length;
+}
+
+const lista: Tarefa[] = [
+  { titulo: "A", estado: "por fazer" },
+  { titulo: "B", estado: "feita" },
+  { titulo: "C", estado: "feita" },
+];
+console.log("feitas:", contar(lista, "feita"));
+console.log("por fazer:", contar(lista, "por fazer"));`,
+  }, {
+    title: 'Remover sem mudar',
+    text: 'Escreve remover(lista: readonly Tarefa[], id: number): Tarefa[], que devolve uma lista nova sem a tarefa com esse id. Remove a tarefa 2 de [1 "A", 2 "B", 3 "C"] e mostra os títulos das duas listas.',
+    run: "[ 'A', 'B', 'C' ]\n[ 'A', 'C' ]\n",
+    hint: H`<code>return lista.filter((t) =&gt; t.id !== id);</code>. O <code>readonly</code> garante que não mudas a original.`,
+    solution: J`
+interface Tarefa {
+  id: number;
+  titulo: string;
+}
+
+function remover(lista: readonly Tarefa[], id: number): Tarefa[] {
+  return lista.filter((t) => t.id !== id);
+}
+
+const lista: Tarefa[] = [
+  { id: 1, titulo: "A" },
+  { id: 2, titulo: "B" },
+  { id: 3, titulo: "C" },
+];
+const nova = remover(lista, 2);
+console.log(lista.map((t) => t.titulo));
+console.log(nova.map((t) => t.titulo));`,
+  }],
+});
+
+</script>
+<script>
+(function () {
+  'use strict';
+  const $ = (s, el) => (el || document).querySelector(s);
+  const $$ = (s, el) => Array.from((el || document).querySelectorAll(s));
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+  // ---------- progresso (só neste browser) ----------
+  const STORE = COURSE.storageKey;
+  let progress = {};
+  try { progress = JSON.parse(localStorage.getItem(STORE) || '{}') || {}; } catch (e) { progress = {}; }
+  const saveProgress = () => { try { localStorage.setItem(STORE, JSON.stringify(progress)); } catch (e) { /* sem armazenamento */ } };
+  const isDone = id => !!progress[id];
+
+  // ---------- realce de sintaxe ----------
+  // Cada curso define SYNTAX: uma regex com um grupo por tipo de token e a classe CSS de cada grupo.
+  const TOK = SYNTAX.re;
+  function hlLine(line) {
+    let out = '';
+    let last = 0;
+    let m;
+    TOK.lastIndex = 0;
+    while ((m = TOK.exec(line))) {
+      if (!m[0].length) { TOK.lastIndex++; continue; }
+      out += esc(line.slice(last, m.index));
+      const group = m.findIndex((g, i) => i > 0 && g !== undefined);
+      const cls = SYNTAX.classes[group - 1];
+      out += '<span class="t-' + cls + '">' + esc(m[0]) + '</span>';
+      last = m.index + m[0].length;
+    }
+    return out + esc(line.slice(last));
+  }
+  const hlBlock = code => code.split('\n').map(hlLine).join('\n');
+  function highlightStatic(root) {
+    $$('pre.snip code', root).forEach(el => {
+      if (el.dataset.hl) return;
+      el.innerHTML = hlBlock(el.textContent);
+      el.dataset.hl = '1';
+    });
+  }
+
+  // ---------- ecrã (terminal) ----------
+  function renderTerm(s, withCaret) {
+    if (!s) return '<span class="ph">(ainda nada no ecrã)</span>';
+    const html = s.split(/(⟦[^⟧]*⟧)/).map(part => {
+      if (part.charAt(0) === '⟦') return '<span class="in">' + esc(part.slice(1, -1)) + '</span><span class="enter" aria-hidden="true">↵</span>\n';
+      return esc(part);
+    }).join('');
+    // As linhas de erro do compilador ("error TS2322: ...", "error[E0382]: ...", "error CS0029: ...") ficam a vermelho.
+    const coloured = html.replace(/^(error(?:\[E\d+\])?(?: TS\d+| CS\d+)?:.*)$/gm, '<span class="err-line">$1</span>');
+    return coloured + (withCaret ? '<span class="caret" aria-hidden="true"></span>' : '');
+  }
+
+  // ---------- memória ----------
+  function prevValue(prevFrames, fi, frameName, varName) {
+    if (!prevFrames) return undefined;
+    const f = prevFrames[fi];
+    if (!f || f.name !== frameName) return null;
+    const v = f.vars.find(x => x.name === varName);
+    return v ? v.value : null;
+  }
+  const changed = (pv, v) => pv !== undefined && pv !== null && JSON.stringify(pv) !== JSON.stringify(v);
+
+  function scalarHtml(v) {
+    if (v === '?') return '<span class="garbage" title="lixo: valor desconhecido">?</span>';
+    const s = String(v);
+    const k = s.indexOf('→');
+    if (k > -1) return '<span class="ptr-addr">' + esc(s.slice(0, k).trim()) + '</span> <span class="ptr-arrow">' + esc(s.slice(k)) + '</span>';
+    return esc(s);
+  }
+
+  function varHtml(v, pv) {
+    const isNew = pv === null;
+    const val = v.value;
+    let cls = 'var';
+    let body = '';
+    if (Array.isArray(val) && val.length && typeof val[0] === 'object') {
+      cls += ' wide';
+      const fields = Object.keys(val[0]);
+      body = '<div class="t-wrap"><table class="mini"><thead><tr><th>índice</th>' + fields.map(f => '<th>' + esc(f) + '</th>').join('') + '</tr></thead><tbody>' +
+        val.map((row, i) => '<tr><td>[' + i + ']</td>' + fields.map(f => {
+          const c = Array.isArray(pv) && pv[i] && changed(pv[i][f], row[f]);
+          return '<td><span class="' + (c ? 'chg' : '') + '">' + scalarHtml(row[f]) + '</span></td>';
+        }).join('') + '</tr>').join('') + '</tbody></table></div>';
+    } else if (Array.isArray(val)) {
+      cls += val.length > 5 ? ' wide' : '';
+      body = '<div class="cells">' + val.map((c, i) => {
+        const ch = Array.isArray(pv) && changed(pv[i], c);
+        return '<div class="cell"><span class="cell-v' + (ch ? ' chg' : '') + '">' + scalarHtml(c) + '</span><span class="cell-i">[' + i + ']</span></div>';
+      }).join('') + '</div>';
+    } else if (val && typeof val === 'object') {
+      cls += ' wide';
+      body = '<div class="fields">' + Object.keys(val).map(f => {
+        const ch = pv && typeof pv === 'object' && changed(pv[f], val[f]);
+        return '<span class="f-name">.' + esc(f) + '</span><span><span class="' + (ch ? 'chg' : '') + '">' + scalarHtml(val[f]) + '</span></span>';
+      }).join('') + '</div>';
+    } else {
+      body = '<div class="var-val' + (changed(pv, val) ? ' chg' : '') + '">' + scalarHtml(val) + '</div>';
+    }
+    if (isNew) cls += ' is-new';
+    const addr = v.addr ? '<span title="endereço (exemplo)">@' + esc(v.addr) + '</span>' : '';
+    return '<div class="' + cls + '"><div class="var-top"><span class="var-type">' + esc(v.type) + '</span>' + addr + '</div>' +
+      '<div class="var-name">' + esc(v.name) + '</div>' + body + '</div>';
+  }
+
+  function memHtml(frames, prevFrames) {
+    if (!frames.length) return '<p class="mem-empty">O programa ainda não começou a correr.</p>';
+    return frames.map((f, fi) => {
+      const active = fi === frames.length - 1;
+      const vars = f.vars.length
+        ? '<div class="vars">' + f.vars.map(v => varHtml(v, prevValue(prevFrames, fi, f.name, v.name))).join('') + '</div>'
+        : '<p class="mem-empty">sem variáveis</p>';
+      return '<div class="frame' + (active ? ' active' : '') + '"><div class="frame-name"><span>' + esc(f.name) + '()</span>' +
+        (active && frames.length > 1 ? '<span>a correr</span>' : (!active ? '<span>em pausa</span>' : '')) + '</div>' + vars + '</div>';
+    }).join('');
+  }
+
+  // ---------- visualizador ----------
+  // Alguns cursos trocam o painel da direita (Memória + Ecrã) por outro, registado em VIZ_MODES
+  // (por exemplo, no SQL: Base de dados + Resultado). Cada exemplo ou exercício pode escolher o seu
+  // com viz: '...'; senão usa o do curso (COURSE.viz). Sem nenhum, fica o painel do C.
+  const SIDES = typeof VIZ_MODES !== 'undefined' ? VIZ_MODES : {};
+  const sideFor = item => SIDES[(item && item.viz) || COURSE.viz] || null;
+  const SIDE = sideFor(null);
+
+  function mountViz(host, ex, num) {
+    const side = sideFor(ex);
+    const steps = buildSteps(ex.steps, ex.db);
+    const lines = ex.code.split('\n');
+    const hasAddr = ex.steps.some(s => s.d && Object.values(s.d).some(vs => Object.values(vs).some(spec => spec[2])));
+    let cur = 0;
+    host.className = 'viz';
+    host.tabIndex = 0;
+    host.setAttribute('aria-label', 'Exemplo ' + num + ': ' + ex.title + '. Usa as setas esquerda e direita para avançar.');
+    host.innerHTML =
+      '<div class="viz-head">' +
+        '<div class="viz-title"><small>Exemplo ' + num + '</small><h3>' + esc(ex.title) + '</h3></div>' +
+        '<div class="viz-controls">' +
+          '<button class="btn" type="button" data-a="prev">← Anterior</button>' +
+          '<span class="viz-count" aria-live="polite"></span>' +
+          '<button class="btn btn-primary" type="button" data-a="next">Seguinte →</button>' +
+          '<button class="btn btn-ghost" type="button" data-a="reset">Recomeçar</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="viz-bar"><span></span></div>' +
+      '<div class="viz-note"><span class="viz-note-line"></span><div class="viz-note-text"></div></div>' +
+      '<div class="viz-grid">' +
+        '<div class="panel"><div class="panel-label"><span>Código</span><span>▶ = linha a correr</span></div><div class="code">' +
+          lines.map((l, i) => '<div class="ln" data-n="' + (i + 1) + '"><span class="no">' + (i + 1) + '</span><span class="arrow"></span><span class="src">' + (hlLine(l) || ' ') + '</span></div>').join('') +
+        '</div></div>' +
+        '<div class="viz-side">' + (side ? side.panelsHtml() :
+          '<div class="panel"><div class="panel-label"><span>Memória</span>' + (hasAddr ? '<span class="addr-note">endereços de exemplo</span>' : '<span>amarelo = mudou agora</span>') + '</div><div class="mem"></div></div>' +
+          '<div class="panel out"><div class="panel-label"><span>Ecrã</span></div><pre class="term"></pre></div>') +
+        '</div>' +
+      '</div>';
+
+    const btnPrev = $('[data-a="prev"]', host);
+    const btnNext = $('[data-a="next"]', host);
+    const count = $('.viz-count', host);
+    const bar = $('.viz-bar span', host);
+    const noteLine = $('.viz-note-line', host);
+    const noteText = $('.viz-note-text', host);
+    const mem = $('.mem', host);
+    const term = $('.term', host);
+    const codeBox = $('.code', host);
+    const lnEls = $$('.ln', host);
+
+    function render() {
+      const s = steps[cur];
+      const prev = cur > 0 ? steps[cur - 1] : null;
+      lnEls.forEach(el => {
+        const on = Number(el.dataset.n) === s.l;
+        el.classList.toggle('cur', on);
+        $('.arrow', el).textContent = on ? '▶' : '';
+      });
+      noteLine.textContent = 'linha ' + s.l;
+      noteText.innerHTML = s.n;
+      if (side) {
+        side.render(host, s, prev, { renderTerm, isLast: cur === steps.length - 1, ex });
+      } else {
+        mem.innerHTML = memHtml(s.frames, prev ? prev.frames : null);
+        term.innerHTML = renderTerm(s.out, cur < steps.length - 1);
+        term.scrollTop = term.scrollHeight;
+      }
+      count.textContent = 'Passo ' + (cur + 1) + ' de ' + steps.length;
+      bar.style.width = ((cur + 1) / steps.length * 100) + '%';
+      btnPrev.disabled = cur === 0;
+      btnNext.disabled = cur === steps.length - 1;
+      btnNext.textContent = cur === steps.length - 1 ? 'Fim' : 'Seguinte →';
+    }
+    function go(i) { cur = Math.max(0, Math.min(steps.length - 1, i)); render(); }
+    host.addEventListener('click', e => {
+      const a = e.target.closest('[data-a]');
+      if (!a) return;
+      if (a.dataset.a === 'prev') go(cur - 1);
+      if (a.dataset.a === 'next') go(cur + 1);
+      if (a.dataset.a === 'reset') go(0);
+    });
+    host.addEventListener('keydown', e => {
+      if (e.target.closest('button') && (e.key === ' ' || e.key === 'Enter')) return;
+      if (e.key === 'ArrowRight') { e.preventDefault(); go(cur + 1); }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); go(cur - 1); }
+      if (e.key === 'Home') { e.preventDefault(); go(0); }
+    });
+    render();
+    void codeBox;
+  }
+
+  // ---------- quiz ----------
+  // Uma opção de resposta. No SQL, as respostas "mono" são resultados e aparecem como tabelinhas.
+  function optionHtml(q, text) {
+    if (q.mono && SIDE && SIDE.outputHtml) return '<span class="opt-txt">' + SIDE.outputHtml(text) + '</span>';
+    return '<span class="opt-txt' + (q.mono ? ' mono' : '') + '">' + esc(text) + '</span>';
+  }
+
+  function mountQuiz(host, lesson) {
+    const qs = lesson.quiz;
+    let answers = qs.map(() => null);
+    function draw() {
+      host.innerHTML = qs.map((q, qi) =>
+        '<div class="q" data-q="' + qi + '">' +
+          '<p class="q-text"><span class="q-num">' + (qi + 1) + '/' + qs.length + '</span><span>' + esc(q.q) + '</span></p>' +
+          (q.code ? '<pre class="snip"><code>' + hlBlock(q.code) + '</code></pre>' : '') +
+          '<div class="opts" role="group" aria-label="Opções">' + q.opts.map((o, oi) =>
+            '<button class="opt" type="button" data-o="' + oi + '"><span class="opt-key">' + 'ABCD'[oi] + '</span>' + optionHtml(q, o) + '</button>'
+          ).join('') + '</div>' +
+          '<div class="q-exp" hidden></div>' +
+        '</div>'
+      ).join('') + '<div class="score" hidden></div>';
+    }
+    function answer(qi, oi) {
+      if (answers[qi] !== null) return;
+      answers[qi] = oi;
+      const q = qs[qi];
+      const box = $('[data-q="' + qi + '"]', host);
+      $$('.opt', box).forEach((b, i) => {
+        b.disabled = true;
+        if (i === q.ok) b.classList.add('right');
+        else if (i === oi) b.classList.add('wrong');
+        else b.classList.add('dim');
+      });
+      const exp = $('.q-exp', box);
+      exp.innerHTML = (oi === q.ok ? '<strong class="ok">Certo.</strong> ' : '<strong class="bad">Não é bem.</strong> A resposta é a ' + 'ABCD'[q.ok] + '. ') + q.exp;
+      exp.hidden = false;
+      if (answers.every(a => a !== null)) finish();
+    }
+    function finish() {
+      const right = answers.filter((a, i) => a === qs[i].ok).length;
+      const prevBest = progress[lesson.id] ? progress[lesson.id].best : 0;
+      progress[lesson.id] = { best: Math.max(prevBest, right), total: qs.length };
+      saveProgress();
+      renderSidebar();
+      const msg = right === qs.length ? 'Acertaste todas. Podes passar à lição seguinte.'
+        : right * 2 >= qs.length ? 'Quase. Relê as explicações das que falhaste e corre outra vez o exemplo.'
+        : 'Volta a correr o exemplo passo a passo, com calma, e tenta outra vez.';
+      const sc = $('.score', host);
+      sc.innerHTML = '<div><span class="score-num">' + right + '/' + qs.length + '</span><p>' + msg + '</p></div><button class="btn" type="button" data-retry>Repetir perguntas</button>';
+      sc.hidden = false;
+    }
+    host.addEventListener('click', e => {
+      if (e.target.closest('[data-retry]')) { answers = qs.map(() => null); draw(); return; }
+      const b = e.target.closest('.opt');
+      if (!b) return;
+      answer(Number(b.closest('[data-q]').dataset.q), Number(b.dataset.o));
+    });
+    draw();
+  }
+
+  // ---------- exercícios ----------
+  // O que o programa da solução mostra. No SQL é o resultado da consulta, como tabela.
+  function runHtml(run) {
+    if (SIDE && SIDE.outputHtml) return '<div><div class="ex-label">Resultado esperado</div>' + SIDE.outputHtml(run) + '</div>';
+    return '<div><div class="ex-label">Exemplo de execução (a amarelo, o que escreves)</div><pre class="term">' + renderTerm(run, false) + '</pre></div>';
+  }
+
+  function exHtml(ex, i) {
+    return '<article class="ex">' +
+      '<h3>Exercício ' + (i + 1) + ': ' + esc(ex.title) + '</h3>' +
+      '<p>' + esc(ex.text) + '</p>' +
+      (sideFor(ex) && sideFor(ex).exerciseHtml ? sideFor(ex).exerciseHtml(ex) : runHtml(ex.run)) +
+      '<details><summary>Ver dica</summary><div class="det-body"><p>' + ex.hint + '</p></div></details>' +
+      '<details><summary>Ver solução</summary><div class="det-body"><pre class="snip"><code>' + hlBlock(ex.solution) + '</code></pre>' +
+        '<div class="sol-tools"><button class="btn" type="button" data-copy="' + i + '">Copiar código</button></div></div></details>' +
+    '</article>';
+  }
+
+  // ---------- vistas ----------
+  const view = $('#view');
+
+  function renderHome() {
+    view.innerHTML = '';
+    view.appendChild($('#tpl-home').content.cloneNode(true));
+    const next = LESSONS.find(l => !isDone(l.id));
+    const actions = $('#hero-actions');
+    if (!Object.keys(progress).length) {
+      actions.innerHTML = '<a class="btn btn-primary" href="#licao-0">Começar pela lição 0</a><a class="btn" href="#cabula">Ver a cábula</a>';
+    } else if (next) {
+      actions.innerHTML = '<a class="btn btn-primary" href="#licao-' + next.id + '">Continuar: lição ' + next.id + '</a><a class="btn" href="#cabula">Ver a cábula</a>';
+    } else {
+      actions.innerHTML = '<a class="btn btn-primary" href="#cabula">Rever a cábula</a><a class="btn" href="#licao-0">Recomeçar as lições</a>';
+    }
+    $('#home-lessons').innerHTML = LESSONS.map(l =>
+      '<a class="card-lesson" href="#licao-' + l.id + '"><span class="nav-num">' + l.id + '</span><strong>' + esc(l.title) + '</strong><span class="s">' + esc(l.short) + '</span>' +
+      (isDone(l.id) ? '<span class="done-tag">Feita · ' + progress[l.id].best + '/' + progress[l.id].total + '</span>' : '') + '</a>'
+    ).join('');
+  }
+
+  function renderCheat() {
+    view.innerHTML = '';
+    view.appendChild($('#tpl-cheat').content.cloneNode(true));
+    highlightStatic(view);
+  }
+
+  function renderLesson(id) {
+    const L = LESSONS[id];
+    const prev = LESSONS[id - 1];
+    const next = LESSONS[id + 1];
+    view.innerHTML =
+      '<section class="lesson-head"><span class="eyebrow">Lição ' + L.id + ' de ' + (LESSONS.length - 1) + '</span><h1>' + esc(L.title) + '</h1><p class="lead">' + esc(L.short.charAt(0).toUpperCase() + L.short.slice(1)) + '.</p></section>' +
+      '<section class="prose">' + L.body + '</section>' +
+      '<aside class="analogy"><span class="analogy-label">Pensa assim</span><p>' + L.analogy + '</p></aside>' +
+      (L.db && SIDE && SIDE.dbHtml ? '<section class="section"><div class="section-head"><h2>A base de dados desta lição</h2><p>Os exemplos, as perguntas e os exercícios usam estas tabelas.</p></div>' + SIDE.dbHtml(L.db) + '</section>' : '') +
+      '<section class="section"><div class="section-head"><h2>Vê a correr</h2><p>Carrega em "Seguinte" (ou usa as setas do teclado) e acompanha a linha amarela, a memória e o ecrã.</p></div>' +
+        L.examples.map((_, i) => '<div data-viz="' + i + '"></div>').join('') + '</section>' +
+      '<section class="section"><div class="section-head"><h2>Erros comuns</h2></div><ul class="mistakes">' + L.mistakes.map(m => '<li>' + m + '</li>').join('') + '</ul></section>' +
+      '<section class="section"><div class="section-head"><h2>Testa-te</h2><p>Responde sem correr o código. Se precisares, faz a tabela de execução no papel.</p></div><div class="quiz" id="quiz"></div></section>' +
+      '<section class="section"><div class="section-head"><h2>Pratica</h2><p>Escreve o programa no computador antes de abrires a solução.</p></div><div class="exs">' + L.exercises.map(exHtml).join('') + '</div></section>' +
+      '<nav class="pager" aria-label="Navegação entre lições">' +
+        (prev ? '<a href="#licao-' + prev.id + '"><small>← Anterior</small><span>' + prev.id + '. ' + esc(prev.title) + '</span></a>' : '<a href="#inicio"><small>← Início</small><span>Como usar</span></a>') +
+        (next ? '<a class="next" href="#licao-' + next.id + '"><small>Seguinte →</small><span>' + next.id + '. ' + esc(next.title) + '</span></a>' : '<a class="next" href="#cabula"><small>Seguinte →</small><span>' + esc(COURSE.cheatTitle) + '</span></a>') +
+      '</nav>';
+    L.examples.forEach((ex, i) => mountViz($('[data-viz="' + i + '"]', view), ex, i + 1));
+    mountQuiz($('#quiz', view), L);
+    highlightStatic(view);
+    view.querySelectorAll('[data-copy]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const code = L.exercises[Number(btn.dataset.copy)].solution;
+        try {
+          await navigator.clipboard.writeText(code);
+          btn.textContent = 'Copiado';
+        } catch (e) {
+          const pre = btn.closest('.det-body').querySelector('pre');
+          const r = document.createRange();
+          r.selectNodeContents(pre);
+          const sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(r);
+          btn.textContent = 'Selecionado: usa Ctrl+C';
+        }
+        setTimeout(() => { btn.textContent = 'Copiar código'; }, 2200);
+      });
+    });
+  }
+
+  // ---------- barra lateral ----------
+  function currentKey() {
+    const h = location.hash.replace('#', '');
+    if (h === 'cabula') return 'cabula';
+    const m = h.match(/^licao-(\d+)$/);
+    if (m && LESSONS[Number(m[1])]) return 'licao-' + m[1];
+    return 'inicio';
+  }
+  function renderSidebar() {
+    const key = currentKey();
+    const done = LESSONS.filter(l => isDone(l.id)).length;
+    $('#progress').innerHTML = '<span>' + done + ' de ' + LESSONS.length + ' lições feitas</span><div class="progress-track"><div class="progress-fill" style="width:' + (done / LESSONS.length * 100) + '%"></div></div>';
+    const cur = k => (key === k ? ' aria-current="page"' : '');
+    $('#nav').innerHTML =
+      '<a href="#inicio"' + cur('inicio') + '><span class="nav-icon">~</span><span>Início</span><span></span></a>' +
+      '<div class="nav-label">Lições</div>' +
+      LESSONS.map(l => '<a href="#licao-' + l.id + '"' + cur('licao-' + l.id) + '><span class="nav-num">' + l.id + '</span><span>' + esc(l.title) + '</span><span class="nav-done">' + (isDone(l.id) ? '✓' : '') + '</span></a>').join('') +
+      '<div class="nav-label">Consulta</div>' +
+      '<a href="#cabula"' + cur('cabula') + '><span class="nav-icon">{ }</span><span>' + esc(COURSE.cheatTitle) + '</span><span></span></a>';
+  }
+
+  // ---------- menu no telemóvel ----------
+  const sidebar = $('#sidebar');
+  const menuBtn = $('#menu-btn');
+  let scrim = null;
+  function setMenu(open) {
+    sidebar.classList.toggle('open', open);
+    menuBtn.setAttribute('aria-expanded', String(open));
+    if (open && !scrim) {
+      scrim = document.createElement('div');
+      scrim.className = 'scrim';
+      scrim.addEventListener('click', () => setMenu(false));
+      document.body.appendChild(scrim);
+    } else if (!open && scrim) {
+      scrim.remove();
+      scrim = null;
+    }
+  }
+  menuBtn.addEventListener('click', () => setMenu(!sidebar.classList.contains('open')));
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') setMenu(false); });
+
+  // ---------- rotas ----------
+  function route() {
+    const key = currentKey();
+    if (key === 'cabula') renderCheat();
+    else if (key.indexOf('licao-') === 0) renderLesson(Number(key.slice(6)));
+    else renderHome();
+    renderSidebar();
+    setMenu(false);
+    window.scrollTo(0, 0);
+  }
+  window.addEventListener('hashchange', route);
+  route();
+})();
+</script>
+</body>
+</html>

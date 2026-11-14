@@ -282,6 +282,7 @@ pre.snip {
   line-height: 1.6; padding: 10px 14px; white-space: pre-wrap; overflow-wrap: anywhere; min-height: 4.8em; max-height: 15em; overflow-y: auto;
 }
 .term .in { color: var(--term-in); font-weight: 600; }
+.term .err-line { color: #ff8a7a; font-weight: 600; }
 .term .enter { color: var(--term-in); opacity: .55; font-size: .8em; margin-left: 2px; }
 .term .caret { display: inline-block; width: .55em; height: 1.05em; background: var(--term-ink); opacity: .55; vertical-align: text-bottom; }
 .term .ph { color: #7e899f; font-style: italic; }
@@ -2731,7 +2732,9 @@ fn main() {
       if (part.charAt(0) === '⟦') return '<span class="in">' + esc(part.slice(1, -1)) + '</span><span class="enter" aria-hidden="true">↵</span>\n';
       return esc(part);
     }).join('');
-    return html + (withCaret ? '<span class="caret" aria-hidden="true"></span>' : '');
+    // As linhas de erro do compilador ("error TS2322: ...", "error[E0382]: ...", "error CS0029: ...") ficam a vermelho.
+    const coloured = html.replace(/^(error(?:\[E\d+\])?(?: TS\d+| CS\d+)?:.*)$/gm, '<span class="err-line">$1</span>');
+    return coloured + (withCaret ? '<span class="caret" aria-hidden="true"></span>' : '');
   }
 
   // ---------- memória ----------

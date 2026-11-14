@@ -13,7 +13,8 @@ Each course is a single, self-contained HTML page: short lessons, a step-by-step
 | Rust do Zero | `courses/rust` | done, in review |
 | HTML e CSS do Zero | `courses/html` | done, in review |
 | JavaScript do Zero | `courses/javascript` | done, in review |
-| TypeScript | | next |
+| TypeScript do Zero | `courses/typescript` | done, in review |
+| React, Tauri, Expo, Electron | | later, different format (see CLAUDE.md) |
 
 ## Commands
 
