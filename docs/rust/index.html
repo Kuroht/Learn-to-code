@@ -116,6 +116,8 @@ h3 { font-size: 1.15rem; font-weight: 600; }
 h4 { font-size: 1.05rem; font-weight: 600; }
 p { margin: 0; }
 code, pre, kbd { font-family: var(--font-mono); font-size: .88em; }
+/* Sem ligaduras: quem aprende tem de ver === e => tal como se escrevem, não como um só símbolo. */
+code, pre, kbd, .code, .term, .var, .name, .obj, .grid, .opt-txt.mono { font-variant-ligatures: none; }
 :not(pre) > code {
   background: var(--accent-soft);
   padding: .08em .35em;
@@ -157,6 +159,8 @@ code, pre, kbd { font-family: var(--font-mono); font-size: .88em; }
 
 main { padding: 36px clamp(16px, 4vw, 52px) 96px; min-width: 0; }
 .content { max-width: 1060px; margin: 0 auto; display: grid; gap: 40px; grid-template-columns: minmax(0, 1fr); }
+/* As grelhas de dentro também não podem crescer com uma linha de código comprida (o pre tem scroll próprio). */
+.section, .quiz, .q, .exs, .ex, .det-body { grid-template-columns: minmax(0, 1fr); }
 .prose { max-width: 68ch; display: grid; gap: 14px; }
 .prose ul { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
 
@@ -703,7 +707,7 @@ for p in s.split_whitespace() { }</code></pre>
 </template>
 
 <script>
-const COURSE = {"slug":"rust","title":"Rust do Zero","storageKey":"rustdozero-progresso-v1","cheatTitle":"Cábula de Rust","vizLabels":{"names":"Pilha (stack)","objects":"Heap","moved":"(movido)","orphan":"sem dono: memória libertada (drop)"}};
+const COURSE = {"slug":"rust","title":"Rust do Zero","storageKey":"rustdozero-progresso-v1","cheatTitle":"Cábula de Rust","vizLabels":{"names":"Pilha (stack)","objects":"Heap","moved":"(movido)","orphan":"sem dono: memória libertada (drop)"},"viz":"refs"};
 // Realce de sintaxe para Rust. Cada grupo da regex corresponde, pela ordem, a uma classe em "classes".
 // Os macros (println!, vec!) e as funções aparecem com a cor das funções.
 const SYNTAX = {
@@ -716,7 +720,9 @@ const SYNTAX = {
 // Uma variável que aponta para um objeto mostra "→ #1"; o objeto tem a etiqueta "#1" da mesma cor.
 // Assim, dois nomes a apontar para a mesma lista veem-se logo. Só entra nas páginas com viz: 'refs'.
 
-const VIZ_SIDE = (function () {
+// Cada visualizador regista-se em VIZ_MODES com o seu nome; um curso (ou um exemplo) escolhe qual usa.
+if (typeof VIZ_MODES === 'undefined') var VIZ_MODES = {};
+VIZ_MODES.refs = (function () {
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const isRef = v => typeof v === 'string' && v.charAt(0) === '@';
   // Os textos dos painéis: por omissão os do Python; um curso pode trocá-los em course.js (vizLabels).
@@ -832,7 +838,6 @@ const VIZ_SIDE = (function () {
   };
 })();
 
-if (typeof module !== 'undefined') module.exports = { VIZ_SIDE };
 
 </script>
 <script>
@@ -977,6 +982,8 @@ function buildSteps(raw, initialTables) {
   // heap: os objetos ({ id: { type, value } }). Um objeto sem nomes aparece desbotado num passo e desaparece no seguinte.
   let heap = {};
   let orphans = [];
+  // acts: as ações feitas na página até aqui (cliques, texto escrito), para o visualizador as repetir.
+  let acts = [];
   const res = [];
   raw.forEach((s, idx) => {
     frames = JSON.parse(JSON.stringify(frames));
@@ -985,6 +992,7 @@ function buildSteps(raw, initialTables) {
     orphans.forEach(id => { delete heap[id]; });
     const where = ' (passo ' + (idx + 1) + ')';
     applyTableOps(tables, s, where, nextId);
+    if (s.act) acts = acts.concat([s.act]);
     // obj: cria ou muda objetos: { o1: ['list', ['@o2', 3]] }
     if (s.obj) {
       for (const [id, spec] of Object.entries(s.obj)) heap[id] = { type: spec[0], value: JSON.parse(JSON.stringify(spec[1])) };
@@ -1046,7 +1054,7 @@ function buildSteps(raw, initialTables) {
     allValues.flatMap(refsIn).forEach(id => { if (!heap[id]) throw new Error('referência para um objeto inexistente: @' + id + where); });
     orphans = unreachable(frames, heap);
     // sel, box, chk e width são do curso de HTML: o visualizador da página lê-os de cada passo.
-    res.push({ l: s.l, frames, out, n: s.n || '', tables, tmarks: s.tm || {}, grid, err: s.err || '', heap, orphans, sel: s.sel || null, box: s.box || null, width: s.width || null });
+    res.push({ l: s.l, frames, out, n: s.n || '', tables, tmarks: s.tm || {}, grid, err: s.err || '', heap, orphans, sel: s.sel || null, box: s.box || null, width: s.width || null, acts });
   });
   return res;
 }
@@ -2791,11 +2799,15 @@ fn main() {
   }
 
   // ---------- visualizador ----------
-  // Alguns cursos trocam o painel da direita (Memória + Ecrã) por outro, definido em VIZ_SIDE
-  // (por exemplo, no SQL: Base de dados + Resultado). Sem VIZ_SIDE fica o painel do C.
-  const SIDE = typeof VIZ_SIDE !== 'undefined' ? VIZ_SIDE : null;
+  // Alguns cursos trocam o painel da direita (Memória + Ecrã) por outro, registado em VIZ_MODES
+  // (por exemplo, no SQL: Base de dados + Resultado). Cada exemplo ou exercício pode escolher o seu
+  // com viz: '...'; senão usa o do curso (COURSE.viz). Sem nenhum, fica o painel do C.
+  const SIDES = typeof VIZ_MODES !== 'undefined' ? VIZ_MODES : {};
+  const sideFor = item => SIDES[(item && item.viz) || COURSE.viz] || null;
+  const SIDE = sideFor(null);
 
   function mountViz(host, ex, num) {
+    const side = sideFor(ex);
     const steps = buildSteps(ex.steps, ex.db);
     const lines = ex.code.split('\n');
     const hasAddr = ex.steps.some(s => s.d && Object.values(s.d).some(vs => Object.values(vs).some(spec => spec[2])));
@@ -2819,7 +2831,7 @@ fn main() {
         '<div class="panel"><div class="panel-label"><span>Código</span><span>▶ = linha a correr</span></div><div class="code">' +
           lines.map((l, i) => '<div class="ln" data-n="' + (i + 1) + '"><span class="no">' + (i + 1) + '</span><span class="arrow"></span><span class="src">' + (hlLine(l) || ' ') + '</span></div>').join('') +
         '</div></div>' +
-        '<div class="viz-side">' + (SIDE ? SIDE.panelsHtml() :
+        '<div class="viz-side">' + (side ? side.panelsHtml() :
           '<div class="panel"><div class="panel-label"><span>Memória</span>' + (hasAddr ? '<span class="addr-note">endereços de exemplo</span>' : '<span>amarelo = mudou agora</span>') + '</div><div class="mem"></div></div>' +
           '<div class="panel out"><div class="panel-label"><span>Ecrã</span></div><pre class="term"></pre></div>') +
         '</div>' +
@@ -2846,8 +2858,8 @@ fn main() {
       });
       noteLine.textContent = 'linha ' + s.l;
       noteText.innerHTML = s.n;
-      if (SIDE) {
-        SIDE.render(host, s, prev, { renderTerm, isLast: cur === steps.length - 1, ex });
+      if (side) {
+        side.render(host, s, prev, { renderTerm, isLast: cur === steps.length - 1, ex });
       } else {
         mem.innerHTML = memHtml(s.frames, prev ? prev.frames : null);
         term.innerHTML = renderTerm(s.out, cur < steps.length - 1);
@@ -2948,7 +2960,7 @@ fn main() {
     return '<article class="ex">' +
       '<h3>Exercício ' + (i + 1) + ': ' + esc(ex.title) + '</h3>' +
       '<p>' + esc(ex.text) + '</p>' +
-      (SIDE && SIDE.exerciseHtml ? SIDE.exerciseHtml(ex) : runHtml(ex.run)) +
+      (sideFor(ex) && sideFor(ex).exerciseHtml ? sideFor(ex).exerciseHtml(ex) : runHtml(ex.run)) +
       '<details><summary>Ver dica</summary><div class="det-body"><p>' + ex.hint + '</p></div></details>' +
       '<details><summary>Ver solução</summary><div class="det-body"><pre class="snip"><code>' + hlBlock(ex.solution) + '</code></pre>' +
         '<div class="sol-tools"><button class="btn" type="button" data-copy="' + i + '">Copiar código</button></div></div></details>' +

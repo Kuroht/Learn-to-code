@@ -1,0 +1,68 @@
+  <section class="hero">
+    <span class="eyebrow">Desenvolvimento web · depois do HTML e do CSS</span>
+    <h1>Aprender JavaScript a ver valores, objetos e a página</h1>
+    <p>Onze lições curtas, do primeiro <code>console.log</code> às classes, ao DOM e aos eventos. Em cada exemplo carregas em "Seguinte" e vês as variáveis, os objetos no heap e, nas últimas lições, a página a reagir.</p>
+    <div class="hero-actions" id="hero-actions"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>Como usar</h2></div>
+    <ol class="steps">
+      <li><h3>Lê a explicação</h3><p>É curta e compara com o C e com o Python sempre que ajuda.</p></li>
+      <li><h3>Corre o exemplo</h3><p>Antes de cada "Seguinte", tenta adivinhar o que aparece no ecrã. No JavaScript, as surpresas vêm quase sempre das conversões de tipos.</p></li>
+      <li><h3>Responde às perguntas</h3><p>"O que aparece no ecrã?" e, nas lições do DOM, "como fica a página?". Cada resposta traz a explicação.</p></li>
+      <li><h3>Faz os exercícios no computador</h3><p>Corre os programas com <code>node programa.js</code>, e as páginas abrindo o ficheiro HTML no browser.</p></li>
+    </ol>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>Lições</h2><p>As lições 0 a 8 são a linguagem; a 9 e a 10 usam-na para mexer na página.</p></div>
+    <div class="grid-lessons" id="home-lessons"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>As três armadilhas do JavaScript</h2>
+      <p>Saber estas três resolve a maioria das perguntas "o que aparece no ecrã?".</p>
+    </div>
+    <div class="two">
+      <div class="prose">
+        <p><strong>1. O <code>+</code> com texto junta, os outros operadores convertem.</strong> <code>"5" + 3</code> dá "53", mas <code>"5" * 3</code> dá 15. Converte de propósito com <code>Number(...)</code>.</p>
+        <p><strong>2. Usa sempre <code>===</code>.</strong> O <code>==</code> converte tipos antes de comparar e dá resultados estranhos (<code>0 == false</code> é verdade).</p>
+        <p><strong>3. Objetos e arrays são referências.</strong> <code>const b = a</code> não copia: as duas variáveis apontam para o mesmo objeto. Copia com <code>[...a]</code> ou <code>{ ...a }</code>.</p>
+      </div>
+      <div class="t-wrap">
+        <table class="t trace">
+          <thead><tr><th>Código</th><th>Dá</th></tr></thead>
+          <tbody>
+            <tr><td>"5" + 3</td><td>"53"</td></tr>
+            <tr><td>"5" * 3</td><td>15</td></tr>
+            <tr><td>7 / 2</td><td>3.5</td></tr>
+            <tr class="hl"><td>5 === "5"</td><td>false</td></tr>
+            <tr><td>[1] === [1]</td><td>false</td></tr>
+            <tr><td>[10, 9, 1].sort()</td><td>[1, 10, 9]</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="two">
+    <div class="box">
+      <h2>Onde praticar</h2>
+      <ul>
+        <li><strong>Sem instalar nada:</strong> abre as ferramentas do browser (F12), vai ao separador Consola e escreve JavaScript diretamente. Os objetos aparecem um pouco diferentes do Node, mas os valores são os mesmos.</li>
+        <li><strong>No teu computador:</strong> instala o <a href="https://nodejs.org">Node.js</a>, escreve o programa num ficheiro <code>ola.js</code> e corre <code>node ola.js</code>.</li>
+        <li>Para as lições do DOM, escreve um ficheiro HTML com um <code>&lt;script&gt;</code> no fim do body e abre-o no browser. Os erros aparecem na consola (F12).</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h2>Para quem está a explicar</h2>
+      <ul>
+        <li>Pede-lhe que diga o que aparece no ecrã <em>antes</em> de carregar em "Seguinte", sobretudo nas lições 1 e 7.</li>
+        <li>Quando um valor sai estranho, usem <code>console.log(typeof x, x)</code>: quase sempre é texto onde se esperava um número.</li>
+        <li>Nas lições 4 a 7, desenhem as variáveis e os objetos com setas, como o visualizador.</li>
+        <li>Nas lições do DOM, abram a consola do browser juntos: os erros dizem a linha e o que estava null ou undefined.</li>
+      </ul>
+    </div>
+  </section>

@@ -139,6 +139,8 @@ function buildSteps(raw, initialTables) {
   // heap: os objetos ({ id: { type, value } }). Um objeto sem nomes aparece desbotado num passo e desaparece no seguinte.
   let heap = {};
   let orphans = [];
+  // acts: as ações feitas na página até aqui (cliques, texto escrito), para o visualizador as repetir.
+  let acts = [];
   const res = [];
   raw.forEach((s, idx) => {
     frames = JSON.parse(JSON.stringify(frames));
@@ -147,6 +149,7 @@ function buildSteps(raw, initialTables) {
     orphans.forEach(id => { delete heap[id]; });
     const where = ' (passo ' + (idx + 1) + ')';
     applyTableOps(tables, s, where, nextId);
+    if (s.act) acts = acts.concat([s.act]);
     // obj: cria ou muda objetos: { o1: ['list', ['@o2', 3]] }
     if (s.obj) {
       for (const [id, spec] of Object.entries(s.obj)) heap[id] = { type: spec[0], value: JSON.parse(JSON.stringify(spec[1])) };
@@ -208,7 +211,7 @@ function buildSteps(raw, initialTables) {
     allValues.flatMap(refsIn).forEach(id => { if (!heap[id]) throw new Error('referência para um objeto inexistente: @' + id + where); });
     orphans = unreachable(frames, heap);
     // sel, box, chk e width são do curso de HTML: o visualizador da página lê-os de cada passo.
-    res.push({ l: s.l, frames, out, n: s.n || '', tables, tmarks: s.tm || {}, grid, err: s.err || '', heap, orphans, sel: s.sel || null, box: s.box || null, width: s.width || null });
+    res.push({ l: s.l, frames, out, n: s.n || '', tables, tmarks: s.tm || {}, grid, err: s.err || '', heap, orphans, sel: s.sel || null, box: s.box || null, width: s.width || null, acts });
   });
   return res;
 }

@@ -32,10 +32,12 @@ function buildCourse(slug) {
   const { config } = course;
   const engine = read('engine.js');
   // O objeto COURSE dá ao código da página o que muda de curso para curso.
-  // Um curso com viz: 'tables' (SQL) leva também o visualizador de tabelas e o seu CSS.
-  const vizJs = config.viz ? '\n' + read('viz-' + config.viz + '.js') : '';
-  const vizCss = config.viz ? '<style>\n' + read('viz-' + config.viz + '.css') + '</style>\n' : '';
-  const courseJs = 'const COURSE = ' + JSON.stringify({ slug, title: config.title, storageKey: config.storageKey, cheatTitle: config.cheatTitle, vizLabels: config.vizLabels || null }) + ';\n' + course.syntaxSource + vizJs;
+  // Um curso com viz: 'tables' (SQL) leva também o visualizador de tabelas e o seu CSS. viz pode ser uma lista
+  // (o JavaScript usa ['refs', 'page']): entram todos, e o primeiro é o que os exemplos usam por omissão.
+  const vizList = [].concat(config.viz || []);
+  const vizJs = vizList.map(v => '\n' + read('viz-' + v + '.js')).join('');
+  const vizCss = vizList.map(v => '<style>\n' + read('viz-' + v + '.css') + '</style>\n').join('');
+  const courseJs = 'const COURSE = ' + JSON.stringify({ slug, title: config.title, storageKey: config.storageKey, cheatTitle: config.cheatTitle, vizLabels: config.vizLabels || null, viz: vizList[0] || null }) + ';\n' + course.syntaxSource + vizJs;
   const inlined = engine + courseJs + course.lessonsSource;
   if (inlined.includes('</script')) throw new Error(slug + ': o texto "</script" partia a página');
 

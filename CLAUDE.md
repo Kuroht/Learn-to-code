@@ -91,6 +91,18 @@ Exercise `run` uses the same `⟦...⟧` convention. All of `o` joined together 
 - Examples after lesson 0 omit the skeleton (the browser adds it). Page text may use accents (the pages are UTF-8).
 - The default page is 800px wide with the body's 8px margin, so a block is 784px wide; keep that in mind for width claims.
 
+## JavaScript course specifics (`courses/javascript`)
+
+- Programs run inside Node with the `vm` module (no new processes); output is `util.format`, i.e. exactly Node's console.log
+  (`[ 1, 2 ]`, `{ nome: 'Ana' }`). An uncaught error prints `Name: message`. setTimeout and Promises are awaited.
+- `viz: ['refs', 'page']`: a course can list several visualizers (registered in `VIZ_MODES`); the first is the default and an
+  example or exercise picks another with `viz: 'page'`. The DOM lessons (9, 10) use the page visualizer and are checked in headless
+  Edge through `shared/page-check.js` (allowed by the owner for these lessons). Steps can have `act: ['click', sel]` or
+  `act: ['input', sel, text]`; quizzes and exercises can have `acts`.
+- Lesson code lives inside JS template strings, so write `‵` for a backtick, `¤{` for `${` and `<\/script>` for a closing script
+  tag; the `J` helper converts them. In `` H`...` `` text use `&#96;` and `&#36;`.
+- Avoid "clique"/"clicar" in text: say "carregar no botão".
+
 ## Rust course specifics (`courses/rust`)
 
 - **Windows on the owner's machine blocks the .exe files rustc produces.** The runner compiles for `wasm32-wasip1`

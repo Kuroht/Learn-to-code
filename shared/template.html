@@ -116,6 +116,8 @@ h3 { font-size: 1.15rem; font-weight: 600; }
 h4 { font-size: 1.05rem; font-weight: 600; }
 p { margin: 0; }
 code, pre, kbd { font-family: var(--font-mono); font-size: .88em; }
+/* Sem ligaduras: quem aprende tem de ver === e => tal como se escrevem, não como um só símbolo. */
+code, pre, kbd, .code, .term, .var, .name, .obj, .grid, .opt-txt.mono { font-variant-ligatures: none; }
 :not(pre) > code {
   background: var(--accent-soft);
   padding: .08em .35em;
@@ -157,6 +159,8 @@ code, pre, kbd { font-family: var(--font-mono); font-size: .88em; }
 
 main { padding: 36px clamp(16px, 4vw, 52px) 96px; min-width: 0; }
 .content { max-width: 1060px; margin: 0 auto; display: grid; gap: 40px; grid-template-columns: minmax(0, 1fr); }
+/* As grelhas de dentro também não podem crescer com uma linha de código comprida (o pre tem scroll próprio). */
+.section, .quiz, .q, .exs, .ex, .det-body { grid-template-columns: minmax(0, 1fr); }
 .prose { max-width: 68ch; display: grid; gap: 14px; }
 .prose ul { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
 
@@ -561,11 +565,15 @@ details[open] summary { border-bottom: 1px solid var(--line); }
   }
 
   // ---------- visualizador ----------
-  // Alguns cursos trocam o painel da direita (Memória + Ecrã) por outro, definido em VIZ_SIDE
-  // (por exemplo, no SQL: Base de dados + Resultado). Sem VIZ_SIDE fica o painel do C.
-  const SIDE = typeof VIZ_SIDE !== 'undefined' ? VIZ_SIDE : null;
+  // Alguns cursos trocam o painel da direita (Memória + Ecrã) por outro, registado em VIZ_MODES
+  // (por exemplo, no SQL: Base de dados + Resultado). Cada exemplo ou exercício pode escolher o seu
+  // com viz: '...'; senão usa o do curso (COURSE.viz). Sem nenhum, fica o painel do C.
+  const SIDES = typeof VIZ_MODES !== 'undefined' ? VIZ_MODES : {};
+  const sideFor = item => SIDES[(item && item.viz) || COURSE.viz] || null;
+  const SIDE = sideFor(null);
 
   function mountViz(host, ex, num) {
+    const side = sideFor(ex);
     const steps = buildSteps(ex.steps, ex.db);
     const lines = ex.code.split('\n');
     const hasAddr = ex.steps.some(s => s.d && Object.values(s.d).some(vs => Object.values(vs).some(spec => spec[2])));
@@ -589,7 +597,7 @@ details[open] summary { border-bottom: 1px solid var(--line); }
         '<div class="panel"><div class="panel-label"><span>Código</span><span>▶ = linha a correr</span></div><div class="code">' +
           lines.map((l, i) => '<div class="ln" data-n="' + (i + 1) + '"><span class="no">' + (i + 1) + '</span><span class="arrow"></span><span class="src">' + (hlLine(l) || ' ') + '</span></div>').join('') +
         '</div></div>' +
-        '<div class="viz-side">' + (SIDE ? SIDE.panelsHtml() :
+        '<div class="viz-side">' + (side ? side.panelsHtml() :
           '<div class="panel"><div class="panel-label"><span>Memória</span>' + (hasAddr ? '<span class="addr-note">endereços de exemplo</span>' : '<span>amarelo = mudou agora</span>') + '</div><div class="mem"></div></div>' +
           '<div class="panel out"><div class="panel-label"><span>Ecrã</span></div><pre class="term"></pre></div>') +
         '</div>' +
@@ -616,8 +624,8 @@ details[open] summary { border-bottom: 1px solid var(--line); }
       });
       noteLine.textContent = 'linha ' + s.l;
       noteText.innerHTML = s.n;
-      if (SIDE) {
-        SIDE.render(host, s, prev, { renderTerm, isLast: cur === steps.length - 1, ex });
+      if (side) {
+        side.render(host, s, prev, { renderTerm, isLast: cur === steps.length - 1, ex });
       } else {
         mem.innerHTML = memHtml(s.frames, prev ? prev.frames : null);
         term.innerHTML = renderTerm(s.out, cur < steps.length - 1);
@@ -718,7 +726,7 @@ details[open] summary { border-bottom: 1px solid var(--line); }
     return '<article class="ex">' +
       '<h3>Exercício ' + (i + 1) + ': ' + esc(ex.title) + '</h3>' +
       '<p>' + esc(ex.text) + '</p>' +
-      (SIDE && SIDE.exerciseHtml ? SIDE.exerciseHtml(ex) : runHtml(ex.run)) +
+      (sideFor(ex) && sideFor(ex).exerciseHtml ? sideFor(ex).exerciseHtml(ex) : runHtml(ex.run)) +
       '<details><summary>Ver dica</summary><div class="det-body"><p>' + ex.hint + '</p></div></details>' +
       '<details><summary>Ver solução</summary><div class="det-body"><pre class="snip"><code>' + hlBlock(ex.solution) + '</code></pre>' +
         '<div class="sol-tools"><button class="btn" type="button" data-copy="' + i + '">Copiar código</button></div></div></details>' +

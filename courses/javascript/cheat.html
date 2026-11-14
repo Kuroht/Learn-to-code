@@ -1,0 +1,135 @@
+  <section class="lesson-head">
+    <span class="eyebrow">Resumo</span>
+    <h1>Cábula de JavaScript</h1>
+    <p class="lead">Tudo o que as lições ensinam, numa página. Boa para ter aberta enquanto fazes exercícios.</p>
+  </section>
+  <div class="cheat">
+    <div class="box">
+      <h3>Básico</h3>
+<pre class="snip"><code class="js">// comentário
+const nome = "Ana";          // não muda
+let idade = 19;              // pode mudar
+console.log("Nome:", nome);
+console.log(`${nome} tem ${idade} anos`);
+typeof idade                 // "number"
+Number("12")  String(12)  (13.666).toFixed(2)</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Tipos</h3>
+      <div class="t-wrap"><table class="t">
+        <tbody>
+          <tr><td><code>number</code></td><td><code>17</code>, <code>3.5</code> (não há int)</td></tr>
+          <tr><td><code>string</code></td><td><code>"Ana"</code>, <code>'Ana'</code>, <code>`Olá ${nome}`</code></td></tr>
+          <tr><td><code>boolean</code></td><td><code>true</code>, <code>false</code></td></tr>
+          <tr><td><code>undefined</code></td><td>sem valor</td></tr>
+          <tr><td><code>null</code></td><td>"nada", de propósito</td></tr>
+          <tr><td>objetos</td><td><code>{ ... }</code>, <code>[ ... ]</code>, funções, classes (por referência)</td></tr>
+        </tbody>
+      </table></div>
+      <p>Falsy: <code>false 0 "" null undefined NaN</code>. Tudo o resto é verdadeiro.</p>
+    </div>
+
+    <div class="box">
+      <h3>Decisões e ciclos</h3>
+<pre class="snip"><code class="js">if (nota >= 10 && nota <= 20) { ... }
+else { ... }
+const r = nota >= 10 ? "aprovado" : "reprovado";
+
+for (let i = 0; i < 5; i++) { ... }
+for (const x of lista) { ... }   // elementos
+for (const chave in objeto) { ... }
+while (cond) { ... }</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Funções</h3>
+<pre class="snip"><code class="js">function soma(a, b) {
+  return a + b;
+}
+const dobro = (x) => x * 2;
+const ola = (nome = "aluno") => "Ola, " + nome;</code></pre>
+      <p>Sem <code>return</code>, devolve <code>undefined</code>. Argumentos em falta ficam <code>undefined</code>.</p>
+    </div>
+
+    <div class="box">
+      <h3>Arrays</h3>
+<pre class="snip"><code class="js">const v = [12, 17, 9];
+v.length  v[0]  v[v.length - 1]
+v.push(15)  v.pop()  v.includes(9)  v.indexOf(9)
+v.map(x => x * 2)          // array novo
+v.filter(x => x >= 10)     // array novo
+v.find(x => x > 10)        // o primeiro
+v.reduce((s, x) => s + x, 0)
+v.sort((a, b) => a - b)    // números! (muda v)
+v.join(", ")
+const copia = [...v];</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Objetos e classes</h3>
+<pre class="snip"><code class="js">const aluno = { nome: "Ana", nota: 17 };
+aluno.nome  aluno["nota"]  aluno.curso = "LEI";
+Object.keys(aluno)  JSON.stringify(aluno)
+const copia = { ...aluno };          // cópia rasa
+const funda = structuredClone(aluno);
+
+class Conta {
+  constructor(titular) { this.titular = titular; this.saldo = 0; }
+  depositar(v) { this.saldo += v; }
+}
+const c = new Conta("Ana");</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>DOM e eventos</h3>
+<pre class="snip"><code class="js">const el = document.querySelector("#titulo");
+document.querySelectorAll("li")
+el.textContent = "Olá";
+el.style.color = "blue";
+el.classList.add("ativo");  // remove, toggle
+const li = document.createElement("li");
+lista.append(li);
+
+botao.addEventListener("click", () => { ... });
+campo.addEventListener("input", () => {
+  console.log(campo.value);  // sempre texto
+});
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+});</code></pre>
+      <p>O <code>&lt;script&gt;</code> vai no fim do body.</p>
+    </div>
+
+    <div class="box">
+      <h3>Mensagens de erro</h3>
+      <div class="t-wrap"><table class="t">
+        <thead><tr><th>Mensagem</th><th>Costuma ser</th></tr></thead>
+        <tbody>
+          <tr><td><code>ReferenceError: x is not defined</code></td><td>nome mal escrito, ou variável de outro bloco/função</td></tr>
+          <tr><td><code>TypeError: Assignment to constant variable.</code></td><td>mudar uma <code>const</code>: usa <code>let</code></td></tr>
+          <tr><td><code>TypeError: Cannot read properties of undefined (reading 'nome')</code></td><td>o objeto antes do ponto é undefined (propriedade ou índice errado)</td></tr>
+          <tr><td><code>TypeError: Cannot set properties of null</code></td><td>o <code>querySelector</code> não encontrou o elemento (seletor errado, ou script antes do HTML)</td></tr>
+          <tr><td><code>TypeError: x is not a function</code></td><td>chamaste algo que não é função (nome mal escrito, ou faltou um método)</td></tr>
+          <tr><td><code>TypeError: Class constructor X cannot be invoked without 'new'</code></td><td>faltou o <code>new</code></td></tr>
+          <tr><td><code>SyntaxError: Unexpected token</code></td><td>falta ou sobra um parêntese, chaveta ou vírgula</td></tr>
+          <tr><td><code>SyntaxError: Identifier 'x' has already been declared</code></td><td>dois <code>let</code>/<code>const</code> com o mesmo nome no mesmo bloco</td></tr>
+          <tr><td><code>NaN</code> no resultado (sem erro)</td><td>uma conta com texto que não é número, ou com undefined</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="box">
+      <h3>Antes de entregar</h3>
+      <ul class="checklist">
+        <li>As comparações usam <code>===</code> e <code>!==</code>.</li>
+        <li>Os valores que vêm de campos ou de texto foram convertidos com <code>Number</code> antes das contas.</li>
+        <li>Usas <code>const</code> por omissão e <code>let</code> só onde a variável muda; nunca <code>var</code>.</li>
+        <li>As funções que devem devolver um valor têm <code>return</code>.</li>
+        <li>Os <code>sort</code> de números têm a função <code>(a, b) =&gt; a - b</code>.</li>
+        <li>Onde querias uma cópia de um array ou objeto, fizeste uma (<code>[...v]</code>, <code>{ ...o }</code>).</li>
+        <li>Nos eventos, passaste a função sem a chamar (sem parênteses).</li>
+        <li>A consola do browser (F12) não mostra erros.</li>
+      </ul>
+    </div>
+  </div>

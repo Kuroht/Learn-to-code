@@ -12,7 +12,8 @@ Each course is a single, self-contained HTML page: short lessons, a step-by-step
 | C# do Zero | `courses/csharp` | done, in review |
 | Rust do Zero | `courses/rust` | done, in review |
 | HTML e CSS do Zero | `courses/html` | done, in review |
-| JavaScript, TypeScript | | planned, in that order |
+| JavaScript do Zero | `courses/javascript` | done, in review |
+| TypeScript | | next |
 
 ## Commands
 

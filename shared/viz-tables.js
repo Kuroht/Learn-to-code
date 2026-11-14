@@ -25,7 +25,9 @@ function dbToSql(db) {
   }).join('\n\n');
 }
 
-const VIZ_SIDE = (function () {
+// Cada visualizador regista-se em VIZ_MODES com o seu nome; um curso (ou um exemplo) escolhe qual usa.
+if (typeof VIZ_MODES === 'undefined') var VIZ_MODES = {};
+VIZ_MODES.tables = (function () {
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
   function cellHtml(value, changed) {
@@ -132,4 +134,4 @@ const VIZ_SIDE = (function () {
   };
 })();
 
-if (typeof module !== 'undefined') module.exports = { dbToSql, cellText, VIZ_SIDE };
+if (typeof module !== 'undefined') module.exports = { dbToSql, cellText };

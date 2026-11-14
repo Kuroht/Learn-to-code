@@ -3,7 +3,9 @@
 // Uma variável que aponta para um objeto mostra "→ #1"; o objeto tem a etiqueta "#1" da mesma cor.
 // Assim, dois nomes a apontar para a mesma lista veem-se logo. Só entra nas páginas com viz: 'refs'.
 
-const VIZ_SIDE = (function () {
+// Cada visualizador regista-se em VIZ_MODES com o seu nome; um curso (ou um exemplo) escolhe qual usa.
+if (typeof VIZ_MODES === 'undefined') var VIZ_MODES = {};
+VIZ_MODES.refs = (function () {
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const isRef = v => typeof v === 'string' && v.charAt(0) === '@';
   // Os textos dos painéis: por omissão os do Python; um curso pode trocá-los em course.js (vizLabels).
@@ -119,4 +121,3 @@ const VIZ_SIDE = (function () {
   };
 })();
 
-if (typeof module !== 'undefined') module.exports = { VIZ_SIDE };
