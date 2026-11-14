@@ -7,7 +7,7 @@ const isWindows = process.platform === 'win32';
 
 module.exports = {
   toolName: 'gcc',
-  installHint: 'Instala o gcc. No Windows: MSYS2 (https://www.msys2.org) e depois "pacman -S mingw-w64-ucrt-x86_64-gcc", com C:\\msys64\\ucrt64\\bin no PATH. No Linux: "sudo apt install gcc".',
+  installHint: 'Instala o gcc. No Windows: "winget install BrechtSanders.WinLibs.POSIX.UCRT" e abre um terminal novo. No Linux: "sudo apt install gcc".',
 
   // Diz se o gcc está instalado.
   isAvailable() {
