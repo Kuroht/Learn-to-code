@@ -696,7 +696,17 @@ fclose(f);
 </template>
 
 <script>
-// ===== C do Zero — motor do visualizador (partilhado entre a página e os testes) =====
+const COURSE = {"slug":"c","title":"C do Zero","storageKey":"cdozero-progresso-v1","cheatTitle":"Cábula de C"};
+// Realce de sintaxe para C. Cada grupo da regex corresponde, pela ordem, a uma classe em "classes".
+const SYNTAX = {
+  re: /(\/\/.*$)|(^\s*#.*$)|("(?:\\.|[^"\\])*")|('(?:\\.|[^'\\])')|\b(int|double|float|char|void|long|short|unsigned|signed|const|struct|FILE|size_t)\b|\b(return|if|else|for|while|do|switch|case|break|default|continue|sizeof|typedef|NULL)\b|\b(\d+(?:\.\d+)?)\b|\b([A-Za-z_]\w*)(?=\s*\()/g,
+  classes: ['com', 'pp', 'str', 'str', 'ty', 'kw', 'num', 'fn'],
+};
+
+</script>
+<script>
+// ===== Motor do visualizador: transforma a lista de passos de um exemplo em fotografias da memória. =====
+// É partilhado por todos os cursos e corre tanto na página como nos testes (shared/check.js).
 function parseVarPath(key) {
   const m = key.match(/^([A-Za-z_]\w*)(.*)$/);
   if (!m) throw new Error('caminho inválido: ' + key);
@@ -2229,7 +2239,6 @@ int main(void) {
   }],
 });
 
-if (typeof module !== 'undefined') module.exports = { LESSONS };
 
 </script>
 <script>
@@ -2240,14 +2249,15 @@ if (typeof module !== 'undefined') module.exports = { LESSONS };
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
   // ---------- progresso (só neste browser) ----------
-  const STORE = 'cdozero-progresso-v1';
+  const STORE = COURSE.storageKey;
   let progress = {};
   try { progress = JSON.parse(localStorage.getItem(STORE) || '{}') || {}; } catch (e) { progress = {}; }
   const saveProgress = () => { try { localStorage.setItem(STORE, JSON.stringify(progress)); } catch (e) { /* sem armazenamento */ } };
   const isDone = id => !!progress[id];
 
   // ---------- realce de sintaxe ----------
-  const TOK = /(\/\/.*$)|(^\s*#.*$)|("(?:\\.|[^"\\])*")|('(?:\\.|[^'\\])')|\b(int|double|float|char|void|long|short|unsigned|signed|const|struct|FILE|size_t)\b|\b(return|if|else|for|while|do|switch|case|break|default|continue|sizeof|typedef|NULL)\b|\b(\d+(?:\.\d+)?)\b|\b([A-Za-z_]\w*)(?=\s*\()/g;
+  // Cada curso define SYNTAX: uma regex com um grupo por tipo de token e a classe CSS de cada grupo.
+  const TOK = SYNTAX.re;
   function hlLine(line) {
     let out = '';
     let last = 0;
@@ -2256,7 +2266,8 @@ if (typeof module !== 'undefined') module.exports = { LESSONS };
     while ((m = TOK.exec(line))) {
       if (!m[0].length) { TOK.lastIndex++; continue; }
       out += esc(line.slice(last, m.index));
-      const cls = m[1] ? 'com' : m[2] ? 'pp' : (m[3] || m[4]) ? 'str' : m[5] ? 'ty' : m[6] ? 'kw' : m[7] ? 'num' : 'fn';
+      const group = m.findIndex((g, i) => i > 0 && g !== undefined);
+      const cls = SYNTAX.classes[group - 1];
       out += '<span class="t-' + cls + '">' + esc(m[0]) + '</span>';
       last = m.index + m[0].length;
     }
@@ -2532,7 +2543,7 @@ if (typeof module !== 'undefined') module.exports = { LESSONS };
       '<section class="section"><div class="section-head"><h2>Pratica</h2><p>Escreve o programa no computador antes de abrires a solução.</p></div><div class="exs">' + L.exercises.map(exHtml).join('') + '</div></section>' +
       '<nav class="pager" aria-label="Navegação entre lições">' +
         (prev ? '<a href="#licao-' + prev.id + '"><small>← Anterior</small><span>' + prev.id + '. ' + esc(prev.title) + '</span></a>' : '<a href="#inicio"><small>← Início</small><span>Como usar</span></a>') +
-        (next ? '<a class="next" href="#licao-' + next.id + '"><small>Seguinte →</small><span>' + next.id + '. ' + esc(next.title) + '</span></a>' : '<a class="next" href="#cabula"><small>Seguinte →</small><span>Cábula de C</span></a>') +
+        (next ? '<a class="next" href="#licao-' + next.id + '"><small>Seguinte →</small><span>' + next.id + '. ' + esc(next.title) + '</span></a>' : '<a class="next" href="#cabula"><small>Seguinte →</small><span>' + esc(COURSE.cheatTitle) + '</span></a>') +
       '</nav>';
     L.examples.forEach((ex, i) => mountViz($('[data-viz="' + i + '"]', view), ex, i + 1));
     mountQuiz($('#quiz', view), L);
@@ -2575,7 +2586,7 @@ if (typeof module !== 'undefined') module.exports = { LESSONS };
       '<div class="nav-label">Lições</div>' +
       LESSONS.map(l => '<a href="#licao-' + l.id + '"' + cur('licao-' + l.id) + '><span class="nav-num">' + l.id + '</span><span>' + esc(l.title) + '</span><span class="nav-done">' + (isDone(l.id) ? '✓' : '') + '</span></a>').join('') +
       '<div class="nav-label">Consulta</div>' +
-      '<a href="#cabula"' + cur('cabula') + '><span class="nav-icon">{ }</span><span>Cábula de C</span><span></span></a>';
+      '<a href="#cabula"' + cur('cabula') + '><span class="nav-icon">{ }</span><span>' + esc(COURSE.cheatTitle) + '</span><span></span></a>';
   }
 
   // ---------- menu no telemóvel ----------

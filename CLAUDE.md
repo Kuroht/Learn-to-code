@@ -1,0 +1,64 @@
+# do Zero: conventions
+
+Interactive programming courses in European Portuguese for a first-year LEI student at UTAD.
+C do Zero (`courses/c`) is the reference for structure, style and quality. Read it before writing a new course.
+
+## Course order and workflow
+
+- Order: **C (done) → SQL → Python → C# → Rust → TypeScript.** One course per branch (`course/<slug>`), committed as you go.
+- Stop after each course for review. Don't push or open PRs unless asked.
+- Before starting a course, check its toolchain (`sqlite3`, `python3`, `dotnet`, `rustc`/`cargo`, `node` + `tsc`).
+  If it's missing, say exactly what to install and wait.
+- When a course is done, report: the `npm run check -- <slug>` result, what you weren't sure about, and the path of `docs/<slug>/index.html`.
+- Later (not yet): React, Tauri, Expo and Electron, probably as step-by-step projects rather than variable traces.
+
+## Commands
+
+- `npm run build [-- slug]` builds `docs/<slug>/index.html` and `docs/index.html`.
+- `npm run check -- <slug>` = content review + every program run with the real toolchain + build + browser smoke test.
+  It must pass with zero failures before a course is called done. Warnings must be read and either fixed or explained.
+- Never edit files in `docs/` by hand: they are build output.
+
+## Content rules
+
+- Everything the student reads is in **European Portuguese**: ecrã, ficheiro, utilizador, carregar em, guardar, tu (never tela, arquivo, usuário, você, salvar, clicar, gerúndio "está fazendo"). `check.js` flags common Brazilian forms, but read the text yourself too.
+- Code identifiers may be in Portuguese (`nota`, `soma`, `aluno`). **No accents inside program output** (strings printed to the screen, table data shown as output): some consoles show garbage.
+- 10 to 11 lessons per course (`id` 0..N, equal to the position). Each lesson has:
+  `title`, `short` (lowercase, no final full stop), `body` (short HTML), `analogy` (one "Pensa assim" box),
+  `examples` (1 or 2 step-through examples), `mistakes`, `quiz`, `exercises` (2, each with `run`, `hint`, `solution`).
+- Assume the student already did C do Zero. Compare with C where it helps ("em C fazias X, aqui...").
+- Quizzes: mostly "O que aparece no ecrã?" with `check: true` (the code is run and must match exactly one option).
+  Wrong options come from real beginner mistakes. Every question has an `exp`.
+- Every course has a cheat sheet (`cheat.html`, root element `.cheat`) with the common compiler/runtime error messages and what they usually mean.
+
+## Lesson data format (`courses/<slug>/lessons*.js`)
+
+Helpers at the top of the first file: `` C`...` `` for code (trims the first/last newline), `` H`...` `` for HTML.
+`const LESSONS = []` and one `LESSONS.push({...})` per lesson. The files are concatenated in the order of `course.js → lessonFiles`.
+
+Step format for `examples[].steps`:
+
+| Key | Meaning |
+|---|---|
+| `l` | line being executed (1 = first line of `code`); must be a non-empty line |
+| `push` / `pop` | create a function frame by name / remove the last one |
+| `d` | declare: `{ frame: { name: [type, value, address?] } }` (value may be an array, an array of objects or an object) |
+| `u` | update: `{ frame: { name: v, 'v[2]': v, 's.field': v } }` |
+| `x` | delete: `{ frame: ['i'] }` |
+| `o` | text appended to the screen. `⟦...⟧` marks what the user types; it is also the stdin used by the check |
+| `n` | explanation of the step (HTML) |
+
+Exercise `run` uses the same `⟦...⟧` convention. All of `o` joined together must equal the real program output.
+
+## Code layout
+
+- `shared/` is the same for every course: `template.html` (design + UI), `engine.js`, `build.js`, `check.js`, `smoke.js`.
+  Course-specific text goes in the course folder, never in the template. If a language needs a new kind of
+  visualization (tables for SQL, references for Python/C#, ownership for Rust), add it to the shared template/engine
+  in a way that doesn't change existing courses, then re-run `npm run check` for **every** course.
+- Each course: `course.js`, `lessons*.js`, `home.html`, `cheat.html`, `syntax.js`, `runner.js`.
+- `runner.js` exports `toolName`, `installHint`, `isAvailable()`, `wrapQuiz(code)` and `run(code, stdin, tmpDir)` → `{ out }` or `{ error }` (+ optional `warnings`).
+- `course.js → storageKey` is where student progress lives in localStorage: never change it once a course is published.
+- Design: keep the layout, light/dark, mobile, keyboard arrows and the highlighted current line. Each course only
+  changes its accent colour (`course.js → theme`: `light`/`dark` × `accent`/`accentSoft`). Check contrast in both themes.
+- Files use LF line endings (`.gitattributes`). CRLF inside lesson files would break the code line numbers.

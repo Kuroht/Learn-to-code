@@ -731,4 +731,3 @@ int main(void) {
   }],
 });
 
-if (typeof module !== 'undefined') module.exports = { LESSONS };

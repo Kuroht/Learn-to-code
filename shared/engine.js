@@ -1,4 +1,5 @@
-// ===== C do Zero — motor do visualizador (partilhado entre a página e os testes) =====
+// ===== Motor do visualizador: transforma a lista de passos de um exemplo em fotografias da memória. =====
+// É partilhado por todos os cursos e corre tanto na página como nos testes (shared/check.js).
 function parseVarPath(key) {
   const m = key.match(/^([A-Za-z_]\w*)(.*)$/);
   if (!m) throw new Error('caminho inválido: ' + key);

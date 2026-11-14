@@ -1,0 +1,13 @@
+{
+  "name": "learn-to-code",
+  "private": true,
+  "description": "Cursos interativos de programação em português de Portugal (C do Zero, SQL do Zero, ...).",
+  "scripts": {
+    "build": "node shared/build.js",
+    "check": "node shared/check.js",
+    "smoke": "node shared/smoke.js"
+  },
+  "devDependencies": {
+    "playwright-core": "^1.56.1"
+  }
+}

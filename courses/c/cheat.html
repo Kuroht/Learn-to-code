@@ -1,0 +1,199 @@
+  <section class="lesson-head">
+    <span class="eyebrow">Resumo</span>
+    <h1>Cábula de C</h1>
+    <p class="lead">Tudo o que as lições ensinam, numa página. Boa para ter aberta enquanto fazes exercícios.</p>
+  </section>
+  <div class="cheat">
+    <div class="box">
+      <h3>Estrutura de um programa</h3>
+<pre class="snip"><code class="c">#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;   // só se usares strings
+
+int main(void) {
+    // o programa começa aqui
+    return 0;
+}</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Tipos e formatos</h3>
+      <div class="t-wrap"><table class="t">
+        <thead><tr><th>Tipo</th><th>Exemplo</th><th>printf</th><th>scanf</th></tr></thead>
+        <tbody>
+          <tr><td><code>int</code></td><td><code>-3</code>, <code>42</code></td><td><code>%d</code></td><td><code>%d</code></td></tr>
+          <tr><td><code>double</code></td><td><code>14.5</code></td><td><code>%f</code>, <code>%.2f</code></td><td><code>%lf</code></td></tr>
+          <tr><td><code>float</code></td><td><code>3.14</code></td><td><code>%f</code></td><td><code>%f</code></td></tr>
+          <tr><td><code>char</code></td><td><code>'A'</code></td><td><code>%c</code></td><td><code>" %c"</code></td></tr>
+          <tr><td><code>char[]</code></td><td><code>"Ana"</code></td><td><code>%s</code></td><td><code>%s</code> sem &amp;</td></tr>
+        </tbody>
+      </table></div>
+      <p>No scanf, tudo leva <code>&amp;</code> exceto as strings. Evita acentos no texto do printf: em algumas consolas saem caracteres estranhos.</p>
+    </div>
+
+    <div class="box">
+      <h3>Operadores</h3>
+      <div class="t-wrap"><table class="t">
+        <tbody>
+          <tr><td>Contas</td><td><code>+ - * / %</code></td><td><code>7 / 2</code> → 3 · <code>7 % 2</code> → 1 · <code>7.0 / 2</code> → 3.5</td></tr>
+          <tr><td>Comparar</td><td><code>== != &lt; &gt; &lt;= &gt;=</code></td><td>dão 1 (verdadeiro) ou 0 (falso)</td></tr>
+          <tr><td>Lógicos</td><td><code>&amp;&amp; || !</code></td><td>e · ou · não</td></tr>
+          <tr><td>Atalhos</td><td><code>x++ x-- x += 2</code></td><td><code>x = x + 1</code> · <code>x = x - 1</code> · <code>x = x + 2</code></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="box">
+      <h3>Decisões</h3>
+<pre class="snip"><code class="c">if (nota &gt;= 10 &amp;&amp; nota &lt;= 20) {
+    printf("Aprovado\n");
+} else if (nota &gt;= 0) {
+    printf("Reprovado\n");
+} else {
+    printf("Invalida\n");
+}
+
+switch (opcao) {
+    case 1:
+        printf("Um\n");
+        break;          // não esquecer!
+    default:
+        printf("Outro\n");
+}</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Ciclos</h3>
+<pre class="snip"><code class="c">for (int i = 0; i &lt; n; i++) {   // n voltas: 0 .. n-1
+    ...
+}
+
+while (x &gt; 0) {                 // testa antes
+    x--;
+}
+
+do {                            // testa depois: 1 volta no mínimo
+    scanf("%d", &amp;x);
+} while (x &lt;= 0);               // leva ; no fim</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Funções</h3>
+<pre class="snip"><code class="c">int soma(int a, int b);          // protótipo (se a função vier depois do main)
+
+int soma(int a, int b) {         // devolve um int
+    return a + b;
+}
+
+void mostra(int x) {             // não devolve nada
+    printf("%d\n", x);
+}
+
+void dobra(int *x) {             // muda a variável de quem chama
+    *x = *x * 2;
+}
+// chamar: dobra(&amp;n);</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Arrays e matrizes</h3>
+<pre class="snip"><code class="c">int v[5] = {1, 2, 3, 4, 5};      // índices 0 a 4
+for (int i = 0; i &lt; 5; i++)
+    printf("%d ", v[i]);
+
+int m[2][3];                     // 2 linhas, 3 colunas
+for (int l = 0; l &lt; 2; l++)
+    for (int c = 0; c &lt; 3; c++)
+        m[l][c] = 0;
+
+void mostra(int v[], int n);     // passar a uma função: o array e o tamanho</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Strings</h3>
+<pre class="snip"><code class="c">char nome[20];                   // 19 letras + '\0'
+scanf("%s", nome);               // uma palavra, sem &amp;
+fgets(nome, 20, stdin);          // uma linha com espaços</code></pre>
+      <div class="t-wrap"><table class="t">
+        <tbody>
+          <tr><td><code>strlen(s)</code></td><td>tamanho, sem o <code>'\0'</code></td></tr>
+          <tr><td><code>strcpy(d, o)</code></td><td>copia o para d (em vez de <code>=</code>)</td></tr>
+          <tr><td><code>strcat(d, o)</code></td><td>junta o ao fim de d</td></tr>
+          <tr><td><code>strcmp(a, b)</code></td><td>0 se iguais (em vez de <code>==</code>)</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="box">
+      <h3>Apontadores</h3>
+      <div class="t-wrap"><table class="t">
+        <tbody>
+          <tr><td><code>int *p;</code></td><td>p guarda a morada de um int</td></tr>
+          <tr><td><code>p = &amp;x;</code></td><td>p aponta para x</td></tr>
+          <tr><td><code>*p = 5;</code></td><td>guarda 5 na caixa apontada (o x)</td></tr>
+          <tr><td><code>v</code> (array)</td><td>já é a morada de <code>v[0]</code></td></tr>
+          <tr><td><code>p-&gt;campo</code></td><td>campo de um struct apontado, igual a <code>(*p).campo</code></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="box">
+      <h3>Structs</h3>
+<pre class="snip"><code class="c">struct Aluno {
+    int numero;
+    char nome[20];
+    double nota;
+};                               // ; obrigatório
+
+struct Aluno a = {1234, "Rui", 13.5};
+a.nota = 15.0;
+strcpy(a.nome, "Ana");
+
+struct Aluno turma[30];
+turma[0].nota = 12.0;</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Ficheiros</h3>
+<pre class="snip"><code class="c">FILE *f = fopen("dados.txt", "r");   // "r" ler · "w" escrever (apaga) · "a" acrescentar
+if (f == NULL) {
+    printf("Erro ao abrir\n");
+    return 1;
+}
+int x;
+while (fscanf(f, "%d", &amp;x) == 1) {   // lê até acabar
+    printf("%d\n", x);
+}
+fclose(f);
+// escrever: fprintf(f, "%d\n", x);</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Mensagens do compilador</h3>
+      <div class="t-wrap"><table class="t">
+        <thead><tr><th>Mensagem</th><th>Costuma ser</th></tr></thead>
+        <tbody>
+          <tr><td><code>expected ';' before ...</code></td><td>falta um <code>;</code>, normalmente na linha anterior</td></tr>
+          <tr><td><code>'x' undeclared</code></td><td>variável não declarada ou nome mal escrito</td></tr>
+          <tr><td><code>implicit declaration of function</code></td><td>falta o <code>#include</code>, nome mal escrito, ou função usada antes de ser declarada</td></tr>
+          <tr><td><code>format '%d' expects argument of type 'int *'</code></td><td>falta o <code>&amp;</code> no scanf</td></tr>
+          <tr><td><code>suggest parentheses around assignment</code></td><td><code>=</code> em vez de <code>==</code> num if ou while</td></tr>
+          <tr><td><code>control reaches end of non-void function</code></td><td>falta o <code>return</code></td></tr>
+          <tr><td><code>Segmentation fault</code> (ao correr)</td><td>índice fora do array, scanf sem <code>&amp;</code>, ou apontador sem morada</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="box">
+      <h3>Antes de entregar</h3>
+      <ul class="checklist">
+        <li>Todas as instruções acabam em <code>;</code> e as chavetas estão fechadas.</li>
+        <li>Todas as variáveis têm valor antes de serem usadas (acumuladores a 0).</li>
+        <li>Os scanf têm <code>&amp;</code> (exceto strings) e o formato certo (<code>%lf</code> para double).</li>
+        <li>As comparações usam <code>==</code>, não <code>=</code>.</li>
+        <li>As divisões que precisam de casas decimais têm um real (<code>3.0</code>).</li>
+        <li>Os ciclos sobre arrays vão de 0 até <code>&lt; tamanho</code>.</li>
+        <li>Cada <code>case</code> do switch tem <code>break</code>.</li>
+        <li>Testaste com valores pequenos e casos limite (0, negativos, o último elemento).</li>
+      </ul>
+    </div>
+  </div>

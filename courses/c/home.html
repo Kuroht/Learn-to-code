@@ -1,0 +1,70 @@
+  <section class="hero">
+    <span class="eyebrow">Programação em C · 1.º ano de Engenharia Informática</span>
+    <h1>Aprender C a ver o código a correr</h1>
+    <p>Onze lições curtas, do primeiro <code>printf</code> aos apontadores e structs. Em cada exemplo carregas em "Seguinte" e vês, linha a linha, o que muda na memória e o que aparece no ecrã.</p>
+    <div class="hero-actions" id="hero-actions"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>Como usar</h2></div>
+    <ol class="steps">
+      <li><h3>Lê a explicação</h3><p>É curta de propósito. Fica com a ideia principal e passa ao exemplo.</p></li>
+      <li><h3>Corre o exemplo</h3><p>Antes de cada "Seguinte", tenta adivinhar que linha vem a seguir e o que muda. É este o treino que conta.</p></li>
+      <li><h3>Responde às perguntas</h3><p>São do tipo "o que aparece no ecrã?", como nos testes. Cada resposta traz a explicação.</p></li>
+      <li><h3>Faz os exercícios no computador</h3><p>Só se aprende a programar a programar. Tenta primeiro sem ver a solução, depois usa a dica.</p></li>
+    </ol>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>Lições</h2><p>Segue a ordem: cada lição usa o que veio antes.</p></div>
+    <div class="grid-lessons" id="home-lessons"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>Para o teste: a tabela de execução</h2>
+      <p>A técnica que mais pontos dá nas perguntas "o que aparece no ecrã?".</p>
+    </div>
+    <div class="two">
+      <div class="prose">
+        <p>Faz no papel o que o visualizador faz: <strong>uma coluna por variável</strong> e <strong>uma linha por instrução executada</strong>. Sempre que uma variável muda, escreves o valor novo. O que for para o ecrã vai para a última coluna.</p>
+        <p>Parece lento, mas é muito mais rápido do que errar. A tabela ao lado é o ciclo da lição 5 (<code>for (int i = 1; i &lt;= 4; i++) soma = soma + i;</code>), até à segunda volta.</p>
+        <p>Os erros de quem faz isto "de cabeça" são quase sempre os mesmos: esquecer a última volta de um ciclo, esquecer a divisão inteira, ou achar que uma função mudou uma variável que não mudou.</p>
+      </div>
+      <div class="t-wrap">
+        <table class="t trace">
+          <thead><tr><th>Linha</th><th>i</th><th>soma</th><th>Ecrã</th></tr></thead>
+          <tbody>
+            <tr><td>4</td><td>–</td><td>0</td><td></td></tr>
+            <tr><td>5</td><td>1</td><td>0</td><td></td></tr>
+            <tr class="hl"><td>6</td><td>1</td><td>1</td><td></td></tr>
+            <tr><td>7</td><td>1</td><td>1</td><td>i=1 soma=1</td></tr>
+            <tr><td>5</td><td>2</td><td>1</td><td></td></tr>
+            <tr class="hl"><td>6</td><td>2</td><td>3</td><td></td></tr>
+            <tr><td>7</td><td>2</td><td>3</td><td>i=2 soma=3</td></tr>
+            <tr><td>…</td><td>…</td><td>…</td><td>…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="two">
+    <div class="box">
+      <h2>Onde praticar</h2>
+      <ul>
+        <li><strong>No browser, sem instalar nada:</strong> <a href="https://www.onlinegdb.com/online_c_compiler">OnlineGDB</a> ou <a href="https://www.programiz.com/c-programming/online-compiler/">Programiz</a>. Colas o código, carregas em Run e escreves o input em baixo.</li>
+        <li><strong>No teu computador:</strong> usa o ambiente que o professor indicar. Na linha de comandos compila-se com <code>gcc ola.c -o ola</code> e corre-se com <code>./ola</code>.</li>
+        <li>Compila com <code>-Wall</code> (<code>gcc -Wall ola.c -o ola</code>): o compilador avisa de muitos erros das lições, como o <code>=</code> num if ou o <code>&amp;</code> em falta no scanf.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h2>Para quem está a explicar</h2>
+      <ul>
+        <li>Pede-lhe que diga o que vai acontecer <em>antes</em> de carregar em "Seguinte". Quando errar, parem e vejam porquê.</li>
+        <li>Uma ideia de cada vez. Se variáveis e o sinal <code>=</code> não estiverem sólidos, ciclos e arrays não vão fazer sentido.</li>
+        <li>Pede-lhe que explique um programa em voz alta, linha a linha. Explicar mostra logo o que ficou por perceber.</li>
+        <li>Leiam juntos os erros do compilador: a linha indicada e a primeira mensagem costumam chegar.</li>
+      </ul>
+    </div>
+  </section>
