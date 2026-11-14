@@ -1,0 +1,2694 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SQL do Zero</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Caderno de laboratório: papel azulado, tinta azul-escura, marcador amarelo na linha que está a correr.
+     Layout: barra lateral com as lições + coluna de leitura; o visualizador alarga para código | memória + ecrã. */
+  --paper: #f2f4f8;
+  --panel: #ffffff;
+  --ink: #161d2e;
+  --muted: #586276;
+  --line: #d9dfea;
+  --accent: #2547d0;
+  --accent-ink: #ffffff;
+  --accent-soft: #e6ebfc;
+  --mark: #ffe58a;
+  --mark-edge: #d9a514;
+  --ok: #17804a;
+  --ok-soft: #e1f3e8;
+  --bad: #bf3329;
+  --bad-soft: #fbe6e3;
+  --code-bg: #f8f9fc;
+  --term-bg: #121826;
+  --term-ink: #dfe6f3;
+  --term-in: #ffd866;
+  --t-kw: #7a2bc2;
+  --t-ty: #0b7584;
+  --t-str: #a0450a;
+  --t-num: #ad1767;
+  --t-com: #737d90;
+  --t-pp: #39691a;
+  --t-fn: #2547d0;
+  --shadow: 0 1px 2px rgba(22, 29, 46, .06), 0 6px 20px rgba(22, 29, 46, .05);
+  --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0f121a;
+    --panel: #161b25;
+    --ink: #e6e9f1;
+    --muted: #98a1b4;
+    --line: #283041;
+    --accent: #8ea5ff;
+    --accent-ink: #0f121a;
+    --accent-soft: #1d2645;
+    --mark: rgba(255, 210, 60, .2);
+    --mark-edge: #e9bd3a;
+    --ok: #4cc47f;
+    --ok-soft: rgba(76, 196, 127, .14);
+    --bad: #ff7d70;
+    --bad-soft: rgba(255, 125, 112, .14);
+    --code-bg: #121620;
+    --term-bg: #0a0d14;
+    --t-kw: #c79bf2;
+    --t-ty: #63d3e2;
+    --t-str: #f4a46d;
+    --t-num: #ff8cc4;
+    --t-com: #7e899f;
+    --t-pp: #a8d873;
+    --t-fn: #8ea5ff;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 6px 20px rgba(0, 0, 0, .25);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0f121a;
+  --panel: #161b25;
+  --ink: #e6e9f1;
+  --muted: #98a1b4;
+  --line: #283041;
+  --accent: #8ea5ff;
+  --accent-ink: #0f121a;
+  --accent-soft: #1d2645;
+  --mark: rgba(255, 210, 60, .2);
+  --mark-edge: #e9bd3a;
+  --ok: #4cc47f;
+  --ok-soft: rgba(76, 196, 127, .14);
+  --bad: #ff7d70;
+  --bad-soft: rgba(255, 125, 112, .14);
+  --code-bg: #121620;
+  --term-bg: #0a0d14;
+  --t-kw: #c79bf2;
+  --t-ty: #63d3e2;
+  --t-str: #f4a46d;
+  --t-num: #ff8cc4;
+  --t-com: #7e899f;
+  --t-pp: #a8d873;
+  --t-fn: #8ea5ff;
+  --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 6px 20px rgba(0, 0, 0, .25);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 17px/1.6 var(--font-body);
+}
+a { color: var(--accent); text-underline-offset: 3px; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+h1, h2, h3, h4 { font-family: var(--font-display); line-height: 1.15; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(2rem, 1.5rem + 2vw, 2.9rem); font-weight: 800; letter-spacing: -.02em; }
+h2 { font-size: 1.55rem; font-weight: 800; letter-spacing: -.01em; }
+h3 { font-size: 1.15rem; font-weight: 600; }
+h4 { font-size: 1.05rem; font-weight: 600; }
+p { margin: 0; }
+code, pre, kbd { font-family: var(--font-mono); font-size: .88em; }
+:not(pre) > code {
+  background: var(--accent-soft);
+  padding: .08em .35em;
+  border-radius: 5px;
+  white-space: nowrap;
+}
+
+/* ---------- estrutura ---------- */
+.app { display: grid; grid-template-columns: 276px minmax(0, 1fr); min-height: 100vh; }
+.sidebar {
+  position: sticky; top: 0; height: 100vh; overflow-y: auto;
+  background: var(--panel); border-right: 1px solid var(--line);
+  padding: 22px 14px 28px; display: flex; flex-direction: column; gap: 18px;
+}
+.brand { display: flex; align-items: baseline; gap: 8px; padding: 0 10px; text-decoration: none; color: var(--ink); }
+.brand-mark {
+  font-family: var(--font-mono); font-weight: 600; font-size: .95rem;
+  background: var(--ink); color: var(--panel); padding: 2px 7px; border-radius: 6px;
+}
+.brand-name { font-family: var(--font-display); font-weight: 800; font-size: 1.35rem; letter-spacing: -.01em; }
+.progress { padding: 0 10px; display: grid; gap: 6px; font-size: .85rem; color: var(--muted); }
+.progress-track { height: 6px; background: var(--line); border-radius: 99px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--ok); border-radius: 99px; transition: width .3s; }
+.nav { display: grid; gap: 2px; }
+.nav-label { font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); padding: 10px 10px 4px; }
+.nav a {
+  display: grid; grid-template-columns: 26px minmax(0, 1fr) auto; align-items: center; gap: 8px;
+  padding: 7px 10px; border-radius: 8px; color: var(--ink); text-decoration: none; font-size: .95rem; line-height: 1.3;
+}
+.nav a:hover { background: var(--paper); }
+.nav a[aria-current="page"] { background: var(--accent-soft); color: var(--accent); font-weight: 700; }
+.nav-num {
+  font-family: var(--font-mono); font-size: .78rem; color: var(--muted); text-align: center;
+  border: 1px solid var(--line); border-radius: 6px; padding: 1px 0;
+}
+.nav a[aria-current="page"] .nav-num { border-color: var(--accent); color: var(--accent); }
+.nav-done { color: var(--ok); font-size: .85rem; font-weight: 700; }
+.nav-icon { width: 26px; text-align: center; color: var(--muted); font-family: var(--font-mono); font-size: .8rem; }
+
+main { padding: 36px clamp(16px, 4vw, 52px) 96px; min-width: 0; }
+.content { max-width: 1060px; margin: 0 auto; display: grid; gap: 40px; }
+.prose { max-width: 68ch; display: grid; gap: 14px; }
+.prose ul { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
+
+.topbar { display: none; }
+
+/* ---------- tabelas ---------- */
+.t-wrap { overflow-x: auto; }
+table.t { border-collapse: collapse; width: 100%; font-size: .93rem; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.t th, .t td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.t th { font-size: .78rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); background: var(--code-bg); }
+.t tr:last-child td { border-bottom: 0; }
+.t td code { white-space: nowrap; }
+
+/* ---------- código ---------- */
+pre { margin: 0; }
+pre.snip {
+  background: var(--code-bg); border: 1px solid var(--line); border-radius: 10px;
+  padding: 12px 14px; overflow-x: auto; line-height: 1.55;
+}
+.t-kw { color: var(--t-kw); font-weight: 600; }
+.t-ty { color: var(--t-ty); font-weight: 600; }
+.t-str { color: var(--t-str); }
+.t-num { color: var(--t-num); }
+.t-com { color: var(--t-com); font-style: italic; }
+.t-pp { color: var(--t-pp); }
+.t-fn { color: var(--t-fn); }
+
+/* ---------- cabeçalho da lição ---------- */
+.lesson-head { display: grid; gap: 10px; }
+.eyebrow { font-family: var(--font-mono); font-size: .82rem; color: var(--accent); font-weight: 600; letter-spacing: .02em; }
+.lead { font-size: 1.15rem; color: var(--muted); max-width: 60ch; }
+.analogy {
+  max-width: 68ch; background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--mark-edge);
+  border-radius: 10px; padding: 14px 18px; display: grid; gap: 4px;
+}
+.analogy-label { font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+.section { display: grid; gap: 16px; }
+.section-head { display: grid; gap: 4px; }
+.section-head p { color: var(--muted); }
+
+/* ---------- visualizador ---------- */
+.viz {
+  background: var(--panel); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow);
+  padding: 16px; display: grid; gap: 12px;
+}
+.viz:focus-visible { outline-offset: 4px; border-radius: 14px; }
+.viz-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; }
+.viz-title { display: grid; gap: 2px; }
+.viz-title small { font-family: var(--font-mono); color: var(--muted); font-size: .78rem; }
+.viz-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.viz-count { font-family: var(--font-mono); font-size: .82rem; color: var(--muted); min-width: 9.5em; text-align: center; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.btn {
+  font: inherit; font-size: .92rem; font-weight: 700; cursor: pointer;
+  border: 1px solid var(--line); background: var(--panel); color: var(--ink);
+  padding: 7px 14px; border-radius: 9px; line-height: 1.2;
+}
+.btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+.btn:disabled { opacity: .45; cursor: default; }
+.btn-primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn-primary:hover:not(:disabled) { color: var(--accent-ink); filter: brightness(1.08); }
+.btn-ghost { border-color: transparent; color: var(--muted); }
+.viz-bar { height: 4px; background: var(--line); border-radius: 99px; overflow: hidden; }
+.viz-bar span { display: block; height: 100%; background: var(--accent); transition: width .2s; }
+.viz-note {
+  background: var(--accent-soft); border-radius: 10px; padding: 12px 14px; min-height: 3.4em;
+  display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; align-items: start;
+}
+.viz-note code { background: var(--panel); }
+.viz-note-line { font-family: var(--font-mono); font-size: .78rem; font-weight: 600; color: var(--accent); background: var(--panel); border-radius: 6px; padding: 2px 7px; margin-top: 2px; white-space: nowrap; }
+.viz-grid { display: grid; grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr); gap: 12px; align-items: start; }
+.viz-side { display: grid; gap: 12px; }
+.panel { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--code-bg); }
+.panel-label {
+  font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .09em; color: var(--muted);
+  padding: 7px 12px; border-bottom: 1px solid var(--line); background: var(--panel);
+  display: flex; justify-content: space-between; gap: 8px;
+}
+.code { overflow-x: auto; padding: 8px 0; font-family: var(--font-mono); font-size: .86rem; line-height: 1.65; }
+.ln { display: grid; grid-template-columns: 2.6em 1.3em minmax(0, 1fr); white-space: pre; min-width: max-content; padding-right: 14px; }
+.ln .no { text-align: right; color: var(--t-com); opacity: .8; user-select: none; }
+.ln .arrow { text-align: center; color: var(--mark-edge); user-select: none; }
+.ln.cur { background: var(--mark); box-shadow: inset 3px 0 0 var(--mark-edge); }
+.ln.cur .no { color: var(--ink); opacity: 1; font-weight: 600; }
+
+.mem { padding: 10px; display: grid; gap: 10px; min-height: 92px; }
+.mem-empty { color: var(--muted); font-size: .9rem; padding: 6px 4px; }
+.frame { border: 1px dashed var(--line); border-radius: 9px; padding: 8px; display: grid; gap: 8px; background: var(--panel); }
+.frame.active { border: 1px solid var(--accent); }
+.frame-name { font-family: var(--font-mono); font-size: .78rem; font-weight: 600; color: var(--muted); display: flex; justify-content: space-between; }
+.frame.active .frame-name { color: var(--accent); }
+.vars { display: flex; flex-wrap: wrap; gap: 8px; }
+.var {
+  border: 1px solid var(--line); border-radius: 8px; padding: 6px 9px 7px; background: var(--code-bg);
+  display: grid; gap: 2px; min-width: 76px; max-width: 100%;
+}
+.var.wide { flex-basis: 100%; }
+.var-top { display: flex; justify-content: space-between; gap: 10px; font-family: var(--font-mono); font-size: .7rem; color: var(--muted); }
+.var-type { color: var(--t-ty); }
+.var-name { font-family: var(--font-mono); font-weight: 600; font-size: .9rem; }
+.var-val { font-family: var(--font-mono); font-size: 1.05rem; font-variant-numeric: tabular-nums; border-radius: 5px; padding: 0 3px; margin: 0 -3px; overflow-wrap: anywhere; }
+.chg { background: var(--mark); box-shadow: 0 0 0 2px var(--mark-edge); }
+.var.is-new { border-color: var(--accent); }
+.garbage { color: var(--muted); font-style: italic; }
+.ptr-addr { color: var(--t-num); }
+.ptr-arrow { color: var(--accent); font-size: .9rem; font-weight: 600; }
+.cells { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 2px; }
+.cell { display: grid; text-align: center; min-width: 2.7em; }
+.cell-v { font-family: var(--font-mono); font-size: .92rem; border: 1px solid var(--line); background: var(--panel); border-radius: 5px; padding: 2px 4px; }
+.cell-i { font-family: var(--font-mono); font-size: .66rem; color: var(--muted); }
+.fields { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 10px; font-family: var(--font-mono); font-size: .88rem; margin-top: 2px; }
+.fields .f-name { color: var(--muted); }
+.mini { border-collapse: collapse; font-family: var(--font-mono); font-size: .84rem; margin-top: 4px; }
+.mini th, .mini td { border: 1px solid var(--line); padding: 2px 8px; text-align: left; }
+.mini th { font-weight: 600; color: var(--muted); font-size: .72rem; background: var(--panel); }
+.addr-note { font-size: .74rem; color: var(--muted); }
+
+.term {
+  background: var(--term-bg); color: var(--term-ink); font-family: var(--font-mono); font-size: .86rem;
+  line-height: 1.6; padding: 10px 14px; white-space: pre-wrap; overflow-wrap: anywhere; min-height: 4.8em; max-height: 15em; overflow-y: auto;
+}
+.term .in { color: var(--term-in); font-weight: 600; }
+.term .enter { color: var(--term-in); opacity: .55; font-size: .8em; margin-left: 2px; }
+.term .caret { display: inline-block; width: .55em; height: 1.05em; background: var(--term-ink); opacity: .55; vertical-align: text-bottom; }
+.term .ph { color: #7e899f; font-style: italic; }
+.panel.out { background: var(--term-bg); border-color: var(--term-bg); }
+.panel.out .panel-label { background: var(--term-bg); color: #9aa6bd; border-color: #263046; }
+
+/* ---------- erros comuns ---------- */
+.mistakes { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; max-width: 76ch; }
+.mistakes li { background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--bad); border-radius: 9px; padding: 10px 14px; }
+
+/* ---------- quiz ---------- */
+.quiz { display: grid; gap: 14px; }
+.q { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: grid; gap: 12px; }
+.q-text { font-weight: 700; display: flex; gap: 10px; align-items: baseline; }
+.q-num { font-family: var(--font-mono); font-size: .78rem; color: var(--muted); font-weight: 400; white-space: nowrap; }
+.opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 8px; }
+.opt {
+  font: inherit; text-align: left; cursor: pointer; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; align-items: start;
+  border: 1px solid var(--line); background: var(--code-bg); color: var(--ink); border-radius: 9px; padding: 9px 12px;
+}
+.opt:hover:not(:disabled) { border-color: var(--accent); }
+.opt:disabled { cursor: default; }
+.opt-key { font-family: var(--font-mono); font-size: .78rem; font-weight: 600; color: var(--muted); border: 1px solid var(--line); border-radius: 5px; padding: 0 6px; margin-top: 2px; background: var(--panel); }
+.opt-txt.mono { font-family: var(--font-mono); font-size: .9rem; white-space: pre; overflow-x: auto; }
+.opt.right { border-color: var(--ok); background: var(--ok-soft); }
+.opt.right .opt-key { border-color: var(--ok); color: var(--ok); }
+.opt.wrong { border-color: var(--bad); background: var(--bad-soft); }
+.opt.wrong .opt-key { border-color: var(--bad); color: var(--bad); }
+.opt.dim { opacity: .55; }
+.q-exp { border-radius: 9px; padding: 10px 14px; background: var(--code-bg); border: 1px solid var(--line); }
+.q-exp strong.ok { color: var(--ok); }
+.q-exp strong.bad { color: var(--bad); }
+.score {
+  background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;
+}
+.score-num { font-family: var(--font-display); font-weight: 800; font-size: 1.6rem; font-variant-numeric: tabular-nums; }
+
+/* ---------- exercícios ---------- */
+.exs { display: grid; gap: 14px; }
+.ex { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: grid; gap: 12px; }
+.ex-label { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .09em; color: var(--muted); margin-bottom: 4px; }
+.ex .term { border-radius: 9px; max-height: none; min-height: 0; }
+details { border: 1px solid var(--line); border-radius: 9px; background: var(--code-bg); }
+summary { cursor: pointer; padding: 9px 14px; font-weight: 700; color: var(--accent); }
+details[open] summary { border-bottom: 1px solid var(--line); }
+.det-body { padding: 12px 14px; display: grid; gap: 10px; }
+.det-body pre.snip { background: var(--panel); }
+.sol-tools { display: flex; justify-content: flex-end; }
+
+/* ---------- navegação entre lições ---------- */
+.pager { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; border-top: 1px solid var(--line); padding-top: 24px; }
+.pager a {
+  display: grid; gap: 2px; text-decoration: none; color: var(--ink); background: var(--panel);
+  border: 1px solid var(--line); border-radius: 10px; padding: 10px 16px; min-width: 220px;
+}
+.pager a:hover { border-color: var(--accent); }
+.pager small { color: var(--muted); font-size: .8rem; }
+.pager .next { text-align: right; margin-left: auto; }
+
+/* ---------- início ---------- */
+.hero { display: grid; gap: 16px; padding-top: 8px; }
+.hero p { font-size: 1.15rem; color: var(--muted); max-width: 58ch; }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.hero-actions .btn { padding: 10px 18px; font-size: 1rem; text-decoration: none; display: inline-block; }
+.steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; counter-reset: s; }
+.steps li { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; display: grid; gap: 6px; counter-increment: s; align-content: start; }
+.steps li::before { content: counter(s); font-family: var(--font-mono); font-weight: 600; font-size: .8rem; color: var(--accent); border: 1px solid var(--accent); border-radius: 6px; width: 1.8em; text-align: center; }
+.steps p { color: var(--muted); font-size: .95rem; }
+.grid-lessons { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; }
+.card-lesson {
+  display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 12px; text-decoration: none; color: var(--ink);
+  background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px; align-content: start;
+}
+.card-lesson:hover { border-color: var(--accent); }
+.card-lesson .nav-num { grid-row: span 2; width: 28px; height: 24px; line-height: 20px; }
+.card-lesson strong { font-family: var(--font-display); font-weight: 600; font-size: 1.02rem; line-height: 1.25; }
+.card-lesson span.s { color: var(--muted); font-size: .88rem; line-height: 1.35; }
+.card-lesson .done-tag { grid-column: 2; font-size: .78rem; font-weight: 700; color: var(--ok); }
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; align-items: start; }
+.box { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; display: grid; gap: 10px; }
+.box ul { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
+.trace td, .trace th { font-family: var(--font-mono); font-size: .84rem; text-align: center; }
+.trace td:last-child, .trace th:last-child { text-align: left; }
+.trace tr.hl td { background: var(--mark); }
+
+/* ---------- cábula ---------- */
+.cheat { columns: 2 380px; column-gap: 14px; }
+.cheat .box { break-inside: avoid; margin-bottom: 14px; }
+.cheat h3 { font-size: 1.05rem; }
+.cheat .t { font-size: .86rem; }
+.checklist { list-style: none; padding: 0 !important; }
+.checklist li { padding-left: 1.6em; position: relative; }
+.checklist li::before { content: ""; position: absolute; left: 0; top: .3em; width: .95em; height: .95em; border: 2px solid var(--muted); border-radius: 3px; }
+
+/* ---------- telemóvel ---------- */
+@media (max-width: 960px) {
+  .app { grid-template-columns: minmax(0, 1fr); }
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    position: sticky; top: 0; z-index: 20; background: var(--panel); border-bottom: 1px solid var(--line); padding: 10px 16px;
+  }
+  .sidebar {
+    position: fixed; z-index: 30; left: 0; top: 0; width: min(300px, 86vw); height: 100%;
+    transform: translateX(-102%); transition: transform .2s; box-shadow: var(--shadow);
+  }
+  .sidebar.open { transform: none; }
+  .scrim { position: fixed; inset: 0; background: rgba(10, 13, 20, .45); z-index: 25; }
+  main { padding-top: 24px; }
+}
+@media (max-width: 820px) {
+  .viz-grid { grid-template-columns: minmax(0, 1fr); }
+  .viz-controls { width: 100%; }
+  .viz-count { min-width: 0; flex: 1; }
+}
+@media (max-width: 480px) {
+  body { font-size: 16px; }
+  .viz { padding: 12px; }
+  .pager a { min-width: 0; flex: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; scroll-behavior: auto !important; }
+}
+</style>
+<style>
+/* ---------- visualizador de tabelas (SQL) ---------- */
+/* Usa as variáveis do template, por isso funciona nos temas claro e escuro. */
+.dbt { display: grid; gap: 4px; }
+.dbt + .dbt { margin-top: 4px; }
+.dbt-name { font-family: var(--font-mono); font-size: .8rem; font-weight: 600; color: var(--accent); display: flex; justify-content: space-between; gap: 8px; }
+.dbt-name span { color: var(--muted); font-weight: 400; }
+.dbt.is-new table.grid { box-shadow: 0 0 0 2px var(--accent); }
+table.grid { border-collapse: separate; border-spacing: 0; font-family: var(--font-mono); font-size: .82rem; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; min-width: 100%; }
+.grid th, .grid td { padding: 3px 9px; text-align: left; border-bottom: 1px solid var(--line); white-space: nowrap; vertical-align: top; }
+.grid tbody tr:last-child td { border-bottom: 0; }
+.grid th { background: var(--code-bg); font-weight: 600; font-size: .78rem; }
+.grid .col-name { color: var(--ink); }
+.grid .col-type { display: block; font-weight: 400; font-size: .66rem; color: var(--t-ty); }
+.tag { display: inline-block; margin-left: 5px; font-size: .62rem; font-weight: 700; border-radius: 4px; padding: 0 4px; vertical-align: 1px; }
+.tag-pk { background: var(--mark); color: var(--ink); box-shadow: inset 0 0 0 1px var(--mark-edge); }
+.tag-fk { background: var(--accent-soft); color: var(--accent); }
+.grid td .null { color: var(--muted); font-style: italic; }
+.grid td.null { color: var(--muted); font-style: italic; }
+.grid td.empty { color: var(--muted); font-style: italic; font-family: var(--font-body); }
+.grid td .chg { background: var(--mark); box-shadow: 0 0 0 2px var(--mark-edge); border-radius: 3px; padding: 0 2px; }
+.grid tr.row-new td { background: var(--ok-soft); }
+.grid tr.row-hit td { background: var(--mark); }
+.grid tr.row-keep td { background: var(--ok-soft); }
+.grid tr.row-keep td:first-child { box-shadow: inset 3px 0 0 var(--ok); }
+.grid tr.row-drop td { background: var(--bad-soft); color: var(--muted); text-decoration: line-through; text-decoration-color: var(--bad); }
+.grid tr.row-drop td:first-child { box-shadow: inset 3px 0 0 var(--bad); }
+.grid tr.grp-b td { background: var(--accent-soft); }
+.grid tr.grp-start td { border-top: 2px solid var(--accent); }
+.grid-label { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; margin-bottom: 6px; font-size: .8rem; color: var(--muted); }
+.grid-label code { white-space: normal; }
+.sql-err { display: grid; gap: 4px; border: 1px solid var(--bad); background: var(--bad-soft); border-radius: 8px; padding: 8px 10px; }
+.sql-err strong { color: var(--bad); font-size: .8rem; text-transform: uppercase; letter-spacing: .06em; }
+.sql-err code { background: none !important; padding: 0 !important; white-space: normal !important; overflow-wrap: anywhere; }
+.out-grids { display: grid; gap: 8px; justify-items: start; }
+.out-grids .t-wrap, .out-grids table { max-width: 100%; }
+table.mini-grid { min-width: 0; }
+.ex .out-grids { padding: 2px 0; }
+.opt .out-grids { overflow-x: auto; max-width: 100%; }
+.db-tables { display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-start; }
+.db-tables .dbt { max-width: 100%; }
+.db-tables + details { margin-top: 4px; }
+</style>
+<style>
+:root { --accent: #0a7468; --accent-soft: #dff2ef; --t-fn: #0a7468; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --accent: #4fd1bf; --accent-soft: #14302c; --t-fn: #4fd1bf; } }
+:root[data-theme="dark"] { --accent: #4fd1bf; --accent-soft: #14302c; --t-fn: #4fd1bf; }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <a class="brand" href="#inicio"><span class="brand-mark">.sql</span><span class="brand-name">SQL do Zero</span></a>
+    <button class="btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="sidebar">Lições</button>
+  </header>
+  <aside class="sidebar" id="sidebar" aria-label="Lições">
+    <a class="brand" href="#inicio"><span class="brand-mark">.sql</span><span class="brand-name">SQL do Zero</span></a>
+    <div class="progress" id="progress"></div>
+    <nav class="nav" id="nav"></nav>
+  </aside>
+  <main id="main" tabindex="-1">
+    <noscript><p>Esta página precisa de JavaScript para funcionar.</p></noscript>
+    <div class="content" id="view"></div>
+  </main>
+</div>
+
+<template id="tpl-home">
+  <section class="hero">
+    <span class="eyebrow">Bases de Dados · 1.º ano de Engenharia Informática</span>
+    <h1>Aprender SQL a ver as tabelas a mudar</h1>
+    <p>Onze lições curtas, do primeiro <code>SELECT</code> aos <code>JOIN</code> e à normalização. Em cada exemplo carregas em "Seguinte" e vês que linhas passam o <code>WHERE</code>, como o <code>GROUP BY</code> faz os grupos e como o <code>JOIN</code> junta as tabelas.</p>
+    <div class="hero-actions" id="hero-actions"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>Como usar</h2></div>
+    <ol class="steps">
+      <li><h3>Lê a explicação</h3><p>É curta de propósito. Se já fizeste o C do Zero, vais reconhecer muitas ideias.</p></li>
+      <li><h3>Corre o exemplo</h3><p>Antes de cada "Seguinte", tenta adivinhar que linhas vão passar e que resultado vai sair.</p></li>
+      <li><h3>Responde às perguntas</h3><p>Quase todas são "que resultado dá esta consulta?". Cada resposta traz a explicação.</p></li>
+      <li><h3>Faz os exercícios</h3><p>Escreve a consulta num SQLite antes de veres a solução, e compara com o resultado esperado.</p></li>
+    </ol>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>Lições</h2><p>Segue a ordem: cada lição usa o que veio antes.</p></div>
+    <div class="grid-lessons" id="home-lessons"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>Para o teste: a ordem em que o SQL trabalha</h2>
+      <p>Escreve-se por uma ordem, mas o SGBD executa por outra. Saber isto resolve metade das dúvidas.</p>
+    </div>
+    <div class="two">
+      <div class="prose">
+        <p>Uma consulta escreve-se começando pelo <code>SELECT</code>, mas o SGBD começa pelo <code>FROM</code>: primeiro tem de saber de que tabela vêm as linhas. Depois filtra, agrupa, e só no fim escolhe as colunas e ordena.</p>
+        <p>É por isso que o <code>WHERE</code> não pode usar <code>COUNT(*)</code> (os grupos ainda não existem) e que o <code>ORDER BY</code> já pode usar os nomes dados com <code>AS</code> (o SELECT já correu).</p>
+        <p>Nas perguntas "que resultado dá?", faz no papel o que o visualizador faz: escreve a tabela, risca as linhas que o WHERE tira, junta os grupos, e só no fim escolhe as colunas.</p>
+      </div>
+      <div class="t-wrap">
+        <table class="t trace">
+          <thead><tr><th>Ordem</th><th>Parte</th><th>O que faz</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>FROM / JOIN</td><td>vai buscar as tabelas e junta-as</td></tr>
+            <tr><td>2</td><td>WHERE</td><td>tira as linhas que não interessam</td></tr>
+            <tr><td>3</td><td>GROUP BY</td><td>junta as linhas em grupos</td></tr>
+            <tr><td>4</td><td>HAVING</td><td>tira os grupos que não interessam</td></tr>
+            <tr class="hl"><td>5</td><td>SELECT</td><td>escolhe e calcula as colunas</td></tr>
+            <tr><td>6</td><td>DISTINCT</td><td>tira as linhas repetidas</td></tr>
+            <tr><td>7</td><td>ORDER BY</td><td>ordena</td></tr>
+            <tr><td>8</td><td>LIMIT</td><td>fica só com as primeiras</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="two">
+    <div class="box">
+      <h2>Onde praticar</h2>
+      <ul>
+        <li><strong>No browser, sem instalar nada:</strong> <a href="https://sqliteonline.com">SQLite Online</a> ou <a href="https://www.db-fiddle.com">DB Fiddle</a> (escolhe SQLite). Abre "Ver o SQL que cria estas tabelas" na lição, copia, e depois escreve as tuas consultas.</li>
+        <li><strong>No computador:</strong> o <a href="https://sqlitebrowser.org">DB Browser for SQLite</a> mostra as tabelas em grelha, como aqui.</li>
+        <li>Este curso usa o <strong>SQLite</strong>. Na cadeira podem usar MySQL, PostgreSQL ou Oracle: o SQL das lições é praticamente igual, mudam alguns tipos e pormenores (a cábula indica os principais).</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h2>Para quem está a explicar</h2>
+      <ul>
+        <li>Pede-lhe que diga que linhas vão passar <em>antes</em> de carregar em "Seguinte".</li>
+        <li>Desenhem as tabelas no papel. Nos JOIN, liguem com setas cada linha ao seu par.</li>
+        <li>Quando uma consulta dá um resultado estranho, tirem partes (o ORDER BY, o GROUP BY) e vejam o resultado a cada passo.</li>
+        <li>Leiam juntos as mensagens de erro: dizem quase sempre qual é a coluna ou a tabela com problema.</li>
+      </ul>
+    </div>
+  </section>
+</template>
+
+<template id="tpl-cheat">
+  <section class="lesson-head">
+    <span class="eyebrow">Resumo</span>
+    <h1>Cábula de SQL</h1>
+    <p class="lead">Tudo o que as lições ensinam, numa página. Boa para ter aberta enquanto fazes exercícios.</p>
+  </section>
+  <div class="cheat">
+    <div class="box">
+      <h3>Uma consulta completa</h3>
+<pre class="snip"><code class="sql">SELECT curso, COUNT(*) AS n      -- 5. colunas
+FROM alunos                      -- 1. tabela
+WHERE nota &gt;= 10                 -- 2. linhas
+GROUP BY curso                   -- 3. grupos
+HAVING COUNT(*) &gt;= 2             -- 4. grupos que ficam
+ORDER BY n DESC                  -- 6. ordem
+LIMIT 3;                         -- 7. quantas</code></pre>
+      <p>Os números dizem a ordem em que o SGBD trabalha.</p>
+    </div>
+
+    <div class="box">
+      <h3>Criar e mudar dados</h3>
+<pre class="snip"><code class="sql">CREATE TABLE alunos (
+    numero INTEGER PRIMARY KEY,
+    nome TEXT NOT NULL,
+    curso TEXT REFERENCES cursos(sigla),
+    nota INTEGER
+);
+INSERT INTO alunos VALUES (101, 'Ana', 'LEI', 17);
+INSERT INTO alunos (numero, nome) VALUES (102, 'Rui');
+UPDATE alunos SET nota = nota + 1 WHERE numero = 102;
+DELETE FROM alunos WHERE nota &lt; 10;
+DROP TABLE alunos;               -- apaga a própria tabela</code></pre>
+      <p><strong>UPDATE e DELETE sem WHERE afetam todas as linhas.</strong> Testa o WHERE primeiro com um SELECT.</p>
+    </div>
+
+    <div class="box">
+      <h3>Condições (WHERE e HAVING)</h3>
+      <div class="t-wrap"><table class="t">
+        <tbody>
+          <tr><td><code>= &lt;&gt; != &lt; &gt; &lt;= &gt;=</code></td><td>comparar (igual é um só <code>=</code>)</td></tr>
+          <tr><td><code>AND OR NOT</code></td><td>e, ou, não (usa parênteses)</td></tr>
+          <tr><td><code>BETWEEN 10 AND 14</code></td><td>inclui o 10 e o 14</td></tr>
+          <tr><td><code>IN ('LEI', 'LEM')</code></td><td>igual a um destes</td></tr>
+          <tr><td><code>LIKE 'M%'</code></td><td><code>%</code> qualquer texto, <code>_</code> um carácter</td></tr>
+          <tr><td><code>IS NULL</code>, <code>IS NOT NULL</code></td><td>nunca <code>= NULL</code></td></tr>
+        </tbody>
+      </table></div>
+      <p>Texto entre plicas: <code>'LEI'</code>. As aspas são para nomes de colunas.</p>
+    </div>
+
+    <div class="box">
+      <h3>Funções de agregação</h3>
+      <div class="t-wrap"><table class="t">
+        <tbody>
+          <tr><td><code>COUNT(*)</code></td><td>número de linhas</td></tr>
+          <tr><td><code>COUNT(col)</code></td><td>linhas com valor (sem os NULL)</td></tr>
+          <tr><td><code>COUNT(DISTINCT col)</code></td><td>valores diferentes</td></tr>
+          <tr><td><code>SUM AVG MIN MAX</code></td><td>soma, média, menor, maior (ignoram NULL)</td></tr>
+          <tr><td><code>ROUND(x, 2)</code></td><td>arredonda a 2 casas</td></tr>
+          <tr><td><code>COALESCE(x, 0)</code></td><td>x, ou 0 se x for NULL</td></tr>
+        </tbody>
+      </table></div>
+      <p>Inteiro / inteiro dá inteiro, como em C: <code>7 / 2</code> é 3. Usa <code>AVG</code> ou <code>7 / 2.0</code>.</p>
+    </div>
+
+    <div class="box">
+      <h3>JOIN</h3>
+<pre class="snip"><code class="sql">-- só as linhas com par
+SELECT a.nome, c.nome AS curso
+FROM alunos a
+JOIN cursos c ON a.curso = c.sigla;
+
+-- todas as da esquerda; sem par fica NULL
+SELECT a.nome
+FROM alunos a
+LEFT JOIN inscricoes i ON i.aluno = a.numero
+WHERE i.aluno IS NULL;           -- "quem não tem nenhuma"</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Chaves e relações</h3>
+      <div class="t-wrap"><table class="t">
+        <tbody>
+          <tr><td>Chave primária (PK)</td><td>identifica a linha; única e não NULL</td></tr>
+          <tr><td>Chave estrangeira (FK)</td><td>guarda a PK de uma linha de outra tabela</td></tr>
+          <tr><td>1:N</td><td>FK no lado N (<code>alunos.curso</code>)</td></tr>
+          <tr><td>N:M</td><td>tabela de ligação com as duas FK; PK = o par</td></tr>
+          <tr><td>SQLite</td><td><code>PRAGMA foreign_keys = ON;</code> para as FK serem verificadas</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="box">
+      <h3>Formas normais</h3>
+      <div class="t-wrap"><table class="t">
+        <tbody>
+          <tr><td>1FN</td><td>um valor por célula (nada de listas)</td></tr>
+          <tr><td>2FN</td><td>o que não é chave depende da chave <strong>toda</strong></td></tr>
+          <tr><td>3FN</td><td>o que não é chave não depende de outra coluna que não é chave</td></tr>
+        </tbody>
+      </table></div>
+      <p>Quando falha: tira essas colunas para uma tabela nova e deixa uma FK.</p>
+    </div>
+
+    <div class="box">
+      <h3>Mensagens de erro do SQLite</h3>
+      <div class="t-wrap"><table class="t">
+        <thead><tr><th>Mensagem</th><th>Costuma ser</th></tr></thead>
+        <tbody>
+          <tr><td><code>no such table: aluno</code></td><td>nome da tabela mal escrito, ou ainda não criada</td></tr>
+          <tr><td><code>no such column: idade</code></td><td>coluna mal escrita, ou texto sem plicas (<code>= LEI</code>)</td></tr>
+          <tr><td><code>no such column: "Ana" - should this be a string literal in single-quotes?</code></td><td>texto entre aspas em vez de plicas</td></tr>
+          <tr><td><code>near "SELEC": syntax error</code></td><td>palavra mal escrita, vírgula a mais ou a menos perto daí</td></tr>
+          <tr><td><code>incomplete input</code></td><td>a instrução acabou a meio (falta a condição, um parêntese...)</td></tr>
+          <tr><td><code>ambiguous column name: nome</code></td><td>num JOIN, as duas tabelas têm essa coluna: usa <code>a.nome</code></td></tr>
+          <tr><td><code>misuse of aggregate function COUNT()</code></td><td>função de agregação no WHERE: vai para o HAVING</td></tr>
+          <tr><td><code>HAVING clause on a non-aggregate query</code></td><td>HAVING sem GROUP BY nem funções: usa WHERE</td></tr>
+          <tr><td><code>UNIQUE constraint failed: alunos.numero</code></td><td>chave primária repetida</td></tr>
+          <tr><td><code>NOT NULL constraint failed: alunos.nome</code></td><td>faltou um valor obrigatório</td></tr>
+          <tr><td><code>FOREIGN KEY constraint failed</code></td><td>a FK aponta para uma linha que não existe, ou apagaste uma linha que ainda é apontada</td></tr>
+          <tr><td><code>table alunos has 4 columns but 3 values were supplied</code></td><td>INSERT com valores a menos: indica as colunas</td></tr>
+          <tr><td><code>table alunos already exists</code></td><td>CREATE TABLE repetido</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="box">
+      <h3>SQLite e os outros SGBD</h3>
+      <div class="t-wrap"><table class="t">
+        <thead><tr><th>SQLite</th><th>MySQL / PostgreSQL / Oracle</th></tr></thead>
+        <tbody>
+          <tr><td><code>INTEGER</code>, <code>REAL</code>, <code>TEXT</code></td><td><code>INT</code>, <code>DECIMAL(4,1)</code>, <code>VARCHAR(50)</code></td></tr>
+          <tr><td>FK só com <code>PRAGMA foreign_keys = ON</code></td><td>FK sempre verificadas</td></tr>
+          <tr><td>aceita <code>SELECT nome, COUNT(*)</code> sem GROUP BY</td><td>dá erro (e com razão)</td></tr>
+          <tr><td><code>LIMIT 3</code></td><td>Oracle: <code>FETCH FIRST 3 ROWS ONLY</code></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="box">
+      <h3>Antes de entregar</h3>
+      <ul class="checklist">
+        <li>O texto está entre plicas e as colunas sem nada.</li>
+        <li>Os UPDATE e DELETE têm WHERE (e testaste-o com um SELECT).</li>
+        <li>Os NULL são testados com <code>IS NULL</code>.</li>
+        <li>Com GROUP BY, o SELECT só tem colunas do grupo e funções.</li>
+        <li>As condições sobre funções estão no HAVING, não no WHERE.</li>
+        <li>Num JOIN, há um <code>ON</code> certo e as colunas repetidas levam a alcunha da tabela.</li>
+        <li>Para "quem não tem", usaste LEFT JOIN e IS NULL.</li>
+        <li>Se a ordem interessa, há ORDER BY.</li>
+      </ul>
+    </div>
+  </div>
+</template>
+
+<script>
+const COURSE = {"slug":"sql","title":"SQL do Zero","storageKey":"sqldozero-progresso-v1","cheatTitle":"Cábula de SQL"};
+// Realce de sintaxe para SQL. Cada grupo da regex corresponde, pela ordem, a uma classe em "classes".
+// A regex não distingue maiúsculas de minúsculas (flag i), tal como o SQL.
+const SYNTAX = {
+  re: /(--.*$)|('(?:''|[^'])*')|\b(INTEGER|TEXT|REAL)\b|\b(SELECT|FROM|WHERE|AND|OR|NOT|IN|IS|NULL|LIKE|BETWEEN|ORDER|BY|ASC|DESC|LIMIT|DISTINCT|AS|INSERT|INTO|VALUES|UPDATE|SET|DELETE|CREATE|TABLE|PRIMARY|KEY|FOREIGN|REFERENCES|UNIQUE|DEFAULT|DROP|JOIN|INNER|LEFT|ON|GROUP|HAVING|PRAGMA|CASE|WHEN|THEN|ELSE|END)\b|\b(\d+(?:\.\d+)?)\b|\b([A-Za-z_]\w*)(?=\()/gi,
+  classes: ['com', 'str', 'ty', 'kw', 'num', 'fn'],
+};
+
+// ===== Visualizador de tabelas (cursos de SQL) =====
+// Troca o painel "Memória + Ecrã" por "Base de dados + Resultado". Só entra nas páginas cujo
+// course.js diz viz: 'tables'. Também corre em Node (o runner de SQL usa o dbToSql).
+
+// Texto de uma célula, igual ao que o check gera a partir do SQLite: NULL aparece como NULL.
+function cellText(value) {
+  if (value === null) return 'NULL';
+  return String(value);
+}
+
+// O SQL que cria uma base de dados descrita como { tabela: { cols, key?, rows } }.
+function dbToSql(db) {
+  const literal = v => {
+    if (v === null) return 'NULL';
+    if (typeof v === 'number') return String(v);
+    if (/^-?\d+\.\d+$/.test(v)) return v; // reais escritos como texto ('14.0') para manter o .0
+    return "'" + String(v).replace(/'/g, "''") + "'";
+  };
+  return Object.entries(db).map(([name, spec]) => {
+    const lines = spec.cols.map(([col, def]) => '    ' + col + ' ' + def);
+    if (spec.key) lines.push('    PRIMARY KEY (' + spec.key.join(', ') + ')');
+    const create = 'CREATE TABLE ' + name + ' (\n' + lines.join(',\n') + '\n);';
+    const inserts = (spec.rows || []).map(r => 'INSERT INTO ' + name + ' VALUES (' + r.map(literal).join(', ') + ');');
+    return [create].concat(inserts).join('\n');
+  }).join('\n\n');
+}
+
+const VIZ_SIDE = (function () {
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+  function cellHtml(value, changed) {
+    const cls = (value === null ? 'null' : '') + (changed ? ' chg' : '');
+    return '<td><span class="' + cls.trim() + '">' + esc(cellText(value)) + '</span></td>';
+  }
+
+  // Cabeçalho de uma tabela da base de dados: nome, tipo e as etiquetas PK / FK.
+  function colHead(col) {
+    const tags = (col.pk ? '<span class="tag tag-pk" title="chave primária">PK</span>' : '') +
+      (col.fk ? '<span class="tag tag-fk" title="chave estrangeira: aponta para ' + esc(col.fk) + '">FK→' + esc(col.fk) + '</span>' : '');
+    return '<th><span class="col-name">' + esc(col.name) + '</span>' + tags + '<span class="col-type">' + esc(col.type) + '</span></th>';
+  }
+
+  // Uma tabela da base de dados. prev é a mesma tabela no passo anterior (para pintar o que mudou);
+  // undefined quer dizer que a tabela acabou de ser criada.
+  function tableHtml(name, table, prev, marks) {
+    const prevRows = {};
+    if (prev) prev.rows.forEach(r => { prevRows[r.id] = r; });
+    const isNewTable = prev === undefined;
+    const body = table.rows.length
+      ? table.rows.map((row, i) => {
+        const old = prevRows[row.id];
+        const mark = marks && marks[i] ? ' row-' + marks[i] : '';
+        const isNew = !isNewTable && !old ? ' row-new' : '';
+        return '<tr class="' + (mark + isNew).trim() + '">' +
+          row.cells.map((v, c) => cellHtml(v, old && cellText(old.cells[c]) !== cellText(v))).join('') + '</tr>';
+      }).join('')
+      : '<tr><td class="empty" colspan="' + table.cols.length + '">(sem linhas)</td></tr>';
+    return '<div class="dbt' + (isNewTable ? ' is-new' : '') + '"><div class="dbt-name">' + esc(name) +
+      '<span>' + table.rows.length + (table.rows.length === 1 ? ' linha' : ' linhas') + '</span></div>' +
+      '<div class="t-wrap"><table class="grid"><thead><tr>' + table.cols.map(colHead).join('') + '</tr></thead><tbody>' + body + '</tbody></table></div></div>';
+  }
+
+  function tablesHtml(tables, prevTables, tmarks) {
+    const names = Object.keys(tables);
+    if (!names.length) return '<p class="mem-empty">A base de dados ainda não tem tabelas.</p>';
+    // No primeiro passo não há passo anterior: compara a tabela consigo própria, para nada aparecer como novo.
+    return names.map(n => tableHtml(n, tables[n], prevTables ? prevTables[n] : tables[n], tmarks[n])).join('');
+  }
+
+  // A grelha de trabalho da consulta. marks por linha: 'keep' (passa), 'drop' (fica de fora), 'hit' (em destaque).
+  // groups: tamanhos dos grupos do GROUP BY, pela ordem das linhas.
+  function gridHtml(g, err) {
+    if (err) return '<div class="sql-err"><strong>Erro</strong><code>' + esc(err) + '</code></div>';
+    if (!g) return '<p class="mem-empty">Nenhuma consulta a correr.</p>';
+    const groupOf = [];
+    (g.groups || []).forEach((size, gi) => { for (let k = 0; k < size; k++) groupOf.push(gi); });
+    const rows = g.rows.length
+      ? g.rows.map((r, i) => {
+        const cls = [];
+        if (g.marks && g.marks[i]) cls.push('row-' + g.marks[i]);
+        if (g.groups) {
+          cls.push(groupOf[i] % 2 ? 'grp-b' : 'grp-a');
+          if (i > 0 && groupOf[i] !== groupOf[i - 1]) cls.push('grp-start');
+        }
+        return '<tr class="' + cls.join(' ') + '">' + r.map(v => cellHtml(v, false)).join('') + '</tr>';
+      }).join('')
+      : '<tr><td class="empty" colspan="' + g.cols.length + '">(nenhuma linha)</td></tr>';
+    const count = g.rows.filter((_, i) => !(g.marks && g.marks[i] === 'drop')).length;
+    return (g.label ? '<div class="grid-label"><code>' + esc(g.label) + '</code><span>' + count + (count === 1 ? ' linha' : ' linhas') + '</span></div>' : '') +
+      '<div class="t-wrap"><table class="grid"><thead><tr>' + g.cols.map(c => '<th><span class="col-name">' + esc(c) + '</span></th>').join('') +
+      '</tr></thead><tbody>' + rows + '</tbody></table></div>';
+  }
+
+  // Resultado em texto (como o sqlite3 com .headers on: "nome|nota" e uma linha por resultado)
+  // mostrado como tabelinhas. Os conjuntos de resultados vêm separados por uma linha vazia.
+  function outputHtml(text) {
+    const blocks = text.replace(/\n+$/, '').split(/\n\n/);
+    return '<div class="out-grids">' + blocks.map(block => {
+      if (block.indexOf('Erro: ') === 0) return '<div class="sql-err"><strong>Erro</strong><code>' + esc(block.slice(6)) + '</code></div>';
+      const lines = block.split('\n');
+      const head = lines[0].split('|');
+      const body = lines.slice(1).map(l => l.split('|'));
+      return '<table class="grid mini-grid"><thead><tr>' + head.map(h => '<th>' + esc(h) + '</th>').join('') + '</tr></thead><tbody>' +
+        (body.length ? body.map(r => '<tr>' + r.map(v => '<td' + (v === 'NULL' ? ' class="null"' : '') + '>' + esc(v) + '</td>').join('') + '</tr>').join('')
+          : '<tr><td class="empty" colspan="' + head.length + '">(nenhuma linha)</td></tr>') +
+        '</tbody></table>';
+    }).join('') + '</div>';
+  }
+
+  // A base de dados de uma lição, mostrada antes dos exemplos.
+  function dbHtml(db) {
+    let id = 0;
+    const html = Object.entries(db).map(([name, spec]) => {
+      const table = makeTable(spec, () => ++id);
+      return tableHtml(name, table, table, null);
+    }).join('');
+    return '<div class="db-tables">' + html + '</div>' +
+      '<details><summary>Ver o SQL que cria estas tabelas</summary><div class="det-body"><pre class="snip"><code>' + esc(dbToSql(db)) + '</code></pre></div></details>';
+  }
+
+  return {
+    panelsHtml() {
+      return '<div class="panel"><div class="panel-label"><span>Base de dados</span><span>amarelo = mudou agora</span></div><div class="mem db"></div></div>' +
+        '<div class="panel"><div class="panel-label"><span>Resultado</span></div><div class="mem res"></div></div>';
+    },
+    render(host, step, prev) {
+      host.querySelector('.db').innerHTML = tablesHtml(step.tables, prev ? prev.tables : null, step.tmarks);
+      host.querySelector('.res').innerHTML = gridHtml(step.grid, step.err);
+    },
+    outputHtml,
+    dbHtml,
+  };
+})();
+
+if (typeof module !== 'undefined') module.exports = { dbToSql, cellText, VIZ_SIDE };
+
+</script>
+<script>
+// ===== Motor do visualizador: transforma a lista de passos de um exemplo em fotografias da memória. =====
+// É partilhado por todos os cursos e corre tanto na página como nos testes (shared/check.js).
+function parseVarPath(key) {
+  const m = key.match(/^([A-Za-z_]\w*)(.*)$/);
+  if (!m) throw new Error('caminho inválido: ' + key);
+  const path = [];
+  const re = /\[(\d+)\]|\.([A-Za-z_]\w*)/g;
+  let t;
+  let consumed = 0;
+  while ((t = re.exec(m[2]))) {
+    path.push(t[1] !== undefined ? Number(t[1]) : t[2]);
+    consumed += t[0].length;
+  }
+  if (consumed !== m[2].length) throw new Error('caminho inválido: ' + key);
+  return { name: m[1], path };
+}
+
+// ---------- tabelas (cursos de SQL) ----------
+// Uma coluna escreve-se como no CREATE TABLE: ['numero', 'INTEGER PRIMARY KEY'] ou ['curso', 'INTEGER REFERENCES cursos(id)'].
+function parseColumn(spec) {
+  const [name, def] = spec;
+  const fk = /REFERENCES\s+(\w+)\s*\((\w+)\)/i.exec(def);
+  return {
+    name,
+    def,
+    type: def.split(/\s+/)[0].toUpperCase(),
+    pk: /PRIMARY\s+KEY/i.test(def),
+    fk: fk ? fk[1] + '.' + fk[2] : null,
+  };
+}
+
+// Transforma { cols, key?, rows? } numa tabela do motor. Cada linha leva um id interno,
+// para o visualizador saber que linha é qual mesmo depois de outras serem apagadas.
+function makeTable(spec, nextId) {
+  const cols = spec.cols.map(parseColumn);
+  (spec.key || []).forEach(k => {
+    const col = cols.find(c => c.name === k);
+    if (!col) throw new Error('chave com coluna inexistente: ' + k);
+    col.pk = true;
+  });
+  const table = { cols, rows: [] };
+  (spec.rows || []).forEach(cells => addRow(table, cells, nextId));
+  return table;
+}
+
+function addRow(table, cells, nextId) {
+  if (cells.length !== table.cols.length) throw new Error('linha com ' + cells.length + ' valores numa tabela com ' + table.cols.length + ' colunas');
+  table.rows.push({ id: nextId(), cells: cells.slice() });
+}
+
+// Aplica as operações de tabelas de um passo: create, ins, upd, del, drop.
+function applyTableOps(tables, s, where, nextId) {
+  const find = name => {
+    if (!tables[name]) throw new Error('tabela inexistente: ' + name + where);
+    return tables[name];
+  };
+  if (s.create) {
+    for (const [name, spec] of Object.entries(s.create)) {
+      if (tables[name]) throw new Error('tabela repetida: ' + name + where);
+      tables[name] = makeTable(spec, nextId);
+    }
+  }
+  if (s.ins) {
+    for (const [name, rows] of Object.entries(s.ins)) rows.forEach(cells => addRow(find(name), cells, nextId));
+  }
+  if (s.upd) {
+    for (const [name, changes] of Object.entries(s.upd)) {
+      const t = find(name);
+      for (const [index, sets] of Object.entries(changes)) {
+        const row = t.rows[Number(index)];
+        if (!row) throw new Error('linha inexistente: ' + name + '[' + index + ']' + where);
+        for (const [col, value] of Object.entries(sets)) {
+          const c = t.cols.findIndex(x => x.name === col);
+          if (c < 0) throw new Error('coluna inexistente: ' + name + '.' + col + where);
+          row.cells[c] = value;
+        }
+      }
+    }
+  }
+  if (s.del) {
+    for (const [name, indexes] of Object.entries(s.del)) {
+      const t = find(name);
+      indexes.forEach(i => { if (!t.rows[i]) throw new Error('apagar linha inexistente: ' + name + '[' + i + ']' + where); });
+      t.rows = t.rows.filter((_, i) => !indexes.includes(i));
+    }
+  }
+  if (s.drop) s.drop.forEach(name => { find(name); delete tables[name]; });
+  // tm: marcas que só valem neste passo, por exemplo as linhas que o WHERE de um UPDATE encontrou.
+  if (s.tm) {
+    for (const [name, marks] of Object.entries(s.tm)) {
+      const t = find(name);
+      Object.keys(marks).forEach(i => { if (!t.rows[i]) throw new Error('marca em linha inexistente: ' + name + '[' + i + ']' + where); });
+    }
+  }
+}
+
+// g: a grelha de trabalho de uma consulta (o que o FROM, o WHERE, o GROUP BY... já construíram).
+function checkGrid(g, where) {
+  if (g === null) return;
+  if (!Array.isArray(g.cols) || !Array.isArray(g.rows)) throw new Error('grelha sem cols ou rows' + where);
+  g.rows.forEach(r => { if (r.length !== g.cols.length) throw new Error('linha da grelha com ' + r.length + ' valores e ' + g.cols.length + ' colunas' + where); });
+  if (g.marks && g.marks.length !== g.rows.length) throw new Error('marks da grelha com tamanho diferente das linhas' + where);
+  if (g.groups && g.groups.reduce((a, b) => a + b, 0) !== g.rows.length) throw new Error('groups da grelha não somam o número de linhas' + where);
+}
+
+// initialTables: a base de dados com que o exemplo começa ({ nome: { cols, rows } }), ou nada.
+function buildSteps(raw, initialTables) {
+  let frames = [];
+  let out = '';
+  let lastId = 0;
+  const nextId = () => ++lastId;
+  let tables = {};
+  for (const [name, spec] of Object.entries(initialTables || {})) tables[name] = makeTable(spec, nextId);
+  let grid = null;
+  const res = [];
+  raw.forEach((s, idx) => {
+    frames = JSON.parse(JSON.stringify(frames));
+    tables = JSON.parse(JSON.stringify(tables));
+    const where = ' (passo ' + (idx + 1) + ')';
+    applyTableOps(tables, s, where, nextId);
+    if (s.g !== undefined) {
+      checkGrid(s.g, where);
+      grid = JSON.parse(JSON.stringify(s.g));
+    }
+    const findFrame = name => {
+      for (let i = frames.length - 1; i >= 0; i--) if (frames[i].name === name) return frames[i];
+      throw new Error('frame inexistente: ' + name + where);
+    };
+    if (s.pop) {
+      if (!frames.length) throw new Error('pop sem frames' + where);
+      frames.pop();
+    }
+    if (s.push) frames.push({ name: s.push, vars: [] });
+    if (s.x) {
+      for (const [fn, names] of Object.entries(s.x)) {
+        const f = findFrame(fn);
+        names.forEach(n => {
+          if (!f.vars.some(v => v.name === n)) throw new Error('apagar variável inexistente: ' + n + where);
+        });
+        f.vars = f.vars.filter(v => !names.includes(v.name));
+      }
+    }
+    if (s.d) {
+      for (const [fn, vars] of Object.entries(s.d)) {
+        const f = findFrame(fn);
+        for (const [name, spec] of Object.entries(vars)) {
+          if (f.vars.some(v => v.name === name)) throw new Error('variável repetida: ' + name + where);
+          const [type, value, addr] = spec;
+          f.vars.push({ name, type, value: JSON.parse(JSON.stringify(value)), addr: addr || null });
+        }
+      }
+    }
+    if (s.u) {
+      for (const [fn, sets] of Object.entries(s.u)) {
+        const f = findFrame(fn);
+        for (const [key, value] of Object.entries(sets)) {
+          const { name, path } = parseVarPath(key);
+          const v = f.vars.find(x => x.name === name);
+          if (!v) throw new Error('atualizar variável inexistente: ' + name + where);
+          if (!path.length) { v.value = value; continue; }
+          let target = v.value;
+          for (let i = 0; i < path.length - 1; i++) {
+            target = target[path[i]];
+            if (target === undefined) throw new Error('caminho inexistente: ' + key + where);
+          }
+          const last = path[path.length - 1];
+          if (target[last] === undefined) throw new Error('caminho inexistente: ' + key + where);
+          target[last] = value;
+        }
+      }
+    }
+    if (s.o) out += s.o;
+    res.push({ l: s.l, frames, out, n: s.n || '', tables, tmarks: s.tm || {}, grid, err: s.err || '' });
+  });
+  return res;
+}
+
+if (typeof module !== 'undefined') module.exports = { buildSteps, parseVarPath, makeTable };
+
+</script>
+<script>
+// ===== SQL do Zero — conteúdo das lições (parte 1) =====
+// Formato de um passo do visualizador (l e n são como no C):
+//   create: { tabela: { cols: [[nome, definição]], key?: [colunas] } }   cria uma tabela vazia
+//   ins:    { tabela: [[valores], ...] }               acrescenta linhas
+//   upd:    { tabela: { índice: { coluna: valor } } }  muda células (índice 0 = primeira linha)
+//   del:    { tabela: [índices] }                      apaga linhas
+//   tm:     { tabela: { índice: 'hit' | 'drop' } }     marca linhas da base de dados só neste passo
+//   g:      { label, cols, rows, marks?, groups? } ou null   a grelha de trabalho da consulta (painel Resultado)
+//           marks: 'keep' (passa), 'drop' (fica de fora), 'hit' (em destaque); groups: tamanhos dos grupos
+//   err:    'mensagem'                                 o SQLite deu erro nesta instrução
+// Um exemplo com db começa com essas tabelas. O check corre cada instrução no SQLite e compara,
+// no último passo dessa instrução, as tabelas e o resultado com os reais.
+const C = (s, ...v) => String.raw(s, ...v).replace(/^\n/, '').replace(/\n\s*$/, '');
+const H = (s, ...v) => String.raw(s, ...v);
+
+// ---------- ajudantes para escrever grelhas e resultados ----------
+// Nomes das colunas de uma tabela de exemplo.
+const colsOf = t => t.cols.map(c => c[0]);
+// Uma linha como objeto, para escrever condições legíveis: a => a.nota >= 10
+const asObj = (t, r) => Object.fromEntries(colsOf(t).map((c, i) => [c, r[i]]));
+// As linhas que cumprem uma condição, e as marcas 'keep'/'drop' que mostram o WHERE a trabalhar.
+const rowsWhere = (t, test) => t.rows.filter(r => test(asObj(t, r)));
+const marksWhere = (t, test) => t.rows.map(r => (test(asObj(t, r)) ? 'keep' : 'drop'));
+// Só algumas colunas das linhas dadas (é o que o SELECT faz).
+const pick = (t, rows, names) => rows.map(r => names.map(n => r[colsOf(t).indexOf(n)]));
+// Um resultado em texto, como o sqlite3 o mostra com .headers on: res(['nome'], [['Ana'], ['Rui']]).
+const res = (cols, rows) => [cols.join('|')].concat(rows.map(r => r.map(v => (v === null ? 'NULL' : String(v))).join('|'))).join('\n');
+// O mesmo, com a mudança de linha final (para o "Resultado esperado" dos exercícios).
+const out = (cols, rows) => res(cols, rows) + '\n';
+// Uma base de dados só com algumas tabelas de outra: only(ESCOLA, 'alunos', 'cursos').
+const only = (db, ...names) => Object.fromEntries(names.map(n => [n, db[n]]));
+
+// ---------- bases de dados das lições ----------
+const ALUNOS = {
+  cols: [['numero', 'INTEGER PRIMARY KEY'], ['nome', 'TEXT NOT NULL'], ['curso', 'TEXT'], ['ano', 'INTEGER'], ['nota', 'INTEGER']],
+  rows: [
+    [101, 'Ana', 'LEI', 1, 17],
+    [102, 'Rui', 'LEI', 1, 9],
+    [103, 'Ines', 'LEE', 2, 14],
+    [104, 'Tiago', 'LEI', 2, 12],
+    [105, 'Marta', 'LEM', 1, 18],
+    [106, 'Pedro', 'LEE', 1, 7],
+    [107, 'Sofia', 'LEI', 1, 15],
+    [108, 'Joao', 'LEM', 2, 11],
+  ],
+};
+const ALL = colsOf(ALUNOS);
+
+const LESSONS = [];
+
+// ---------------------------------------------------------------- 0
+LESSONS.push({
+  id: 0,
+  title: 'Tabelas e o primeiro SELECT',
+  short: 'linhas, colunas e pedir dados com SELECT ... FROM',
+  body: H`
+<p>Uma <strong>base de dados</strong> guarda a informação em <strong>tabelas</strong>. Cada tabela tem <strong>colunas</strong> (que informação se guarda: número, nome, nota) e <strong>linhas</strong> (um registo cada: um aluno). Em C fazias isto com um array de structs: cada struct era uma linha, cada campo era uma coluna.</p>
+<p>Para pedir dados escreve-se em <strong>SQL</strong>. A grande diferença para o C: em SQL dizes <strong>o que queres</strong>, não <strong>como</strong> se faz. Não há <code>for</code> a percorrer as linhas; é o sistema de gestão de base de dados (SGBD) que trata disso.</p>
+<pre class="snip"><code>SELECT colunas
+FROM tabela;</code></pre>
+<ul>
+<li><code>FROM alunos</code> diz de que tabela vêm os dados; <code>SELECT nome, nota</code> diz que colunas queres ver. <code>SELECT *</code> mostra todas.</li>
+<li>Podes fazer contas nas colunas (<code>nota * 5</code>) e dar-lhes um nome novo com <code>AS</code>.</li>
+<li>A instrução acaba com <code>;</code>. As palavras do SQL tanto podem ir em maiúsculas como em minúsculas, mas é costume escrevê-las em maiúsculas.</li>
+<li>Repara na ordem: escreve-se <code>SELECT</code> primeiro, mas o SGBD começa pelo <code>FROM</code>. Só depois de ter a tabela é que escolhe as colunas.</li>
+</ul>`,
+  analogy: H`Uma tabela é a pauta de uma UC afixada no placard: cada linha é um aluno, cada coluna é uma informação sobre ele. Um <code>SELECT</code> é pedir a alguém "lê-me só os nomes e as notas": dizes o que queres e não como procurar.`,
+  db: { alunos: ALUNOS },
+  examples: [{
+    title: 'Escolher colunas',
+    db: { alunos: ALUNOS },
+    code: C`
+SELECT nome, nota
+FROM alunos;`,
+    steps: [
+      { l: 2, g: { label: 'FROM alunos', cols: ALL, rows: ALUNOS.rows }, n: H`O SQL começa pelo <code>FROM</code>, apesar de estar escrito depois: vai buscar a tabela <code>alunos</code> inteira. São 8 linhas e 5 colunas.` },
+      { l: 1, g: { label: 'SELECT nome, nota', cols: ['nome', 'nota'], rows: pick(ALUNOS, ALUNOS.rows, ['nome', 'nota']) }, n: H`Depois o <code>SELECT</code> fica só com as colunas pedidas, pela ordem em que as escreveste. As linhas continuam a ser todas, porque não pedimos nenhum filtro.` },
+    ],
+  }, {
+    title: 'Contas e nomes novos com AS',
+    db: { alunos: ALUNOS },
+    code: C`
+SELECT nome,
+       nota * 5 AS percentagem
+FROM alunos;`,
+    steps: [
+      { l: 3, g: { label: 'FROM alunos', cols: ALL, rows: ALUNOS.rows }, n: 'Primeiro, a tabela inteira.' },
+      { l: 1, g: { label: 'SELECT nome', cols: ['nome'], rows: pick(ALUNOS, ALUNOS.rows, ['nome']) }, n: H`A primeira coluna pedida é o <code>nome</code>.` },
+      { l: 2, g: { label: 'nota * 5 AS percentagem', cols: ['nome', 'percentagem'], rows: ALUNOS.rows.map(r => [r[1], r[4] * 5]) }, n: H`A segunda coluna é uma conta, feita linha a linha: a nota de 0 a 20 vezes 5 dá a percentagem. O <code>AS</code> dá o nome <code>percentagem</code> à coluna nova. A tabela <code>alunos</code> não muda: o SELECT só lê.` },
+    ],
+  }],
+  mistakes: [
+    H`Esquecer o <code>FROM</code>: o SGBD não sabe de que tabela queres as colunas.`,
+    H`Escrever o nome de uma coluna que não existe ou mal escrito. O SQLite responde <em>no such column: idade</em>.`,
+    H`Separar as colunas com espaços em vez de vírgulas: <code>SELECT nome nota</code> não mostra duas colunas (o SQL lê o <code>nota</code> como um nome novo para a coluna <code>nome</code>).`,
+    H`Pôr uma vírgula a mais antes do <code>FROM</code>: <code>SELECT nome, nota, FROM alunos</code> dá erro de sintaxe.`,
+    H`Achar que o <code>SELECT</code> muda a tabela. Ele só lê; para mudar dados há o <code>UPDATE</code> (lição 4).`,
+  ],
+  quiz: [
+    { q: 'Que resultado dá esta consulta?', code: C`SELECT 10 / 4 AS a, 10 / 4.0 AS b;`,
+      opts: [res(['a', 'b'], [[2, 2.5]]), res(['a', 'b'], [[2.5, 2.5]]), res(['a', 'b'], [[2, 2]]), res(['a', 'b'], [[3, 2.5]])], ok: 0, mono: true, check: true,
+      exp: H`Tal como em C, inteiro a dividir por inteiro dá inteiro: <code>10 / 4</code> dá 2 (as casas decimais são cortadas). Basta um dos lados ser real (<code>4.0</code>) para dar 2.5.` },
+    { q: 'Qual destas consultas mostra só os nomes dos alunos?', opts: ['SELECT nome FROM alunos;', 'SELECT alunos FROM nome;', 'SELECT * FROM alunos;', 'FROM alunos SELECT nome;'], ok: 0, mono: true,
+      exp: H`Depois do <code>SELECT</code> vêm as colunas e depois do <code>FROM</code> a tabela. <code>SELECT *</code> mostra todas as colunas, e a ordem <code>FROM ... SELECT</code> não é válida, apesar de ser a ordem em que o SGBD trabalha.` },
+    { q: 'Quantas linhas dá SELECT nome FROM alunos; com a tabela desta lição?', opts: ['1', '5', '8', '40'], ok: 2,
+      exp: 'Sem filtro, o SELECT devolve uma linha por cada linha da tabela: 8 alunos, 8 linhas. O 5 é o número de colunas da tabela, e o SELECT só mostra uma delas.' },
+    { q: 'Que resultado dá esta consulta?', code: C`SELECT 'Ola' AS msg, 2 + 3 * 4 AS conta;`,
+      opts: [res(['msg', 'conta'], [['Ola', 14]]), res(['msg', 'conta'], [['Ola', 20]]), res(["'Ola'", 'conta'], [['Ola', 14]]), res(['msg', 'conta'], [['msg', 14]])], ok: 0, mono: true, check: true,
+      exp: H`Um SELECT nem precisa de tabela para fazer contas. A multiplicação vem antes da soma, como em C e na matemática: 3 × 4 = 12, mais 2 dá 14. O <code>AS</code> dá o nome às colunas.` },
+  ],
+  exercises: [{
+    title: 'Número e nome',
+    text: 'Mostra o número e o nome de todos os alunos.',
+    run: out(['numero', 'nome'], pick(ALUNOS, ALUNOS.rows, ['numero', 'nome'])),
+    hint: H`As colunas vão separadas por vírgula, depois do <code>SELECT</code>.`,
+    solution: C`
+SELECT numero, nome
+FROM alunos;`,
+  }, {
+    title: 'Nota de 0 a 10',
+    text: 'Mostra o nome de cada aluno e a nota numa escala de 0 a 10, com uma casa decimal (por exemplo 8.5). Chama nota10 a essa coluna.',
+    run: out(['nome', 'nota10'], ALUNOS.rows.map(r => [r[1], String(r[4] / 2).includes('.') ? String(r[4] / 2) : r[4] / 2 + '.0'])),
+    hint: H`Dividir por <code>2</code> dava divisão inteira (17 / 2 = 8). Divide por <code>2.0</code> para ter casas decimais.`,
+    solution: C`
+SELECT nome, nota / 2.0 AS nota10
+FROM alunos;`,
+  }],
+});
+
+// ---------------------------------------------------------------- 1
+LESSONS.push({
+  id: 1,
+  title: 'Criar tabelas e inserir dados',
+  short: 'CREATE TABLE, tipos, NOT NULL e INSERT INTO',
+  body: H`
+<p>Antes de ter dados é preciso criar a tabela: dizer que colunas tem e de que tipo é cada uma. É parecido com definir um <code>struct</code> em C: crias o molde, ainda sem nenhuma linha.</p>
+<pre class="snip"><code>CREATE TABLE alunos (
+    numero INTEGER PRIMARY KEY,
+    nome TEXT NOT NULL,
+    nota INTEGER
+);</code></pre>
+<table class="t">
+<thead><tr><th>Tipo (SQLite)</th><th>Guarda</th><th>Em C era</th></tr></thead>
+<tbody>
+<tr><td><code>INTEGER</code></td><td>números inteiros</td><td><code>int</code></td></tr>
+<tr><td><code>REAL</code></td><td>números com casas decimais</td><td><code>double</code></td></tr>
+<tr><td><code>TEXT</code></td><td>texto, escrito entre plicas: <code>'Ana'</code></td><td><code>char[]</code></td></tr>
+</tbody>
+</table>
+<ul>
+<li><code>NOT NULL</code> obriga a coluna a ter sempre um valor. <code>PRIMARY KEY</code> diz que a coluna identifica cada linha: não se pode repetir (vês isto a fundo na lição 8).</li>
+<li><code>INSERT INTO alunos VALUES (101, 'Ana', 17);</code> acrescenta uma linha. Os valores vão pela ordem das colunas.</li>
+<li>Se só deres algumas colunas, escreve-as: <code>INSERT INTO alunos (numero, nome) VALUES (102, 'Rui');</code>. As que faltam ficam com <code>NULL</code> (sem valor).</li>
+<li>Um só INSERT pode meter várias linhas: <code>VALUES (...), (...);</code></li>
+</ul>
+<p>Noutros SGBD (MySQL, PostgreSQL, Oracle) os nomes dos tipos mudam um pouco (<code>INT</code>, <code>VARCHAR(50)</code>, <code>DECIMAL</code>), mas a ideia é a mesma.</p>`,
+  analogy: H`O <code>CREATE TABLE</code> é desenhar as colunas numa folha de pauta em branco. Cada <code>INSERT</code> é escrever uma linha nessa folha. As regras (<code>NOT NULL</code>, <code>PRIMARY KEY</code>) são o funcionário que recusa uma linha mal preenchida.`,
+  examples: [{
+    title: 'Criar a tabela e pôr lá alunos',
+    code: C`
+CREATE TABLE alunos (
+    numero INTEGER PRIMARY KEY,
+    nome TEXT NOT NULL,
+    nota INTEGER
+);
+INSERT INTO alunos VALUES (101, 'Ana', 17);
+INSERT INTO alunos (numero, nome) VALUES (102, 'Rui');
+INSERT INTO alunos VALUES (103, 'Ines', 14), (104, 'Tiago', 12);
+SELECT * FROM alunos;`,
+    steps: [
+      { l: 1, create: { alunos: { cols: [['numero', 'INTEGER PRIMARY KEY'], ['nome', 'TEXT NOT NULL'], ['nota', 'INTEGER']] } }, n: H`<code>CREATE TABLE</code> cria a tabela <code>alunos</code>, ainda sem nenhuma linha. A base de dados passa a ter uma tabela.` },
+      { l: 2, n: H`<code>numero</code> é um inteiro e é a <strong>chave primária</strong> (PK): cada aluno tem um número diferente.` },
+      { l: 3, n: H`<code>nome</code> é texto e <code>NOT NULL</code>: não pode ficar vazio.` },
+      { l: 4, n: H`<code>nota</code> é um inteiro sem regras extra: pode ficar sem valor.` },
+      { l: 6, ins: { alunos: [[101, 'Ana', 17]] }, n: H`O <code>INSERT</code> acrescenta uma linha. Os três valores vão pela ordem das colunas: numero, nome, nota. O texto vai entre plicas.` },
+      { l: 7, ins: { alunos: [[102, 'Rui', null]] }, n: H`Aqui só se dão duas colunas, escritas entre parênteses. A <code>nota</code> fica com <code>NULL</code>: não tem valor (não é zero!).` },
+      { l: 8, ins: { alunos: [[103, 'Ines', 14], [104, 'Tiago', 12]] }, n: 'Um só INSERT com duas linhas, separadas por vírgula.' },
+      { l: 9, g: { label: 'SELECT * FROM alunos', cols: ['numero', 'nome', 'nota'], rows: [[101, 'Ana', 17], [102, 'Rui', null], [103, 'Ines', 14], [104, 'Tiago', 12]] }, n: H`<code>SELECT *</code> mostra todas as colunas e todas as linhas. Lá está o <code>NULL</code> do Rui.` },
+    ],
+  }, {
+    title: 'Quando o INSERT é recusado',
+    code: C`
+CREATE TABLE alunos (
+    numero INTEGER PRIMARY KEY,
+    nome TEXT NOT NULL
+);
+INSERT INTO alunos VALUES (101, 'Ana');
+INSERT INTO alunos VALUES (101, 'Rui');
+INSERT INTO alunos VALUES (102, NULL);
+INSERT INTO alunos VALUES (102, 'Rui');`,
+    steps: [
+      { l: 1, create: { alunos: { cols: [['numero', 'INTEGER PRIMARY KEY'], ['nome', 'TEXT NOT NULL']] } }, n: 'Uma tabela com duas regras: o número não se repete e o nome é obrigatório.' },
+      { l: 5, ins: { alunos: [[101, 'Ana']] }, n: 'A Ana entra sem problemas.' },
+      { l: 6, err: 'UNIQUE constraint failed: alunos.numero', n: H`O 101 já existe e o <code>numero</code> é chave primária. O SQLite recusa a linha inteira: a tabela fica igual.` },
+      { l: 7, err: 'NOT NULL constraint failed: alunos.nome', n: H`O nome é <code>NOT NULL</code>, por isso também esta é recusada.` },
+      { l: 8, ins: { alunos: [[102, 'Rui']] }, n: 'Com um número novo e um nome, o Rui já entra. Uma instrução recusada não estraga as outras.' },
+    ],
+  }],
+  mistakes: [
+    H`Escrever texto com aspas: <code>"Ana"</code>. Em SQL o texto vai entre <strong>plicas</strong>: <code>'Ana'</code>. O SQLite queixa-se com <em>no such column: "Ana"</em>.`,
+    H`Esquecer as plicas no texto: <code>VALUES (101, Ana)</code>. O SQL acha que <code>Ana</code> é o nome de uma coluna.`,
+    H`Dar menos valores do que as colunas sem dizer quais são: <em>table alunos has 3 columns but 2 values were supplied</em>.`,
+    H`Esquecer o <code>;</code> entre instruções, ou a vírgula entre colunas no CREATE TABLE.`,
+    H`Criar a tabela duas vezes: <em>table alunos already exists</em>.`,
+    H`Pôr uma vírgula depois da última coluna do CREATE TABLE, antes do <code>)</code>.`,
+  ],
+  quiz: [
+    { q: 'Que resultado dá este script?', db: false, code: C`
+CREATE TABLE t (a INTEGER, b TEXT);
+INSERT INTO t VALUES (1, 'x');
+INSERT INTO t (b) VALUES ('y');
+SELECT * FROM t;`, opts: [res(['a', 'b'], [[1, 'x'], [null, 'y']]), res(['a', 'b'], [[1, 'x'], [0, 'y']]), res(['a', 'b'], [[1, 'x']]), 'Erro: NOT NULL constraint failed: t.a'], ok: 0, mono: true, check: true,
+      exp: H`A coluna <code>a</code> não foi dada no segundo INSERT, por isso fica <code>NULL</code> (sem valor, que não é o mesmo que 0). Não há erro porque <code>a</code> não tem <code>NOT NULL</code>.` },
+    { q: 'Que resultado dá este script?', db: false, code: C`
+CREATE TABLE t (n INTEGER PRIMARY KEY, nome TEXT);
+INSERT INTO t VALUES (1, 'Ana');
+INSERT INTO t VALUES (1, 'Rui');
+SELECT nome FROM t;`, opts: [res(['nome'], [['Ana'], ['Rui']]), res(['nome'], [['Rui']]), 'Erro: UNIQUE constraint failed: t.n\n\n' + res(['nome'], [['Ana']]), res(['nome'], [['Ana']])], ok: 2, mono: true, check: true,
+      exp: H`O segundo INSERT repete a chave primária, por isso dá erro e o Rui não entra. O SQLite continua para a instrução seguinte, e o SELECT só encontra a Ana.` },
+    { q: 'Que tipo usas para guardar o nome de um aluno?', opts: ['INTEGER', 'REAL', 'TEXT', 'NAME'], ok: 2,
+      exp: H`Texto guarda-se em <code>TEXT</code>. <code>INTEGER</code> e <code>REAL</code> são para números.` },
+    { q: 'Qual destes INSERT está certo?', opts: ["INSERT INTO alunos VALUES (105, 'Marta', 18);", 'INSERT INTO alunos VALUES (105, "Marta", 18);', "INSERT alunos VALUES (105, 'Marta', 18);", "INSERT INTO alunos (105, 'Marta', 18);"], ok: 0, mono: true,
+      exp: H`É <code>INSERT INTO tabela VALUES (...)</code>, com o texto entre plicas. Com aspas o SQLite procura uma coluna chamada Marta, sem <code>INTO</code> é erro de sintaxe e sem <code>VALUES</code> os valores são lidos como nomes de colunas.` },
+  ],
+  exercises: [{
+    title: 'Tabela de UCs',
+    text: 'Cria a tabela ucs com as colunas codigo (texto, chave primária), nome (texto, obrigatório) e ects (inteiro). Insere as UCs BD "Bases de Dados" com 6 ECTS, SO "Sistemas Operativos" com 6 e RC "Redes de Computadores" com 4. No fim mostra a tabela toda.',
+    run: out(['codigo', 'nome', 'ects'], [['BD', 'Bases de Dados', 6], ['SO', 'Sistemas Operativos', 6], ['RC', 'Redes de Computadores', 4]]),
+    hint: H`Primeiro o <code>CREATE TABLE ucs (...)</code>, com as colunas separadas por vírgula. Depois um INSERT (ou três) e um <code>SELECT * FROM ucs;</code>`,
+    solution: C`
+CREATE TABLE ucs (
+    codigo TEXT PRIMARY KEY,
+    nome TEXT NOT NULL,
+    ects INTEGER
+);
+INSERT INTO ucs VALUES
+    ('BD', 'Bases de Dados', 6),
+    ('SO', 'Sistemas Operativos', 6),
+    ('RC', 'Redes de Computadores', 4);
+SELECT * FROM ucs;`,
+  }, {
+    title: 'Livros',
+    text: 'Cria a tabela livros com id (inteiro, chave primária), titulo (texto, obrigatório) e ano (inteiro). Insere Os Maias (1888), Mensagem (1934) e Ensaio sobre a Cegueira (1995), com os ids 1, 2 e 3. Mostra só o título e o ano.',
+    run: out(['titulo', 'ano'], [['Os Maias', 1888], ['Mensagem', 1934], ['Ensaio sobre a Cegueira', 1995]]),
+    hint: H`No fim não uses <code>*</code>: escreve as duas colunas que queres, <code>SELECT titulo, ano</code>.`,
+    solution: C`
+CREATE TABLE livros (
+    id INTEGER PRIMARY KEY,
+    titulo TEXT NOT NULL,
+    ano INTEGER
+);
+INSERT INTO livros VALUES (1, 'Os Maias', 1888), (2, 'Mensagem', 1934), (3, 'Ensaio sobre a Cegueira', 1995);
+SELECT titulo, ano FROM livros;`,
+  }],
+});
+
+// ---------------------------------------------------------------- 2
+const positiva = a => a.nota >= 10;
+const leiPrimeiro = a => a.curso === 'LEI' && a.ano === 1;
+
+LESSONS.push({
+  id: 2,
+  title: 'Filtrar linhas com WHERE',
+  short: 'condições, AND e OR, BETWEEN, IN e LIKE',
+  body: H`
+<p>O <code>WHERE</code> escolhe <strong>que linhas</strong> ficam no resultado. A condição é testada linha a linha: as que dão verdadeiro passam, as outras ficam de fora. A ordem de trabalho é <code>FROM</code> → <code>WHERE</code> → <code>SELECT</code>.</p>
+<table class="t">
+<thead><tr><th>Escreves</th><th>Quer dizer</th></tr></thead>
+<tbody>
+<tr><td><code>nota = 10</code></td><td>igual (só um <code>=</code>, ao contrário do C)</td></tr>
+<tr><td><code>nota &lt;&gt; 10</code> ou <code>nota != 10</code></td><td>diferente</td></tr>
+<tr><td><code>&lt; &gt; &lt;= &gt;=</code></td><td>menor, maior, ...</td></tr>
+<tr><td><code>AND</code>, <code>OR</code>, <code>NOT</code></td><td>e, ou, não (como <code>&amp;&amp;</code>, <code>||</code> e <code>!</code> em C)</td></tr>
+<tr><td><code>nota BETWEEN 10 AND 14</code></td><td>entre 10 e 14, <strong>incluindo</strong> os dois</td></tr>
+<tr><td><code>curso IN ('LEI', 'LEM')</code></td><td>igual a um destes</td></tr>
+<tr><td><code>nome LIKE 'M%'</code></td><td>começa por M (<code>%</code> = qualquer texto, <code>_</code> = um carácter)</td></tr>
+</tbody>
+</table>
+<p>O texto vai entre plicas e, com <code>=</code>, as maiúsculas contam: <code>'lei'</code> não é <code>'LEI'</code>. Quando juntas <code>AND</code> e <code>OR</code>, usa parênteses para não haver dúvidas.</p>`,
+  analogy: 'O WHERE é uma peneira. As linhas da tabela passam uma a uma e só ficam as que cumprem a condição. A tabela original não perde nada: a peneira só decide o que vai para o resultado.',
+  db: { alunos: ALUNOS },
+  examples: [{
+    title: 'Quem teve positiva',
+    db: { alunos: ALUNOS },
+    code: C`
+SELECT nome, nota
+FROM alunos
+WHERE nota >= 10;`,
+    steps: [
+      { l: 2, g: { label: 'FROM alunos', cols: ALL, rows: ALUNOS.rows }, n: H`Primeiro o <code>FROM</code>: a tabela inteira, 8 linhas.` },
+      { l: 3, g: { label: 'WHERE nota >= 10', cols: ALL, rows: ALUNOS.rows, marks: marksWhere(ALUNOS, positiva) }, n: H`O <code>WHERE</code> testa cada linha: 17 &gt;= 10 sim, 9 &gt;= 10 não, ... A verde as que passam, riscadas as que ficam de fora (o Rui e o Pedro).` },
+      { l: 1, g: { label: 'SELECT nome, nota', cols: ['nome', 'nota'], rows: pick(ALUNOS, rowsWhere(ALUNOS, positiva), ['nome', 'nota']) }, n: H`Só no fim o <code>SELECT</code> escolhe as colunas, e só das 6 linhas que passaram.` },
+    ],
+  }, {
+    title: 'Duas condições com AND',
+    db: { alunos: ALUNOS },
+    code: C`
+SELECT nome, curso, ano
+FROM alunos
+WHERE curso = 'LEI' AND ano = 1;`,
+    steps: [
+      { l: 2, g: { label: 'FROM alunos', cols: ALL, rows: ALUNOS.rows }, n: 'A tabela inteira.' },
+      { l: 3, g: { label: "WHERE curso = 'LEI' AND ano = 1", cols: ALL, rows: ALUNOS.rows, marks: marksWhere(ALUNOS, leiPrimeiro) }, n: H`Com <code>AND</code> têm de ser verdade as duas. O Tiago é de LEI mas está no 2.º ano, por isso fica de fora. A Marta está no 1.º ano mas é de LEM.` },
+      { l: 1, g: { label: 'SELECT nome, curso, ano', cols: ['nome', 'curso', 'ano'], rows: pick(ALUNOS, rowsWhere(ALUNOS, leiPrimeiro), ['nome', 'curso', 'ano']) }, n: 'Ficam três alunos: os de LEI do 1.º ano.' },
+    ],
+  }],
+  mistakes: [
+    H`Escrever o texto sem plicas: <code>WHERE curso = LEI</code> dá <em>no such column: LEI</em>.`,
+    H`Escrever <code>WHERE 'curso' = 'LEI'</code>: com plicas, <code>'curso'</code> é texto e não a coluna, e o texto "curso" nunca é igual a "LEI". Não dá erro, mas o resultado vem vazio.`,
+    H`Confundir <code>AND</code> com <code>OR</code>. "Alunos de LEI e de LEM" é <code>curso = 'LEI' OR curso = 'LEM'</code> (ou <code>IN</code>): nenhum aluno é dos dois cursos ao mesmo tempo.`,
+    H`Escrever <code>WHERE nota &gt;= 10 AND &lt;= 14</code>. Cada lado do AND é uma condição completa: <code>nota &gt;= 10 AND nota &lt;= 14</code>, ou <code>BETWEEN 10 AND 14</code>.`,
+    H`Esquecer que o <code>BETWEEN</code> inclui os extremos.`,
+  ],
+  quiz: [
+    { q: 'Que resultado dá esta consulta?', code: C`
+SELECT nome FROM alunos
+WHERE nota > 15;`, opts: [res(['nome'], [['Ana'], ['Marta']]), res(['nome'], [['Ana'], ['Marta'], ['Sofia']]), res(['nome'], [['Marta']]), res(['nome'], [['Marta'], ['Ana']])], ok: 0, mono: true, check: true,
+      exp: H`Só passam as notas maiores do que 15: 17 (Ana) e 18 (Marta). A Sofia tem 15, e 15 &gt; 15 é falso. As linhas aparecem pela ordem da tabela, porque não pedimos outra.` },
+    { q: 'Que resultado dá esta consulta?', code: C`
+SELECT nome FROM alunos
+WHERE curso = 'LEE' OR nota < 10;`, opts: [res(['nome'], [['Pedro']]), res(['nome'], [['Rui'], ['Ines'], ['Pedro']]), res(['nome'], [['Ines'], ['Pedro'], ['Rui']]), res(['nome'], [['Rui'], ['Ines'], ['Pedro'], ['Pedro']])], ok: 1, mono: true, check: true,
+      exp: H`Com <code>OR</code> basta uma das condições: a Ines é de LEE, o Rui tem 9 e o Pedro cumpre as duas. Cada linha aparece uma só vez, mesmo que cumpra as duas condições. Só o Pedro seria a resposta com <code>AND</code>.` },
+    { q: 'Que resultado dá esta consulta?', code: C`
+SELECT nome FROM alunos
+WHERE nota BETWEEN 12 AND 15;`, opts: [res(['nome'], [['Ines']]), res(['nome'], [['Ines'], ['Tiago'], ['Sofia']]), res(['nome'], [['Tiago'], ['Ines'], ['Sofia']]), res(['nome'], [['Ines'], ['Sofia']])], ok: 1, mono: true, check: true,
+      exp: H`O <code>BETWEEN</code> inclui os extremos: 14 (Ines), 12 (Tiago) e 15 (Sofia) passam. Saem pela ordem da tabela, não por nota.` },
+    { q: 'Que resultado dá esta consulta?', code: C`
+SELECT nome FROM alunos
+WHERE nome LIKE '%a';`, opts: [res(['nome'], [['Ana']]), res(['nome'], [['Ana'], ['Marta'], ['Sofia']]), res(['nome'], [['Marta'], ['Sofia']]), res(['nome'], [['Ana'], ['Marta'], ['Sofia'], ['Joao']])], ok: 1, mono: true, check: true,
+      exp: H`<code>'%a'</code> é "qualquer coisa e depois um a no fim": Ana, Marta e Sofia. <code>'A%'</code> seria "começa por A".` },
+    { q: 'Como escreves "o curso é LEI"?', opts: ["WHERE curso = 'LEI'", 'WHERE curso = LEI', "WHERE 'curso' = 'LEI'", 'WHERE curso = "LEI"'], ok: 0, mono: true,
+      exp: H`A coluna escreve-se sem nada e o texto entre plicas. Sem plicas, LEI seria uma coluna. Com plicas em <code>'curso'</code>, compara dois textos que nunca são iguais. E as aspas, em SQL, são para nomes de colunas.` },
+  ],
+  exercises: [{
+    title: 'Positivas de LEI',
+    text: 'Mostra o nome e a nota dos alunos de LEI que tiveram positiva (nota de 10 ou mais).',
+    run: out(['nome', 'nota'], pick(ALUNOS, rowsWhere(ALUNOS, a => a.curso === 'LEI' && a.nota >= 10), ['nome', 'nota'])),
+    hint: H`Duas condições que têm de ser verdade ao mesmo tempo: junta-as com <code>AND</code>.`,
+    solution: C`
+SELECT nome, nota
+FROM alunos
+WHERE curso = 'LEI' AND nota >= 10;`,
+  }, {
+    title: 'Começa por M ou P',
+    text: 'Mostra o número e o nome dos alunos cujo nome começa por M ou por P.',
+    run: out(['numero', 'nome'], pick(ALUNOS, rowsWhere(ALUNOS, a => /^[MP]/.test(a.nome)), ['numero', 'nome'])),
+    hint: H`<code>nome LIKE 'M%'</code> apanha os que começam por M. Junta outra condição para o P com <code>OR</code>.`,
+    solution: C`
+SELECT numero, nome
+FROM alunos
+WHERE nome LIKE 'M%' OR nome LIKE 'P%';`,
+  }],
+});
+
+// ---------------------------------------------------------------- 3
+const porNotaDesc = ALUNOS.rows.slice().sort((a, b) => b[4] - a[4]);
+const cursoAno = ALUNOS.rows.map(r => [r[2], r[3]]);
+const cursoAnoMarks = cursoAno.map((p, i) => (cursoAno.findIndex(q => q[0] === p[0] && q[1] === p[1]) < i ? 'drop' : 'keep'));
+const cursoAnoUnicos = cursoAno.filter((p, i) => cursoAnoMarks[i] === 'keep');
+const cursoAnoOrdenados = cursoAnoUnicos.slice().sort((a, b) => a[0].localeCompare(b[0]) || a[1] - b[1]);
+
+LESSONS.push({
+  id: 3,
+  title: 'Ordenar, limitar e tirar repetidos',
+  short: 'ORDER BY, ASC e DESC, LIMIT e DISTINCT',
+  body: H`
+<p>Sem indicação, a ordem das linhas de um resultado <strong>não é garantida</strong>. Se a ordem interessa, pede-a com <code>ORDER BY</code>.</p>
+<ul>
+<li><code>ORDER BY nota</code> ordena do menor para o maior (<code>ASC</code>, o normal). <code>ORDER BY nota DESC</code> ordena do maior para o menor.</li>
+<li>Podes ordenar por várias colunas: <code>ORDER BY curso, nota DESC</code> ordena por curso e, dentro do mesmo curso, pela nota. O <code>DESC</code> só se aplica à coluna onde está.</li>
+<li><code>LIMIT 3</code> fica só com as 3 primeiras linhas do resultado (e só faz sentido depois de ordenar).</li>
+<li><code>SELECT DISTINCT curso</code> tira as linhas repetidas do resultado.</li>
+</ul>
+<p>A ordem de trabalho fica assim: <code>FROM</code> → <code>WHERE</code> → <code>SELECT</code> → <code>DISTINCT</code> → <code>ORDER BY</code> → <code>LIMIT</code>.</p>`,
+  analogy: H`O <code>ORDER BY</code> é ordenar a pauta antes de a afixar. O <code>LIMIT 3</code> é o pódio: depois de ordenar, ficas só com os três primeiros. O <code>DISTINCT</code> é riscar da lista os nomes repetidos.`,
+  db: { alunos: ALUNOS },
+  examples: [{
+    title: 'Os três melhores',
+    db: { alunos: ALUNOS },
+    code: C`
+SELECT nome, nota
+FROM alunos
+ORDER BY nota DESC
+LIMIT 3;`,
+    steps: [
+      { l: 2, g: { label: 'FROM alunos', cols: ALL, rows: ALUNOS.rows }, n: 'A tabela inteira.' },
+      { l: 1, g: { label: 'SELECT nome, nota', cols: ['nome', 'nota'], rows: pick(ALUNOS, ALUNOS.rows, ['nome', 'nota']) }, n: 'Escolhe as colunas. Ainda estão pela ordem da tabela.' },
+      { l: 3, g: { label: 'ORDER BY nota DESC', cols: ['nome', 'nota'], rows: pick(ALUNOS, porNotaDesc, ['nome', 'nota']) }, n: H`Ordena pela nota, da maior para a menor (<code>DESC</code>).` },
+      { l: 4, g: { label: 'LIMIT 3', cols: ['nome', 'nota'], rows: pick(ALUNOS, porNotaDesc, ['nome', 'nota']), marks: porNotaDesc.map((_, i) => (i < 3 ? 'keep' : 'drop')) }, n: H`O <code>LIMIT 3</code> fica com as três primeiras linhas, as outras saem.` },
+      { l: 4, g: { label: 'LIMIT 3', cols: ['nome', 'nota'], rows: pick(ALUNOS, porNotaDesc.slice(0, 3), ['nome', 'nota']) }, n: H`O resultado: o pódio. Sem o <code>ORDER BY</code>, o LIMIT dava as três primeiras da tabela, que não são as melhores.` },
+    ],
+  }, {
+    title: 'DISTINCT e ordenar por duas colunas',
+    db: { alunos: ALUNOS },
+    code: C`
+SELECT DISTINCT curso, ano
+FROM alunos
+ORDER BY curso, ano;`,
+    steps: [
+      { l: 2, g: { label: 'FROM alunos', cols: ALL, rows: ALUNOS.rows }, n: 'A tabela inteira.' },
+      { l: 1, g: { label: 'SELECT curso, ano', cols: ['curso', 'ano'], rows: cursoAno }, n: H`Com só estas duas colunas há linhas repetidas: <code>LEI | 1</code> aparece três vezes.` },
+      { l: 1, g: { label: 'DISTINCT', cols: ['curso', 'ano'], rows: cursoAno, marks: cursoAnoMarks }, n: H`O <code>DISTINCT</code> risca as linhas que já apareceram antes. Conta a linha inteira: <code>LEI | 1</code> e <code>LEI | 2</code> são diferentes.` },
+      { l: 1, g: { label: 'DISTINCT', cols: ['curso', 'ano'], rows: cursoAnoUnicos }, n: 'Ficam 6 combinações diferentes.' },
+      { l: 3, g: { label: 'ORDER BY curso, ano', cols: ['curso', 'ano'], rows: cursoAnoOrdenados }, n: H`Ordena primeiro pelo curso (por ordem alfabética: LEE, LEI, LEM) e, dentro de cada curso, pelo ano.` },
+    ],
+  }],
+  mistakes: [
+    H`Contar com uma ordem sem <code>ORDER BY</code>. Pode calhar bem hoje e mudar amanhã.`,
+    H`Pôr o <code>ORDER BY</code> antes do <code>WHERE</code>. A ordem das partes é fixa: SELECT, FROM, WHERE, ORDER BY, LIMIT.`,
+    H`Achar que <code>ORDER BY curso, nota DESC</code> ordena as duas colunas ao contrário. O <code>DESC</code> só vale para a <code>nota</code>.`,
+    H`Usar <code>LIMIT</code> sem <code>ORDER BY</code> para "os melhores": dá as primeiras linhas da tabela, sejam quais forem.`,
+    H`Escrever <code>SELECT nome, DISTINCT curso</code>. O <code>DISTINCT</code> vem logo a seguir ao <code>SELECT</code> e vale para a linha toda.`,
+  ],
+  quiz: [
+    { q: 'Que resultado dá esta consulta?', code: C`
+SELECT nome FROM alunos
+ORDER BY nota
+LIMIT 2;`, opts: [res(['nome'], [['Pedro'], ['Rui']]), res(['nome'], [['Marta'], ['Ana']]), res(['nome'], [['Ana'], ['Rui']]), res(['nome'], [['Rui'], ['Pedro']])], ok: 0, mono: true, check: true,
+      exp: H`Sem <code>DESC</code>, a ordem é crescente: as notas mais baixas primeiro, 7 (Pedro) e 9 (Rui). O LIMIT fica com essas duas.` },
+    { q: 'Que resultado dá esta consulta?', code: C`
+SELECT DISTINCT curso FROM alunos
+ORDER BY curso;`, opts: [res(['curso'], [['LEE'], ['LEI'], ['LEM']]), res(['curso'], [['LEE'], ['LEE'], ['LEI'], ['LEI'], ['LEI'], ['LEI'], ['LEM'], ['LEM']]), res(['curso'], [['LEI'], ['LEE'], ['LEM']]), res(['curso'], [['LEM'], ['LEI'], ['LEE']])], ok: 0, mono: true, check: true,
+      exp: H`O <code>DISTINCT</code> deixa cada curso uma só vez e o <code>ORDER BY</code> põe-nos por ordem alfabética. Sem DISTINCT apareciam as 8 linhas.` },
+    { q: 'Que resultado dá esta consulta?', code: C`
+SELECT nome, ano FROM alunos
+WHERE curso = 'LEI'
+ORDER BY ano DESC, nome;`, opts: [res(['nome', 'ano'], [['Tiago', 2], ['Sofia', 1], ['Rui', 1], ['Ana', 1]]), res(['nome', 'ano'], [['Tiago', 2], ['Ana', 1], ['Rui', 1], ['Sofia', 1]]), res(['nome', 'ano'], [['Ana', 1], ['Rui', 1], ['Sofia', 1], ['Tiago', 2]]), res(['nome', 'ano'], [['Ana', 1], ['Rui', 1], ['Tiago', 2], ['Sofia', 1]])], ok: 1, mono: true, check: true,
+      exp: H`Primeiro pelo ano, do maior para o menor: o Tiago (2.º ano) vem à frente. Entre os do 1.º ano desempata o nome, por ordem crescente, porque o <code>DESC</code> só se aplica ao ano.` },
+    { q: 'Numa consulta completa, onde fica o ORDER BY?', opts: ['Logo a seguir ao SELECT', 'Antes do FROM', 'Depois do WHERE e antes do LIMIT', 'Depois do LIMIT'], ok: 2,
+      exp: 'A ordem das partes é sempre SELECT, FROM, WHERE, ORDER BY, LIMIT. Faz sentido: primeiro escolhes as linhas, depois ordenas, e só no fim cortas.' },
+  ],
+  exercises: [{
+    title: 'Pauta por curso',
+    text: 'Mostra o curso, o nome e a nota de todos os alunos, ordenados por curso e, dentro de cada curso, da maior para a menor nota.',
+    run: out(['curso', 'nome', 'nota'], pick(ALUNOS, ALUNOS.rows.slice().sort((a, b) => a[2].localeCompare(b[2]) || b[4] - a[4]), ['curso', 'nome', 'nota'])),
+    hint: H`Duas colunas no <code>ORDER BY</code>, e o <code>DESC</code> só na segunda.`,
+    solution: C`
+SELECT curso, nome, nota
+FROM alunos
+ORDER BY curso, nota DESC;`,
+  }, {
+    title: 'A nota mais baixa',
+    text: 'Mostra o nome e a nota do aluno com a nota mais baixa, usando só ORDER BY e LIMIT.',
+    run: out(['nome', 'nota'], [['Pedro', 7]]),
+    hint: 'Ordena da menor para a maior nota e fica só com a primeira linha.',
+    solution: C`
+SELECT nome, nota
+FROM alunos
+ORDER BY nota
+LIMIT 1;`,
+  }],
+});
+
+// ===== SQL do Zero — conteúdo das lições (parte 2) =====
+// Usa os ajudantes e a tabela ALUNOS definidos em lessons1.js.
+
+// ---------------------------------------------------------------- 4
+const comBonus = ALUNOS.rows.map(r => (r[4] === 9 ? [r[0], r[1], r[2], r[3], 10] : r));
+const naoApagados = ALUNOS.rows.filter(r => r[4] >= 10);
+
+LESSONS.push({
+  id: 4,
+  title: 'Mudar e apagar: UPDATE e DELETE',
+  short: 'SET, o WHERE que não se pode esquecer, e testar antes',
+  body: H`
+<p>O <code>UPDATE</code> muda valores de linhas que já existem e o <code>DELETE</code> apaga linhas. Os dois usam um <code>WHERE</code> para escolher <strong>que linhas</strong> são afetadas, exatamente como no SELECT.</p>
+<pre class="snip"><code>UPDATE alunos
+SET nota = nota + 1
+WHERE numero = 102;
+
+DELETE FROM alunos
+WHERE nota &lt; 10;</code></pre>
+<ul>
+<li>No <code>SET</code>, o lado direito pode usar o valor atual: <code>nota = nota + 1</code> funciona como <code>x = x + 1</code> em C. Para mudar várias colunas, separa-as com vírgulas: <code>SET curso = 'LEI', ano = 2</code>.</li>
+<li><strong>Sem WHERE, o UPDATE muda todas as linhas e o DELETE apaga todas as linhas.</strong> Não há "desfazer".</li>
+<li>Um truque seguro: escreve primeiro <code>SELECT * FROM alunos WHERE ...</code> com o mesmo WHERE, confirma que aparecem as linhas certas, e só depois troca o SELECT por UPDATE ou DELETE.</li>
+<li><code>DELETE FROM alunos;</code> esvazia a tabela, mas ela continua a existir. Para apagar a própria tabela é <code>DROP TABLE alunos;</code>.</li>
+</ul>`,
+  analogy: H`O <code>UPDATE</code> é um corretor com caneta: vai às linhas que o <code>WHERE</code> indica, risca o valor antigo e escreve o novo. Se ninguém lhe disser que linhas são, corrige a pauta inteira.`,
+  db: { alunos: ALUNOS },
+  examples: [{
+    title: 'Mudar notas, com e sem WHERE',
+    db: { alunos: ALUNOS },
+    code: C`
+UPDATE alunos
+SET nota = nota + 1
+WHERE nota = 9;
+UPDATE alunos
+SET ano = ano + 1;`,
+    steps: [
+      { l: 1, n: H`<code>UPDATE alunos</code>: vamos mudar linhas da tabela alunos. Ainda não se sabe quais.` },
+      { l: 3, tm: { alunos: { 1: 'hit' } }, n: H`O <code>WHERE</code> escolhe as linhas, como num SELECT: só o Rui tem nota 9.` },
+      { l: 2, upd: { alunos: { 1: { nota: 10 } } }, n: H`O <code>SET</code> calcula <code>nota + 1</code> com o valor atual (9 + 1) e guarda 10. As outras linhas não mudam.` },
+      { l: 4, n: 'Outro UPDATE, também na tabela alunos.' },
+      { l: 5, upd: { alunos: Object.fromEntries(comBonus.map((r, i) => [i, { ano: r[3] + 1 }])) }, n: H`Este não tem WHERE, por isso <strong>todas</strong> as linhas mudam: toda a gente subiu um ano. Se fosse um engano, não havia forma de desfazer.` },
+    ],
+  }, {
+    title: 'Apagar quem reprovou',
+    db: { alunos: ALUNOS },
+    code: C`
+DELETE FROM alunos
+WHERE nota < 10;
+SELECT nome, nota
+FROM alunos;`,
+    steps: [
+      { l: 2, tm: { alunos: { 1: 'drop', 5: 'drop' } }, n: H`O <code>WHERE</code> encontra as linhas a apagar: o Rui (9) e o Pedro (7).` },
+      { l: 1, del: { alunos: [1, 5] }, n: H`O <code>DELETE</code> apaga essas duas linhas. A tabela passa a ter 6.` },
+      { l: 4, g: { label: 'FROM alunos', cols: ALL, rows: naoApagados }, n: 'Agora um SELECT: a tabela já não tem as linhas apagadas.' },
+      { l: 3, g: { label: 'SELECT nome, nota', cols: ['nome', 'nota'], rows: pick(ALUNOS, naoApagados, ['nome', 'nota']) }, n: 'Ficaram 6 alunos, todos com positiva.' },
+    ],
+  }],
+  mistakes: [
+    H`Esquecer o <code>WHERE</code> num UPDATE ou DELETE: muda ou apaga a tabela toda.`,
+    H`Escrever <code>UPDATE alunos SET nota = 18 AND curso = 'LEI'</code>. Para mudar duas colunas usa-se vírgula: <code>SET nota = 18, curso = 'LEI'</code>.`,
+    H`Escrever <code>DELETE nome FROM alunos</code>. O DELETE apaga linhas inteiras; para limpar só um valor faz-se <code>UPDATE ... SET nome = NULL</code>.`,
+    H`Confundir <code>DELETE FROM alunos</code> (esvazia a tabela) com <code>DROP TABLE alunos</code> (apaga a tabela).`,
+    H`Escolher a linha por um valor que se repete (<code>WHERE nome = 'Ana'</code>) quando havia duas Anas. Para mexer numa só linha, usa a chave primária.`,
+  ],
+  quiz: [
+    { q: 'Que resultado dá este script?', code: C`
+UPDATE alunos SET nota = 20 WHERE nome = 'Ana';
+SELECT nome, nota FROM alunos WHERE nota >= 17;`, opts: [res(['nome', 'nota'], [['Ana', 17], ['Marta', 18]]), res(['nome', 'nota'], [['Ana', 20], ['Marta', 18]]), res(['nome', 'nota'], [['Marta', 18]]), res(['nome', 'nota'], [['Ana', 20]])], ok: 1, mono: true, check: true,
+      exp: 'O UPDATE muda a nota da Ana para 20 antes do SELECT correr. Depois, a Ana (20) e a Marta (18) têm nota de 17 ou mais.' },
+    { q: 'Que resultado dá este script?', code: C`
+UPDATE alunos SET nota = nota + 2;
+SELECT nome, nota FROM alunos WHERE nota < 10;`, opts: [res(['nome', 'nota'], [['Rui', 9], ['Pedro', 7]]), res(['nome', 'nota'], [['Rui', 11], ['Pedro', 9]]), res(['nome', 'nota'], [['Pedro', 9]]), res(['nome', 'nota'], [['Pedro', 7]])], ok: 2, mono: true, check: true,
+      exp: 'Sem WHERE, todas as notas sobem 2. O Rui passa de 9 a 11 e deixa de ter negativa; o Pedro passa de 7 a 9.' },
+    { q: 'Que resultado dá este script?', code: C`
+DELETE FROM alunos WHERE curso = 'LEI';
+SELECT nome FROM alunos WHERE ano = 1;`, opts: [res(['nome'], [['Marta'], ['Pedro']]), res(['nome'], [['Ana'], ['Rui'], ['Marta'], ['Pedro'], ['Sofia']]), res(['nome'], [['Ana'], ['Rui'], ['Sofia']]), res(['nome'], [['Pedro'], ['Marta']])], ok: 0, mono: true, check: true,
+      exp: 'O DELETE apaga os 4 alunos de LEI. Dos que ficam (Ines, Marta, Pedro, Joao), só a Marta e o Pedro estão no 1.º ano.' },
+    { q: 'O que faz DELETE FROM alunos; (sem WHERE)?', opts: ['Apaga a tabela, incluindo as colunas', 'Apaga todas as linhas, mas a tabela continua a existir', 'Dá erro, porque falta o WHERE', 'Apaga só a primeira linha'], ok: 1,
+      exp: H`Sem WHERE, todas as linhas passam o filtro e são apagadas. A tabela fica vazia, mas existe: ainda podes fazer INSERT. Quem apaga a tabela é o <code>DROP TABLE</code>.` },
+  ],
+  exercises: [{
+    title: 'Passar de ano',
+    text: 'Os alunos de LEE do 1.º ano passam para o 2.º ano. Faz o UPDATE e depois mostra o número, o nome e o ano dos alunos de LEE.',
+    run: out(['numero', 'nome', 'ano'], [[103, 'Ines', 2], [106, 'Pedro', 2]]),
+    hint: H`O WHERE do UPDATE tem duas condições (curso e ano). O SELECT a seguir só precisa de <code>curso = 'LEE'</code>.`,
+    solution: C`
+UPDATE alunos
+SET ano = 2
+WHERE curso = 'LEE' AND ano = 1;
+SELECT numero, nome, ano
+FROM alunos
+WHERE curso = 'LEE';`,
+  }, {
+    title: 'Ficam os aprovados',
+    text: 'Apaga os alunos com nota inferior a 10 e depois mostra os nomes dos que ficaram, por ordem alfabética.',
+    run: out(['nome'], naoApagados.map(r => [r[1]]).sort((a, b) => a[0].localeCompare(b[0]))),
+    hint: H`Um <code>DELETE ... WHERE nota &lt; 10</code> e depois um SELECT com <code>ORDER BY nome</code>.`,
+    solution: C`
+DELETE FROM alunos
+WHERE nota < 10;
+SELECT nome
+FROM alunos
+ORDER BY nome;`,
+  }],
+});
+
+// ---------------------------------------------------------------- 5
+const ALUNOS_NULL = {
+  cols: [['numero', 'INTEGER PRIMARY KEY'], ['nome', 'TEXT NOT NULL'], ['curso', 'TEXT'], ['nota', 'INTEGER'], ['email', 'TEXT']],
+  rows: [
+    [101, 'Ana', 'LEI', 17, 'ana@exemplo.pt'],
+    [102, 'Rui', 'LEI', null, null],
+    [103, 'Ines', 'LEE', 14, 'ines@exemplo.pt'],
+    [104, 'Tiago', 'LEI', 12, null],
+    [105, 'Marta', 'LEM', null, 'marta@exemplo.pt'],
+    [106, 'Pedro', 'LEE', 7, 'pedro@exemplo.pt'],
+  ],
+};
+const ALL_N = colsOf(ALUNOS_NULL);
+const semNota = a => a.nota === null;
+
+LESSONS.push({
+  id: 5,
+  title: 'NULL: o valor que falta',
+  short: 'IS NULL, porque é que = NULL nunca dá, e COALESCE',
+  body: H`
+<p><code>NULL</code> quer dizer "não há valor" ou "não se sabe". Não é zero nem texto vazio: o aluno que faltou ao exame não tem nota 0, tem nota <strong>desconhecida</strong>. Em C, uma variável sem valor tinha lixo; em SQL fica explicitamente <code>NULL</code>.</p>
+<ul>
+<li>Qualquer comparação com NULL dá "desconhecido", que não é verdadeiro. Por isso <code>WHERE nota = NULL</code> <strong>nunca</strong> encontra nada, e <code>WHERE nota &lt; 10</code> deixa de fora quem tem NULL.</li>
+<li>Para perguntar se falta o valor usa-se <code>IS NULL</code>, e para o contrário <code>IS NOT NULL</code>.</li>
+<li>Contas com NULL dão NULL: <code>NULL + 1</code> é NULL.</li>
+<li><code>COALESCE(nota, 0)</code> devolve a nota, ou 0 se ela for NULL. Serve para trocar o NULL por um valor à escolha.</li>
+</ul>`,
+  analogy: 'NULL é um "?" escrito na pauta. Se perguntares "a nota dele é menor do que 10?", a resposta não é sim nem não: é "não sei". E o WHERE só deixa passar as linhas cuja resposta é sim.',
+  db: { alunos: ALUNOS_NULL },
+  examples: [{
+    title: 'Quem não tem nota',
+    db: { alunos: ALUNOS_NULL },
+    code: C`
+SELECT nome, nota
+FROM alunos
+WHERE nota = NULL;
+SELECT nome, nota
+FROM alunos
+WHERE nota IS NULL;`,
+    steps: [
+      { l: 2, g: { label: 'FROM alunos', cols: ALL_N, rows: ALUNOS_NULL.rows }, n: 'A tabela tem dois alunos sem nota: o Rui e a Marta.' },
+      { l: 3, g: { label: 'WHERE nota = NULL', cols: ALL_N, rows: ALUNOS_NULL.rows, marks: ALUNOS_NULL.rows.map(() => 'drop') }, n: H`<code>17 = NULL</code>? Não se sabe. <code>NULL = NULL</code>? Também não se sabe! Nenhuma linha dá verdadeiro, por isso nenhuma passa.` },
+      { l: 1, g: { label: 'SELECT nome, nota', cols: ['nome', 'nota'], rows: [] }, n: 'Resultado vazio, e sem nenhum erro. É por isso que este engano é tão traiçoeiro.' },
+      { l: 5, g: { label: 'FROM alunos', cols: ALL_N, rows: ALUNOS_NULL.rows }, n: 'Agora da forma certa.' },
+      { l: 6, g: { label: 'WHERE nota IS NULL', cols: ALL_N, rows: ALUNOS_NULL.rows, marks: marksWhere(ALUNOS_NULL, semNota) }, n: H`<code>IS NULL</code> pergunta mesmo "falta o valor?", e a resposta é sim ou não.` },
+      { l: 4, g: { label: 'SELECT nome, nota', cols: ['nome', 'nota'], rows: pick(ALUNOS_NULL, rowsWhere(ALUNOS_NULL, semNota), ['nome', 'nota']) }, n: 'Aparecem o Rui e a Marta.' },
+    ],
+  }, {
+    title: 'Contas com NULL e COALESCE',
+    db: { alunos: ALUNOS_NULL },
+    code: C`
+SELECT nome,
+       nota + 1 AS mais_um,
+       COALESCE(nota, 0) AS nota_ou_zero
+FROM alunos;`,
+    steps: [
+      { l: 4, g: { label: 'FROM alunos', cols: ALL_N, rows: ALUNOS_NULL.rows }, n: 'A tabela inteira.' },
+      { l: 1, g: { label: 'SELECT nome', cols: ['nome'], rows: pick(ALUNOS_NULL, ALUNOS_NULL.rows, ['nome']) }, n: 'Primeira coluna: o nome.' },
+      { l: 2, g: { label: 'nota + 1 AS mais_um', cols: ['nome', 'mais_um'], rows: ALUNOS_NULL.rows.map(r => [r[1], r[3] === null ? null : r[3] + 1]) }, n: H`Uma conta com NULL dá NULL: não se sabe a nota, por isso também não se sabe a nota mais um.` },
+      { l: 3, g: { label: 'COALESCE(nota, 0) AS nota_ou_zero', cols: ['nome', 'mais_um', 'nota_ou_zero'], rows: ALUNOS_NULL.rows.map(r => [r[1], r[3] === null ? null : r[3] + 1, r[3] === null ? 0 : r[3]]) }, n: H`<code>COALESCE</code> devolve o primeiro valor que não é NULL: a nota, se existir, senão 0.` },
+    ],
+  }],
+  mistakes: [
+    H`Escrever <code>WHERE nota = NULL</code>. Não dá erro, mas nunca encontra nada. É <code>IS NULL</code>.`,
+    H`Achar que NULL é 0 ou <code>''</code>. "Não tem email" e "o email é texto vazio" são coisas diferentes.`,
+    H`Esquecer os NULL num filtro: <code>WHERE nota &lt; 10</code> não apanha os alunos sem nota. Se também os queres, junta <code>OR nota IS NULL</code>.`,
+    H`Fazer contas com colunas que podem ser NULL e estranhar o resultado vazio. Usa <code>COALESCE</code> se fizer sentido trocar o NULL por um valor.`,
+  ],
+  quiz: [
+    { q: 'Que resultado dá esta consulta?', code: C`
+SELECT nome FROM alunos
+WHERE nota < 10;`, opts: [res(['nome'], [['Pedro']]), res(['nome'], [['Rui'], ['Marta'], ['Pedro']]), res(['nome'], [['Rui'], ['Pedro']]), res(['nome'], [['Pedro'], ['Rui'], ['Marta']])], ok: 0, mono: true, check: true,
+      exp: H`<code>NULL &lt; 10</code> dá "desconhecido", e só passam as linhas com verdadeiro. Por isso o Rui e a Marta ficam de fora: só o Pedro (7) passa.` },
+    { q: 'Que resultado dá esta consulta?', code: C`
+SELECT nome FROM alunos
+WHERE email IS NOT NULL AND nota IS NULL;`, opts: [res(['nome'], [['Marta']]), res(['nome'], [['Rui']]), res(['nome'], [['Rui'], ['Marta']]), res(['nome'], [['Ana'], ['Ines'], ['Marta'], ['Pedro']])], ok: 0, mono: true, check: true,
+      exp: 'Tem de ter email e não ter nota. O Rui não tem nenhum dos dois; a Marta tem email mas não tem nota.' },
+    { q: 'Que resultado dá esta consulta?', code: C`
+SELECT nota * 2 AS dobro FROM alunos
+WHERE curso = 'LEI';`, opts: [res(['dobro'], [[34], [0], [24]]), res(['dobro'], [[34], [24]]), res(['dobro'], [[34], [null], [24]]), res(['dobro'], [[17], [null], [12]])], ok: 2, mono: true, check: true,
+      exp: H`Há três alunos de LEI, por isso há três linhas. O Rui não tem nota, e <code>NULL * 2</code> é NULL: a linha aparece, mas com NULL.` },
+    { q: 'Como escolhes os alunos sem email?', opts: ['WHERE email = NULL', 'WHERE email IS NULL', "WHERE email = ''", 'WHERE email = 0'], ok: 1, mono: true,
+      exp: H`Para NULL usa-se sempre <code>IS NULL</code>. <code>= NULL</code> nunca é verdadeiro, e <code>''</code> (texto vazio) ou 0 são valores, não falta de valor.` },
+  ],
+  exercises: [{
+    title: 'Quem tem email',
+    text: 'Mostra o nome e o email dos alunos que têm email, por ordem alfabética do nome.',
+    run: out(['nome', 'email'], pick(ALUNOS_NULL, rowsWhere(ALUNOS_NULL, a => a.email !== null), ['nome', 'email']).sort((a, b) => a[0].localeCompare(b[0]))),
+    hint: H`<code>IS NOT NULL</code> no WHERE e <code>ORDER BY nome</code> no fim.`,
+    solution: C`
+SELECT nome, email
+FROM alunos
+WHERE email IS NOT NULL
+ORDER BY nome;`,
+  }, {
+    title: 'Faltou',
+    text: 'Mostra o nome e a nota de cada aluno, mas com o texto falta no lugar da nota quando ela é NULL. A segunda coluna deve chamar-se nota.',
+    run: out(['nome', 'nota'], ALUNOS_NULL.rows.map(r => [r[1], r[3] === null ? 'falta' : r[3]])),
+    hint: H`<code>COALESCE(nota, 'falta')</code> devolve a nota ou, se for NULL, o texto. Dá-lhe o nome com <code>AS nota</code>.`,
+    solution: C`
+SELECT nome, COALESCE(nota, 'falta') AS nota
+FROM alunos;`,
+  }],
+});
+
+// ---------------------------------------------------------------- 6
+const lei = rowsWhere(ALUNOS, a => a.curso === 'LEI');
+
+LESSONS.push({
+  id: 6,
+  title: 'Contar, somar e fazer médias',
+  short: 'COUNT, SUM, AVG, MIN e MAX',
+  body: H`
+<p>As <strong>funções de agregação</strong> recebem uma coluna de muitas linhas e devolvem um só valor. Em C fazias isto com um ciclo e um acumulador; em SQL é uma função.</p>
+<table class="t">
+<thead><tr><th>Função</th><th>Dá</th></tr></thead>
+<tbody>
+<tr><td><code>COUNT(*)</code></td><td>quantas linhas há</td></tr>
+<tr><td><code>COUNT(nota)</code></td><td>quantas linhas têm nota (não conta os NULL)</td></tr>
+<tr><td><code>SUM(nota)</code></td><td>a soma</td></tr>
+<tr><td><code>AVG(nota)</code></td><td>a média (sempre um número real)</td></tr>
+<tr><td><code>MIN(nota)</code>, <code>MAX(nota)</code></td><td>o menor e o maior</td></tr>
+</tbody>
+</table>
+<ul>
+<li>As funções trabalham sobre as linhas que passaram o <code>WHERE</code>. O resultado tem <strong>uma só linha</strong>.</li>
+<li>Todas, menos <code>COUNT(*)</code>, ignoram os NULL.</li>
+<li>Não podes usá-las no WHERE (<code>WHERE AVG(nota) &gt; 12</code> dá erro). Isso fica para o <code>HAVING</code>, na lição seguinte.</li>
+<li><code>ROUND(AVG(nota), 2)</code> arredonda a 2 casas decimais.</li>
+</ul>`,
+  analogy: 'Agregar é espremer uma coluna inteira num só número. O professor olha para a pauta toda e anuncia apenas "a média foi 12,9" ou "houve 6 positivas".',
+  db: { alunos: ALUNOS },
+  examples: [{
+    title: 'Resumo de LEI numa só linha',
+    db: { alunos: ALUNOS },
+    code: C`
+SELECT COUNT(*) AS alunos,
+       MAX(nota) AS melhor,
+       ROUND(AVG(nota), 2) AS media
+FROM alunos
+WHERE curso = 'LEI';`,
+    steps: [
+      { l: 4, g: { label: 'FROM alunos', cols: ALL, rows: ALUNOS.rows }, n: 'A tabela inteira.' },
+      { l: 5, g: { label: "WHERE curso = 'LEI'", cols: ALL, rows: ALUNOS.rows, marks: marksWhere(ALUNOS, a => a.curso === 'LEI') }, n: 'Primeiro o WHERE: ficam os 4 alunos de LEI. As funções só vão ver estas linhas.' },
+      { l: 5, g: { label: 'as linhas de LEI', cols: ALL, rows: lei }, n: 'Notas de LEI: 17, 9, 12 e 15.' },
+      { l: 1, g: { label: 'COUNT(*)', cols: ['alunos'], rows: [[4]] }, n: H`<code>COUNT(*)</code> conta as linhas: 4. As 4 linhas espremem-se numa só.` },
+      { l: 2, g: { label: 'MAX(nota)', cols: ['alunos', 'melhor'], rows: [[4, 17]] }, n: 'A maior nota: 17.' },
+      { l: 3, g: { label: 'ROUND(AVG(nota), 2)', cols: ['alunos', 'melhor', 'media'], rows: [[4, 17, 13.25]] }, n: '(17 + 9 + 12 + 15) / 4 = 53 / 4 = 13.25. Já tem 2 casas, por isso o ROUND não muda nada.' },
+    ],
+  }, {
+    title: 'A armadilha da divisão (outra vez)',
+    db: { alunos: ALUNOS },
+    code: C`
+SELECT SUM(nota) AS soma,
+       COUNT(*) AS n,
+       SUM(nota) / COUNT(*) AS media_errada,
+       AVG(nota) AS media
+FROM alunos;`,
+    steps: [
+      { l: 5, g: { label: 'FROM alunos', cols: ALL, rows: ALUNOS.rows }, n: 'Todas as linhas: não há WHERE.' },
+      { l: 1, g: { label: 'SUM(nota)', cols: ['soma'], rows: [[103]] }, n: '17 + 9 + 14 + 12 + 18 + 7 + 15 + 11 = 103.' },
+      { l: 2, g: { label: 'COUNT(*)', cols: ['soma', 'n'], rows: [[103, 8]] }, n: '8 alunos.' },
+      { l: 3, g: { label: 'SUM(nota) / COUNT(*)', cols: ['soma', 'n', 'media_errada'], rows: [[103, 8, 12]] }, n: H`103 / 8 com dois inteiros dá divisão inteira, tal como em C: 12, e não 12.875.` },
+      { l: 4, g: { label: 'AVG(nota)', cols: ['soma', 'n', 'media_errada', 'media'], rows: [[103, 8, 12, 12.875]] }, n: H`O <code>AVG</code> faz a conta com reais e dá a média certa.` },
+    ],
+  }],
+  mistakes: [
+    H`Usar uma função no WHERE: <em>misuse of aggregate function COUNT()</em>. Filtrar por agregados é no <code>HAVING</code>.`,
+    H`Fazer <code>SUM(x) / COUNT(*)</code> com inteiros e ter divisão inteira. Usa <code>AVG(x)</code>.`,
+    H`Achar que <code>COUNT(nota)</code> e <code>COUNT(*)</code> dão sempre o mesmo. Se houver notas NULL, o primeiro dá menos.`,
+    H`Juntar colunas normais com funções sem GROUP BY: <code>SELECT nome, MAX(nota)</code>. O SQLite aceita, mas outros SGBD (MySQL, PostgreSQL) dão erro, e o resultado raramente é o que queres.`,
+  ],
+  quiz: [
+    { q: 'Que resultado dá esta consulta?', code: C`
+SELECT COUNT(*) AS n FROM alunos
+WHERE nota >= 10;`, opts: [res(['n'], [[6]]), res(['n'], [[8]]), res(['n'], [[2]]), res(['n'], [[5]])], ok: 0, mono: true, check: true,
+      exp: 'O COUNT conta as linhas que passaram o WHERE: 17, 14, 12, 18, 15 e 11 são 6 positivas.' },
+    { q: 'Com a tabela da lição 5 (alguns alunos sem nota), que resultado dá esta consulta?', db: { alunos: ALUNOS_NULL }, code: C`
+SELECT COUNT(*) AS a, COUNT(nota) AS b
+FROM alunos;`, opts: [res(['a', 'b'], [[6, 4]]), res(['a', 'b'], [[6, 6]]), res(['a', 'b'], [[4, 4]]), res(['a', 'b'], [[4, 6]])], ok: 0, mono: true, check: true,
+      exp: H`<code>COUNT(*)</code> conta as 6 linhas. <code>COUNT(nota)</code> só conta as que têm nota, e o Rui e a Marta não têm: 4.` },
+    { q: 'Que resultado dá esta consulta?', code: C`
+SELECT MIN(nota) AS pior, MAX(nota) AS melhor
+FROM alunos WHERE curso = 'LEM';`, opts: [res(['pior', 'melhor'], [[11, 18]]), res(['pior', 'melhor'], [[18, 11]]), res(['pior', 'melhor'], [[7, 18]]), res(['pior', 'melhor'], [[11, 11]])], ok: 0, mono: true, check: true,
+      exp: 'Em LEM só há a Marta (18) e o Joao (11). O 7 é a pior nota de todos, mas o WHERE já o tinha deixado de fora.' },
+    { q: 'Com a tabela da lição 5 (alguns alunos sem nota), que resultado dá esta consulta?', db: { alunos: ALUNOS_NULL }, code: C`SELECT AVG(nota) AS media FROM alunos;`,
+      opts: [res(['media'], [['12.5']]), res(['media'], [['8.33333333333333']]), res(['media'], [[12]]), res(['media'], [[null]])], ok: 0, mono: true, check: true,
+      exp: H`O AVG ignora os NULL: (17 + 14 + 12 + 7) / 4 = 12.5. Se os NULL contassem como 0, dividia por 6 e dava 8.33.` },
+  ],
+  exercises: [{
+    title: 'Primeiro ano',
+    text: 'Mostra quantos alunos há no 1.º ano (coluna n) e a média das notas deles arredondada a uma casa decimal (coluna media).',
+    run: out(['n', 'media'], [[5, '13.2']]),
+    hint: H`<code>WHERE ano = 1</code>, e no SELECT <code>COUNT(*)</code> e <code>ROUND(AVG(nota), 1)</code>.`,
+    solution: C`
+SELECT COUNT(*) AS n, ROUND(AVG(nota), 1) AS media
+FROM alunos
+WHERE ano = 1;`,
+  }, {
+    title: 'Amplitude',
+    text: 'Mostra a melhor nota, a pior e a diferença entre as duas, nas colunas melhor, pior e amplitude.',
+    run: out(['melhor', 'pior', 'amplitude'], [[18, 7, 11]]),
+    hint: H`Podes fazer contas com os resultados das funções: <code>MAX(nota) - MIN(nota)</code>.`,
+    solution: C`
+SELECT MAX(nota) AS melhor,
+       MIN(nota) AS pior,
+       MAX(nota) - MIN(nota) AS amplitude
+FROM alunos;`,
+  }],
+});
+
+// ---------------------------------------------------------------- 7
+// Os alunos arrumados por curso (LEE, LEI, LEM), como o GROUP BY os junta.
+const porCurso = ['LEE', 'LEI', 'LEM'].flatMap(c => ALUNOS.rows.filter(r => r[2] === c));
+const positivos = rowsWhere(ALUNOS, positiva);
+const positivosPorCurso = ['LEE', 'LEI', 'LEM'].flatMap(c => positivos.filter(r => r[2] === c));
+
+LESSONS.push({
+  id: 7,
+  title: 'Agrupar: GROUP BY e HAVING',
+  short: 'uma linha por grupo, e o WHERE contra o HAVING',
+  body: H`
+<p>Na lição anterior, as funções davam um só valor para a tabela toda. Com <code>GROUP BY curso</code>, as linhas juntam-se em <strong>grupos</strong> (uma por cada curso diferente) e as funções são calculadas <strong>para cada grupo</strong>. O resultado tem uma linha por grupo.</p>
+<pre class="snip"><code>SELECT curso, COUNT(*) AS n, AVG(nota) AS media
+FROM alunos
+GROUP BY curso;</code></pre>
+<ul>
+<li>No SELECT só deves pôr as colunas do <code>GROUP BY</code> e funções de agregação. Pôr outra coluna (como <code>nome</code>) não faz sentido: qual dos nomes do grupo havia de aparecer?</li>
+<li><code>WHERE</code> filtra <strong>linhas</strong>, antes de agrupar. <code>HAVING</code> filtra <strong>grupos</strong>, depois de agrupar, e por isso já pode usar funções: <code>HAVING COUNT(*) &gt;= 2</code>.</li>
+<li>Se a ordem dos grupos interessa, junta <code>ORDER BY</code>.</li>
+</ul>
+<p>A ordem de trabalho completa: <code>FROM</code> → <code>WHERE</code> → <code>GROUP BY</code> → <code>HAVING</code> → <code>SELECT</code> → <code>ORDER BY</code> → <code>LIMIT</code>.</p>`,
+  analogy: H`O <code>GROUP BY</code> é separar os testes em montes, um por curso, e depois contar ou fazer a média de cada monte. O <code>WHERE</code> tira testes antes de fazer os montes; o <code>HAVING</code> deita fora montes inteiros depois de feitos.`,
+  db: { alunos: ALUNOS },
+  examples: [{
+    title: 'Quantos alunos e que média, por curso',
+    db: { alunos: ALUNOS },
+    code: C`
+SELECT curso, COUNT(*) AS n, AVG(nota) AS media
+FROM alunos
+GROUP BY curso;`,
+    steps: [
+      { l: 2, g: { label: 'FROM alunos', cols: ALL, rows: ALUNOS.rows }, n: 'A tabela inteira.' },
+      { l: 3, g: { label: 'GROUP BY curso', cols: ALL, rows: porCurso, groups: [2, 4, 2] }, n: H`O <code>GROUP BY</code> junta as linhas com o mesmo curso. Ficam 3 grupos: LEE (2 alunos), LEI (4) e LEM (2). As cores alternadas mostram onde começa cada grupo.` },
+      { l: 1, g: { label: 'SELECT curso, COUNT(*), AVG(nota)', cols: ['curso', 'n', 'media'], rows: [['LEE', 2, 10.5], ['LEI', 4, 13.25], ['LEM', 2, 14.5]] }, n: 'Cada grupo dá uma linha. LEE: (14 + 7) / 2 = 10.5. LEI: 53 / 4 = 13.25. LEM: (18 + 11) / 2 = 14.5.' },
+    ],
+  }, {
+    title: 'WHERE antes, HAVING depois',
+    db: { alunos: ALUNOS },
+    code: C`
+SELECT curso, COUNT(*) AS positivas
+FROM alunos
+WHERE nota >= 10
+GROUP BY curso
+HAVING COUNT(*) >= 2
+ORDER BY positivas;`,
+    steps: [
+      { l: 2, g: { label: 'FROM alunos', cols: ALL, rows: ALUNOS.rows }, n: 'A tabela inteira.' },
+      { l: 3, g: { label: 'WHERE nota >= 10', cols: ALL, rows: ALUNOS.rows, marks: marksWhere(ALUNOS, positiva) }, n: H`O <code>WHERE</code> trabalha linha a linha, antes de haver grupos: saem o Rui e o Pedro.` },
+      { l: 4, g: { label: 'GROUP BY curso', cols: ALL, rows: positivosPorCurso, groups: [1, 3, 2] }, n: 'Com as 6 linhas que ficaram: LEE tem 1, LEI tem 3, LEM tem 2.' },
+      { l: 5, g: { label: 'HAVING COUNT(*) >= 2', cols: ALL, rows: positivosPorCurso, groups: [1, 3, 2], marks: positivosPorCurso.map(r => (r[2] === 'LEE' ? 'drop' : 'keep')) }, n: H`O <code>HAVING</code> testa cada <strong>grupo</strong>: LEE só tem 1 linha, por isso o grupo inteiro sai.` },
+      { l: 1, g: { label: 'SELECT curso, COUNT(*) AS positivas', cols: ['curso', 'positivas'], rows: [['LEI', 3], ['LEM', 2]] }, n: 'Uma linha por cada grupo que sobrou.' },
+      { l: 6, g: { label: 'ORDER BY positivas', cols: ['curso', 'positivas'], rows: [['LEM', 2], ['LEI', 3]] }, n: H`Ordena pela coluna <code>positivas</code>, do menor para o maior. O ORDER BY já pode usar o nome dado com AS, porque vem depois do SELECT.` },
+    ],
+  }],
+  mistakes: [
+    H`Usar <code>WHERE COUNT(*) &gt; 2</code>. As funções vão no <code>HAVING</code>; o SQLite diz <em>misuse of aggregate function COUNT()</em>.`,
+    H`Usar <code>HAVING</code> sem <code>GROUP BY</code> para filtrar linhas normais: <em>HAVING clause on a non-aggregate query</em>. Para linhas é o WHERE.`,
+    H`Pôr no SELECT uma coluna que não está no GROUP BY (<code>SELECT curso, nome, COUNT(*)</code>). O SQLite escolhe um nome qualquer do grupo; outros SGBD dão erro.`,
+    H`Escrever <code>GROUP BY</code> depois do <code>ORDER BY</code>. A ordem é WHERE, GROUP BY, HAVING, ORDER BY.`,
+  ],
+  quiz: [
+    { q: 'Que resultado dá esta consulta?', code: C`
+SELECT ano, COUNT(*) AS n
+FROM alunos
+GROUP BY ano;`, opts: [res(['ano', 'n'], [[1, 5], [2, 3]]), res(['ano', 'n'], [[1, 8], [2, 8]]), res(['n'], [[5], [3]]), res(['ano', 'n'], [[1, 1], [2, 1]])], ok: 0, mono: true, check: true,
+      exp: 'Há dois anos diferentes, logo dois grupos: 5 alunos no 1.º ano e 3 no 2.º.' },
+    { q: 'Que resultado dá esta consulta?', code: C`
+SELECT curso, MAX(nota) AS m
+FROM alunos
+GROUP BY curso
+HAVING MAX(nota) > 15;`, opts: [res(['curso', 'm'], [['LEM', 18]]), res(['curso', 'm'], [['LEI', 17], ['LEM', 18]]), res(['curso', 'm'], [['LEE', 14], ['LEI', 17], ['LEM', 18]]), res(['curso', 'm'], [['LEI', 17], ['LEI', 15], ['LEM', 18]])], ok: 1, mono: true, check: true,
+      exp: 'As melhores notas por curso são LEE 14, LEI 17 e LEM 18. O HAVING deixa os grupos com mais de 15: LEI e LEM. Cada grupo dá uma linha só.' },
+    { q: 'Que resultado dá esta consulta?', code: C`
+SELECT curso, COUNT(*) AS n
+FROM alunos
+WHERE ano = 2
+GROUP BY curso;`, opts: [res(['curso', 'n'], [['LEE', 2], ['LEI', 4], ['LEM', 2]]), res(['curso', 'n'], [['LEE', 1], ['LEI', 1], ['LEM', 1]]), res(['curso', 'n'], [['LEI', 1]]), res(['n'], [[3]])], ok: 1, mono: true, check: true,
+      exp: 'O WHERE corre primeiro e deixa só os 3 alunos do 2.º ano (Ines, Tiago, Joao), um de cada curso. Depois agrupa-os: cada curso tem 1.' },
+    { q: 'Queres os cursos com média acima de 12. Onde fica a condição AVG(nota) > 12?', opts: ['No WHERE', 'No HAVING', 'No SELECT', 'No ORDER BY'], ok: 1,
+      exp: H`A média só existe depois de agrupar, e o WHERE corre antes disso. Condições sobre grupos vão no <code>HAVING</code>.` },
+  ],
+  exercises: [{
+    title: 'Ranking de cursos',
+    text: 'Para cada curso, mostra a melhor nota (melhor) e a média (media), começando pelo curso com a maior média.',
+    run: out(['curso', 'melhor', 'media'], [['LEM', 18, 14.5], ['LEI', 17, 13.25], ['LEE', 14, 10.5]]),
+    hint: H`<code>GROUP BY curso</code>, e no fim <code>ORDER BY media DESC</code>.`,
+    solution: C`
+SELECT curso, MAX(nota) AS melhor, AVG(nota) AS media
+FROM alunos
+GROUP BY curso
+ORDER BY media DESC;`,
+  }, {
+    title: 'Anos cheios',
+    text: 'Mostra os anos que têm mais de 3 alunos, e quantos alunos tem cada um (coluna n).',
+    run: out(['ano', 'n'], [[1, 5]]),
+    hint: H`Agrupa por ano e filtra os grupos com <code>HAVING COUNT(*) &gt; 3</code>.`,
+    solution: C`
+SELECT ano, COUNT(*) AS n
+FROM alunos
+GROUP BY ano
+HAVING COUNT(*) > 3;`,
+  }],
+});
+
+// ===== SQL do Zero — conteúdo das lições (parte 3) =====
+// Usa os ajudantes definidos em lessons1.js.
+
+// A base de dados da escola, com relações: cursos 1:N alunos, e alunos N:M ucs (através de inscricoes).
+const ESCOLA = {
+  cursos: {
+    cols: [['sigla', 'TEXT PRIMARY KEY'], ['nome', 'TEXT NOT NULL']],
+    rows: [['LEI', 'Engenharia Informatica'], ['LEE', 'Engenharia Eletrotecnica'], ['LEM', 'Engenharia Mecanica'], ['LB', 'Bioengenharia']],
+  },
+  alunos: {
+    cols: [['numero', 'INTEGER PRIMARY KEY'], ['nome', 'TEXT NOT NULL'], ['curso', 'TEXT REFERENCES cursos(sigla)']],
+    rows: [[101, 'Ana', 'LEI'], [102, 'Rui', 'LEI'], [103, 'Ines', 'LEE'], [104, 'Tiago', 'LEI'], [105, 'Marta', 'LEM'], [106, 'Pedro', 'LEE']],
+  },
+  ucs: {
+    cols: [['codigo', 'TEXT PRIMARY KEY'], ['nome', 'TEXT NOT NULL'], ['ects', 'INTEGER']],
+    rows: [['BD', 'Bases de Dados', 6], ['SO', 'Sistemas Operativos', 6], ['ED', 'Estruturas de Dados', 6], ['RC', 'Redes de Computadores', 4]],
+  },
+  inscricoes: {
+    cols: [['aluno', 'INTEGER REFERENCES alunos(numero)'], ['uc', 'TEXT REFERENCES ucs(codigo)'], ['nota', 'INTEGER']],
+    key: ['aluno', 'uc'],
+    rows: [[101, 'BD', 16], [101, 'SO', 13], [102, 'BD', 9], [103, 'ED', 14], [104, 'BD', 12], [104, 'ED', 11], [105, 'SO', 18]],
+  },
+};
+
+// ---------------------------------------------------------------- 8
+LESSONS.push({
+  id: 8,
+  title: 'Chaves e relações',
+  short: 'chave primária, chave estrangeira, 1:N e N:M',
+  body: H`
+<p>Uma base de dados a sério tem várias tabelas ligadas entre si. As ligações fazem-se com chaves.</p>
+<ul>
+<li>A <strong>chave primária</strong> (PK) identifica cada linha: não se repete e não pode ser NULL. Pode ser uma coluna (<code>numero</code>) ou um par de colunas (<code>PRIMARY KEY (aluno, uc)</code>).</li>
+<li>Uma <strong>chave estrangeira</strong> (FK) é uma coluna que guarda a chave primária de uma linha <em>de outra tabela</em>: <code>curso TEXT REFERENCES cursos(sigla)</code>. É assim que o aluno "aponta" para o seu curso. Lembras-te dos apontadores em C? A ideia é parecida: em vez da morada, guarda-se a chave.</li>
+<li>O SGBD não deixa a FK apontar para o vazio: inserir um aluno num curso que não existe, ou apagar um curso que ainda tem alunos, dá <em>FOREIGN KEY constraint failed</em>. <strong>No SQLite</strong> esta verificação vem desligada; liga-se com <code>PRAGMA foreign_keys = ON;</code>.</li>
+</ul>
+<p>Num <strong>diagrama ER</strong> (entidade-relação), cada entidade (Curso, Aluno, UC) vira uma tabela e as relações dizem como se ligam:</p>
+<table class="t">
+<thead><tr><th>Relação</th><th>Exemplo</th><th>Como fica nas tabelas</th></tr></thead>
+<tbody>
+<tr><td>1:N (um para muitos)</td><td>um curso tem muitos alunos; cada aluno tem um curso</td><td>uma FK do lado N: <code>alunos.curso</code></td></tr>
+<tr><td>N:M (muitos para muitos)</td><td>um aluno tem muitas UCs; uma UC tem muitos alunos</td><td>uma tabela de ligação com as duas FK: <code>inscricoes(aluno, uc)</code>, que pode guardar dados da relação (a <code>nota</code>)</td></tr>
+</tbody>
+</table>`,
+  analogy: 'A ficha de inscrição numa UC não volta a escrever o nome, a morada e o curso do aluno: escreve só o número de aluno. Esse número é a chave estrangeira, e quem quiser o resto vai à ficha do aluno.',
+  db: ESCOLA,
+  examples: [{
+    title: 'A chave estrangeira a proteger os dados',
+    db: only(ESCOLA, 'cursos', 'alunos'),
+    code: C`
+PRAGMA foreign_keys = ON;
+INSERT INTO alunos VALUES (107, 'Carla', 'LEI');
+INSERT INTO alunos VALUES (108, 'Bruno', 'MED');
+DELETE FROM cursos WHERE sigla = 'LEM';
+DELETE FROM cursos WHERE sigla = 'LB';`,
+    steps: [
+      { l: 1, n: H`No SQLite as FK só são verificadas depois desta linha. Noutros SGBD estão sempre ligadas.` },
+      { l: 2, tm: { cursos: { 0: 'hit' } }, ins: { alunos: [[107, 'Carla', 'LEI']] }, n: H`A Carla é de LEI, e LEI existe na tabela <code>cursos</code> (a amarelo). A linha entra.` },
+      { l: 3, err: 'FOREIGN KEY constraint failed', n: H`Não há nenhum curso MED. A FK não deixa um aluno apontar para um curso que não existe: a linha é recusada.` },
+      { l: 4, tm: { cursos: { 2: 'hit' }, alunos: { 4: 'hit' } }, err: 'FOREIGN KEY constraint failed', n: H`Apagar LEM deixava a Marta a apontar para o vazio, por isso também é recusado.` },
+      { l: 5, tm: { cursos: { 3: 'drop' } }, n: H`LB (Bioengenharia) não tem nenhum aluno...` },
+      { l: 5, del: { cursos: [3] }, n: '...por isso pode ser apagado.' },
+    ],
+  }, {
+    title: 'Uma relação N:M: a tabela de ligação',
+    db: only(ESCOLA, 'alunos', 'ucs'),
+    code: C`
+CREATE TABLE inscricoes (
+    aluno INTEGER REFERENCES alunos(numero),
+    uc TEXT REFERENCES ucs(codigo),
+    nota INTEGER,
+    PRIMARY KEY (aluno, uc)
+);
+INSERT INTO inscricoes VALUES (101, 'BD', 16), (101, 'SO', 13), (102, 'BD', 9);
+INSERT INTO inscricoes VALUES (101, 'BD', 18);`,
+    steps: [
+      { l: 1, create: { inscricoes: { cols: [['aluno', 'INTEGER REFERENCES alunos(numero)'], ['uc', 'TEXT REFERENCES ucs(codigo)'], ['nota', 'INTEGER']], key: ['aluno', 'uc'] } }, n: 'Um aluno tem muitas UCs e uma UC tem muitos alunos. Isto não cabe numa coluna de nenhuma das duas tabelas: precisa de uma tabela própria.' },
+      { l: 2, n: H`<code>aluno</code> é uma FK para <code>alunos</code>.` },
+      { l: 3, n: H`<code>uc</code> é uma FK para <code>ucs</code>.` },
+      { l: 4, n: H`A <code>nota</code> não é do aluno nem da UC: é da inscrição de um aluno numa UC. Por isso vive nesta tabela.` },
+      { l: 5, n: H`A chave primária é o <strong>par</strong> (aluno, uc): o mesmo aluno pode aparecer várias vezes, com UCs diferentes, mas não duas vezes na mesma UC.` },
+      { l: 7, ins: { inscricoes: [[101, 'BD', 16], [101, 'SO', 13], [102, 'BD', 9]] }, n: 'A Ana (101) aparece duas vezes e a BD também. O que não se repete é o par.' },
+      { l: 8, err: 'UNIQUE constraint failed: inscricoes.aluno, inscricoes.uc', n: H`O par (101, BD) já existe. A chave primária recusa a linha.` },
+    ],
+  }],
+  mistakes: [
+    H`Esquecer o <code>PRAGMA foreign_keys = ON;</code> no SQLite e achar que as FK estão a proteger os dados. Sem ele, o SQLite aceita tudo.`,
+    H`Guardar várias coisas numa célula para evitar uma tabela de ligação: <code>ucs = 'BD, SO'</code>. Depois é quase impossível pesquisar e manter (vês porquê na lição 10).`,
+    H`Pôr a FK do lado errado num 1:N. É o lado "muitos" que guarda a chave do lado "um": cada aluno diz o seu curso, não o curso que lista os alunos.`,
+    H`Dar à FK um tipo diferente da PK para onde aponta (<code>INTEGER</code> contra <code>TEXT</code>).`,
+    H`Usar como chave primária uma coluna que se pode repetir ou mudar, como o nome.`,
+  ],
+  quiz: [
+    { q: 'Qual é a chave primária da tabela inscricoes?', opts: ['aluno', 'uc', 'O par (aluno, uc)', 'nota'], ok: 2,
+      exp: 'Sozinho, o aluno repete-se (uma linha por UC) e a UC também. O que identifica uma linha é a combinação dos dois.' },
+    { q: 'Numa relação 1:N entre cursos e alunos, onde fica a chave estrangeira?', opts: ['Em alunos: cada aluno guarda a sigla do seu curso', 'Em cursos: cada curso guarda os números dos alunos', 'Numa tabela nova, só para a ligação', 'Nas duas tabelas'], ok: 0,
+      exp: 'Cada aluno tem um só curso, por isso cabe numa coluna de alunos. Ao contrário, um curso tem muitos alunos, e muitos valores não cabem numa célula. A tabela nova só é precisa nas relações N:M.' },
+    { q: 'Que resultado dá este script?', code: C`
+PRAGMA foreign_keys = ON;
+INSERT INTO inscricoes VALUES (106, 'XX', 15);
+SELECT COUNT(*) AS n FROM inscricoes;`, opts: [res(['n'], [[8]]), 'Erro: FOREIGN KEY constraint failed\n\n' + res(['n'], [[7]]), 'Erro: FOREIGN KEY constraint failed\n\n' + res(['n'], [[8]]), res(['n'], [[7]])], ok: 1, mono: true, check: true,
+      exp: 'Não há nenhuma UC XX, e com as FK ligadas a linha é recusada. O SELECT corre na mesma e conta as 7 inscrições que já existiam.' },
+    { q: 'E sem o PRAGMA? Que resultado dá este script?', code: C`
+INSERT INTO inscricoes VALUES (106, 'XX', 15);
+SELECT COUNT(*) AS n FROM inscricoes;`, opts: [res(['n'], [[8]]), 'Erro: FOREIGN KEY constraint failed\n\n' + res(['n'], [[7]]), 'Erro: FOREIGN KEY constraint failed\n\n' + res(['n'], [[8]]), res(['n'], [[7]])], ok: 0, mono: true, check: true,
+      exp: H`No SQLite, as FK só são verificadas com <code>PRAGMA foreign_keys = ON</code>. Sem ele, a inscrição numa UC que não existe entra sem erro. É uma surpresa comum.` },
+    { q: 'Os alunos inscrevem-se em várias UCs e cada UC tem vários alunos. Como se guarda isto?', opts: ['Uma coluna uc na tabela alunos', 'Uma coluna aluno na tabela ucs', 'Uma tabela de ligação com as chaves das duas', "Uma coluna com as UCs separadas por vírgulas, como 'BD, SO'"], ok: 2,
+      exp: 'É uma relação N:M. Uma coluna só guarda um valor por linha, por isso as duas primeiras não chegam. A lista com vírgulas parte a 1.ª forma normal (lição 10).' },
+  ],
+  exercises: [{
+    title: 'Turmas',
+    text: 'Liga as FK, cria a tabela turmas (id inteiro chave primária, uc que aponta para ucs(codigo), sala texto), insere as turmas 1 (BD, sala A1) e 2 (SO, sala B2), tenta inserir a turma 3 da UC XX na sala C3 e, no fim, mostra todas as turmas.',
+    run: 'Erro: FOREIGN KEY constraint failed\n\n' + out(['id', 'uc', 'sala'], [[1, 'BD', 'A1'], [2, 'SO', 'B2']]),
+    hint: H`Começa com <code>PRAGMA foreign_keys = ON;</code>. A FK escreve-se na coluna: <code>uc TEXT REFERENCES ucs(codigo)</code>. A turma 3 tem de dar erro.`,
+    solution: C`
+PRAGMA foreign_keys = ON;
+CREATE TABLE turmas (
+    id INTEGER PRIMARY KEY,
+    uc TEXT REFERENCES ucs(codigo),
+    sala TEXT
+);
+INSERT INTO turmas VALUES (1, 'BD', 'A1'), (2, 'SO', 'B2');
+INSERT INTO turmas VALUES (3, 'XX', 'C3');
+SELECT * FROM turmas;`,
+  }, {
+    title: 'Inscritos por UC',
+    text: 'Usando só a tabela inscricoes, mostra quantos alunos estão inscritos em cada UC (colunas uc e n), por ordem do código da UC.',
+    run: out(['uc', 'n'], [['BD', 3], ['ED', 2], ['SO', 2]]),
+    hint: H`É um <code>GROUP BY uc</code> com <code>COUNT(*)</code>, como na lição 7.`,
+    solution: C`
+SELECT uc, COUNT(*) AS n
+FROM inscricoes
+GROUP BY uc
+ORDER BY uc;`,
+  }],
+});
+
+// ---------------------------------------------------------------- 9
+// O JOIN de alunos com cursos: cada aluno junto com a linha do seu curso.
+const cursoDe = sigla => ESCOLA.cursos.rows.find(c => c[0] === sigla);
+const alunoComCurso = ESCOLA.alunos.rows.map(a => a.concat(cursoDe(a[2])));
+const JOIN_COLS = ['a.numero', 'a.nome', 'a.curso', 'c.sigla', 'c.nome'];
+const nomeECurso = alunoComCurso.map(r => [r[1], r[4]]);
+// O LEFT JOIN de alunos com inscricoes: uma linha por inscrição, e NULL para quem não tem nenhuma.
+const LEFT_COLS = ['a.numero', 'a.nome', 'a.curso', 'i.aluno', 'i.uc', 'i.nota'];
+const alunoComInscricoes = ESCOLA.alunos.rows.flatMap(a => {
+  const mine = ESCOLA.inscricoes.rows.filter(i => i[0] === a[0]);
+  return mine.length ? mine.map(i => a.concat(i)) : [a.concat([null, null, null])];
+});
+
+LESSONS.push({
+  id: 9,
+  title: 'Juntar tabelas: JOIN',
+  short: 'INNER JOIN, LEFT JOIN e como as linhas fazem par',
+  body: H`
+<p>Os dados estão espalhados por várias tabelas: o aluno guarda a sigla do curso, mas o nome do curso está noutra tabela. O <code>JOIN</code> junta as duas: para cada linha de uma tabela, procura as linhas da outra que fazem <strong>par</strong> segundo a condição do <code>ON</code> (quase sempre FK = PK) e cola-as numa linha só.</p>
+<pre class="snip"><code>SELECT a.nome, c.nome AS curso
+FROM alunos a
+JOIN cursos c ON a.curso = c.sigla;</code></pre>
+<ul>
+<li><code>alunos a</code> dá a alcunha <code>a</code> à tabela. Escreve-se <code>a.nome</code> para dizer de que tabela é a coluna, o que é obrigatório quando as duas têm uma coluna com o mesmo nome.</li>
+<li><code>JOIN</code> (ou <code>INNER JOIN</code>) só mostra as linhas que têm par. Um curso sem alunos não aparece.</li>
+<li><code>LEFT JOIN</code> mostra <strong>todas</strong> as linhas da tabela da esquerda; quando não há par, as colunas da direita vêm a NULL. Com <code>WHERE ... IS NULL</code> descobres "quem não tem nenhum".</li>
+<li>Podes juntar mais tabelas, uma de cada vez: <code>FROM alunos a JOIN inscricoes i ON ... JOIN ucs u ON ...</code></li>
+</ul>`,
+  analogy: H`Tens a lista de alunos com a sigla do curso e uma tabela de siglas com o nome de cada curso. O JOIN vai a cada aluno, procura a sigla dele na outra lista e escreve o nome do curso ao lado. O <code>LEFT JOIN</code> não risca da lista os alunos cuja sigla não encontra: deixa o espaço em branco.`,
+  db: ESCOLA,
+  examples: [{
+    title: 'Cada aluno com o nome do seu curso',
+    db: only(ESCOLA, 'cursos', 'alunos'),
+    code: C`
+SELECT a.nome, c.nome AS curso
+FROM alunos a
+JOIN cursos c ON a.curso = c.sigla
+ORDER BY a.nome;`,
+    steps: [
+      { l: 2, g: { label: 'FROM alunos a', cols: ['numero', 'nome', 'curso'], rows: ESCOLA.alunos.rows }, n: H`Começa pelos alunos. A partir daqui, <code>a</code> quer dizer <code>alunos</code>.` },
+      { l: 3, tm: { alunos: { 0: 'hit' }, cursos: { 0: 'hit' } }, g: { label: 'JOIN cursos c ON a.curso = c.sigla', cols: JOIN_COLS, rows: alunoComCurso.slice(0, 1) }, n: H`A Ana tem <code>curso = 'LEI'</code>. O JOIN procura em cursos a linha com <code>sigla = 'LEI'</code>, encontra-a e cola as duas numa linha só.` },
+      { l: 3, tm: { alunos: { 1: 'hit' }, cursos: { 0: 'hit' } }, g: { label: 'JOIN cursos c ON a.curso = c.sigla', cols: JOIN_COLS, rows: alunoComCurso.slice(0, 2) }, n: 'O Rui também é de LEI: a mesma linha de cursos serve outra vez.' },
+      { l: 3, tm: { alunos: { 2: 'hit' }, cursos: { 1: 'hit' } }, g: { label: 'JOIN cursos c ON a.curso = c.sigla', cols: JOIN_COLS, rows: alunoComCurso.slice(0, 3) }, n: 'A Ines é de LEE.' },
+      { l: 3, tm: { alunos: { 3: 'hit', 4: 'hit', 5: 'hit' }, cursos: { 0: 'hit', 1: 'hit', 2: 'hit' } }, g: { label: 'JOIN cursos c ON a.curso = c.sigla', cols: JOIN_COLS, rows: alunoComCurso }, n: H`E o mesmo para os restantes. Repara que LB (Bioengenharia) nunca fez par com ninguém, por isso não aparece: o <code>JOIN</code> só mostra linhas com par.` },
+      { l: 1, g: { label: 'SELECT a.nome, c.nome AS curso', cols: ['nome', 'curso'], rows: nomeECurso }, n: H`As duas tabelas têm uma coluna <code>nome</code>, por isso é preciso dizer qual: <code>a.nome</code> é o do aluno e <code>c.nome</code> o do curso.` },
+      { l: 4, g: { label: 'ORDER BY a.nome', cols: ['nome', 'curso'], rows: nomeECurso.slice().sort((x, y) => x[0].localeCompare(y[0])) }, n: 'Por fim, ordena pelo nome do aluno.' },
+    ],
+  }, {
+    title: 'Quem não está inscrito em nada (LEFT JOIN)',
+    db: only(ESCOLA, 'alunos', 'inscricoes'),
+    code: C`
+SELECT a.nome, i.uc
+FROM alunos a
+LEFT JOIN inscricoes i ON i.aluno = a.numero
+WHERE i.uc IS NULL;`,
+    steps: [
+      { l: 2, g: { label: 'FROM alunos a', cols: ['numero', 'nome', 'curso'], rows: ESCOLA.alunos.rows }, n: 'Começa pelos 6 alunos.' },
+      { l: 3, g: { label: 'LEFT JOIN inscricoes i ON i.aluno = a.numero', cols: LEFT_COLS, rows: alunoComInscricoes, marks: alunoComInscricoes.map(r => (r[3] === null ? 'hit' : null)) }, n: H`Cada aluno junta-se a cada inscrição sua: a Ana tem duas, por isso aparece duas vezes. O Pedro não tem nenhuma; com <code>LEFT JOIN</code> aparece à mesma, com NULL nas colunas de inscricoes (a amarelo). Com um JOIN normal desaparecia.` },
+      { l: 4, g: { label: 'WHERE i.uc IS NULL', cols: LEFT_COLS, rows: alunoComInscricoes, marks: alunoComInscricoes.map(r => (r[4] === null ? 'keep' : 'drop')) }, n: H`Ficam só as linhas que não fizeram par, ou seja, os alunos sem inscrições.` },
+      { l: 1, g: { label: 'SELECT a.nome, i.uc', cols: ['nome', 'uc'], rows: [['Pedro', null]] }, n: 'O Pedro é o único aluno que não está inscrito em nenhuma UC.' },
+    ],
+  }],
+  mistakes: [
+    H`Esquecer o <code>ON</code>, ou pôr a condição errada (<code>a.numero = c.sigla</code>). Sem uma condição certa, cada linha junta-se com linhas que não são o seu par.`,
+    H`Escrever <code>nome</code> quando as duas tabelas têm essa coluna: <em>ambiguous column name: nome</em>. Usa <code>a.nome</code> ou <code>c.nome</code>.`,
+    H`Usar <code>JOIN</code> para "quem não tem": esses não fazem par e desaparecem. É preciso <code>LEFT JOIN</code> e <code>IS NULL</code>.`,
+    H`Contar com <code>COUNT(*)</code> depois de um LEFT JOIN: a linha com NULL também conta. Para contar só os pares, usa <code>COUNT(coluna_da_direita)</code>.`,
+    H`Estranhar linhas repetidas: um aluno com três inscrições aparece três vezes depois do JOIN. É normal.`,
+  ],
+  quiz: [
+    { q: 'Que resultado dá esta consulta?', code: C`
+SELECT a.nome
+FROM alunos a
+JOIN inscricoes i ON i.aluno = a.numero
+WHERE i.uc = 'BD'
+ORDER BY a.nome;`, opts: [res(['nome'], [['Ana'], ['Rui'], ['Tiago']]), res(['nome'], [['Ana'], ['Ana'], ['Rui'], ['Tiago']]), res(['nome'], [['Ana'], ['Pedro'], ['Rui'], ['Tiago']]), res(['nome'], [['BD'], ['BD'], ['BD']])], ok: 0, mono: true, check: true,
+      exp: 'Há três inscrições em BD: 101 (Ana), 102 (Rui) e 104 (Tiago). A Ana também está em SO, mas o WHERE tira essa linha. O Pedro não está inscrito em nada.' },
+    { q: 'Que resultado dá esta consulta?', code: C`
+SELECT c.sigla, COUNT(a.numero) AS n
+FROM cursos c
+LEFT JOIN alunos a ON a.curso = c.sigla
+GROUP BY c.sigla
+ORDER BY c.sigla;`, opts: [res(['sigla', 'n'], [['LEE', 2], ['LEI', 3], ['LEM', 1]]), res(['sigla', 'n'], [['LB', 0], ['LEE', 2], ['LEI', 3], ['LEM', 1]]), res(['sigla', 'n'], [['LB', 1], ['LEE', 2], ['LEI', 3], ['LEM', 1]]), res(['sigla', 'n'], [['LB', null], ['LEE', 2], ['LEI', 3], ['LEM', 1]])], ok: 1, mono: true, check: true,
+      exp: H`O LEFT JOIN mantém LB, com NULL no lugar do aluno. <code>COUNT(a.numero)</code> não conta NULL, por isso dá 0. Com <code>COUNT(*)</code> dava 1, e com um JOIN normal LB nem aparecia.` },
+    { q: 'Que resultado dá esta consulta?', code: C`
+SELECT nome
+FROM alunos
+JOIN cursos ON alunos.curso = cursos.sigla;`, opts: ['Erro: ambiguous column name: nome', res(['nome'], [['Ana'], ['Rui'], ['Ines'], ['Tiago'], ['Marta'], ['Pedro']]), res(['nome'], [['Engenharia Informatica'], ['Engenharia Informatica'], ['Engenharia Eletrotecnica'], ['Engenharia Informatica'], ['Engenharia Mecanica'], ['Engenharia Eletrotecnica']])], ok: 0, mono: true, check: true,
+      exp: H`As duas tabelas têm uma coluna <code>nome</code> e o SQL não adivinha qual queres. Tens de escrever <code>alunos.nome</code> ou <code>cursos.nome</code>.` },
+    { q: 'Que resultado dá esta consulta?', code: C`
+SELECT COUNT(*) AS n
+FROM alunos a
+JOIN inscricoes i ON i.aluno = a.numero;`, opts: [res(['n'], [[6]]), res(['n'], [[7]]), res(['n'], [[42]]), res(['n'], [[8]])], ok: 1, mono: true, check: true,
+      exp: 'O JOIN dá uma linha por cada par aluno-inscrição, ou seja, uma por inscrição: 7. O Pedro não tem par e não conta. 42 seria juntar todos com todos (6 × 7), sem ON.' },
+  ],
+  exercises: [{
+    title: 'A pauta completa',
+    text: 'Para todas as inscrições, mostra o nome do aluno (aluno), o nome da UC (uc) e a nota, ordenado pelo nome do aluno e depois pelo nome da UC.',
+    run: out(['aluno', 'uc', 'nota'], [['Ana', 'Bases de Dados', 16], ['Ana', 'Sistemas Operativos', 13], ['Ines', 'Estruturas de Dados', 14], ['Marta', 'Sistemas Operativos', 18], ['Rui', 'Bases de Dados', 9], ['Tiago', 'Bases de Dados', 12], ['Tiago', 'Estruturas de Dados', 11]]),
+    hint: H`São três tabelas: <code>alunos a JOIN inscricoes i ON i.aluno = a.numero JOIN ucs u ON u.codigo = i.uc</code>. Usa AS para dar os nomes aluno e uc.`,
+    solution: C`
+SELECT a.nome AS aluno, u.nome AS uc, i.nota
+FROM alunos a
+JOIN inscricoes i ON i.aluno = a.numero
+JOIN ucs u ON u.codigo = i.uc
+ORDER BY a.nome, u.nome;`,
+  }, {
+    title: 'UCs vazias',
+    text: 'Mostra o código e o nome das UCs que não têm nenhum aluno inscrito.',
+    run: out(['codigo', 'nome'], [['RC', 'Redes de Computadores']]),
+    hint: H`Como no segundo exemplo, mas a tabela da esquerda é <code>ucs</code>: <code>ucs u LEFT JOIN inscricoes i ON i.uc = u.codigo</code>, e depois <code>IS NULL</code>.`,
+    solution: C`
+SELECT u.codigo, u.nome
+FROM ucs u
+LEFT JOIN inscricoes i ON i.uc = u.codigo
+WHERE i.aluno IS NULL;`,
+  }],
+});
+
+// ---------------------------------------------------------------- 10
+const PAUTA = {
+  cols: [['aluno', 'INTEGER'], ['uc', 'TEXT'], ['nome_uc', 'TEXT'], ['nota', 'INTEGER']],
+  key: ['aluno', 'uc'],
+  rows: [[101, 'BD', 'Bases de Dados', 16], [101, 'SO', 'Sistemas Operativos', 13], [102, 'BD', 'Bases de Dados', 9], [104, 'BD', 'Bases de Dados', 12]],
+};
+const pautaMudada = [['BD', 'Bases de Dados I'], ['SO', 'Sistemas Operativos'], ['BD', 'Bases de Dados'], ['BD', 'Bases de Dados']];
+const UCS_NORMAL = { cols: [['codigo', 'TEXT PRIMARY KEY'], ['nome', 'TEXT NOT NULL']], rows: [['BD', 'Bases de Dados'], ['SO', 'Sistemas Operativos']] };
+const NOTAS_NORMAL = {
+  cols: [['aluno', 'INTEGER'], ['uc', 'TEXT REFERENCES ucs(codigo)'], ['nota', 'INTEGER']],
+  key: ['aluno', 'uc'],
+  rows: [[101, 'BD', 16], [101, 'SO', 13], [102, 'BD', 9], [104, 'BD', 12]],
+};
+const ALUNOS_CURSOS = {
+  cols: [['numero', 'INTEGER PRIMARY KEY'], ['nome', 'TEXT'], ['curso', 'TEXT'], ['nome_curso', 'TEXT']],
+  rows: [[101, 'Ana', 'LEI', 'Engenharia Informatica'], [102, 'Rui', 'LEI', 'Engenharia Informatica'], [103, 'Ines', 'LEE', 'Engenharia Eletrotecnica'], [105, 'Marta', 'LEM', 'Engenharia Mecanica']],
+};
+
+LESSONS.push({
+  id: 10,
+  title: 'Normalização: cada coisa no seu sítio',
+  short: 'repetição, anomalias e as três primeiras formas normais',
+  body: H`
+<p>Uma tabela mal desenhada repete informação. A repetição gasta espaço, mas o pior são as <strong>anomalias</strong>: mudas um dado numa linha e esqueces as outras (atualização), não consegues guardar uma UC sem ter um aluno inscrito (inserção), ou apagas o último aluno e perdes o nome da UC (remoção).</p>
+<p><strong>Normalizar</strong> é partir as tabelas até cada informação estar num só sítio. Para isso olha-se para as <strong>dependências funcionais</strong>: <code>uc → nome_uc</code> quer dizer "sabendo a UC, sabe-se o nome da UC".</p>
+<table class="t">
+<thead><tr><th>Forma normal</th><th>Regra</th><th>Exemplo que falha</th></tr></thead>
+<tbody>
+<tr><td>1FN</td><td>cada célula tem um só valor (nada de listas)</td><td><code>telefones = '912..., 934...'</code></td></tr>
+<tr><td>2FN</td><td>1FN, e cada coluna que não é chave depende da chave <strong>toda</strong></td><td><code>pauta(aluno, uc, nome_uc, nota)</code> com chave (aluno, uc): <code>nome_uc</code> só depende de <code>uc</code></td></tr>
+<tr><td>3FN</td><td>2FN, e nenhuma coluna que não é chave depende de outra que também não é</td><td><code>alunos(numero, nome, curso, nome_curso)</code>: <code>nome_curso</code> depende de <code>curso</code></td></tr>
+</tbody>
+</table>
+<p>A solução é quase sempre a mesma: tirar as colunas que dependem da coisa errada para uma tabela nova, cuja chave é essa coisa, e deixar uma FK no lugar.</p>`,
+  analogy: 'Normalizar é arrumar o quarto: cada coisa tem uma gaveta. Se o nome da UC estiver escrito em 30 linhas, um dia alguém corrige 29 e esquece-se de uma. Com o nome numa só gaveta, corrige-se uma vez.',
+  db: { pauta: PAUTA },
+  examples: [{
+    title: 'A anomalia de atualização',
+    db: { pauta: PAUTA },
+    code: C`
+UPDATE pauta
+SET nome_uc = 'Bases de Dados I'
+WHERE aluno = 101 AND uc = 'BD';
+SELECT DISTINCT uc, nome_uc
+FROM pauta
+ORDER BY uc, nome_uc;`,
+    steps: [
+      { l: 1, n: H`A tabela <code>pauta</code> repete o nome da UC em cada inscrição: "Bases de Dados" aparece três vezes.` },
+      { l: 3, tm: { pauta: { 0: 'hit' } }, n: 'Alguém quer mudar o nome da UC, mas o WHERE só apanha uma das linhas de BD...' },
+      { l: 2, upd: { pauta: { 0: { nome_uc: 'Bases de Dados I' } } }, n: '...e o nome muda só nessa linha.' },
+      { l: 5, g: { label: 'FROM pauta', cols: colsOf(PAUTA), rows: PAUTA.rows.map((r, i) => (i === 0 ? [101, 'BD', 'Bases de Dados I', 16] : r)) }, n: 'Vamos ver que nomes tem cada UC.' },
+      { l: 4, g: { label: 'SELECT DISTINCT uc, nome_uc', cols: ['uc', 'nome_uc'], rows: pautaMudada, marks: ['keep', 'keep', 'keep', 'drop'] }, n: 'Sem repetidos...' },
+      { l: 4, g: { label: 'SELECT DISTINCT uc, nome_uc', cols: ['uc', 'nome_uc'], rows: pautaMudada.slice(0, 3) }, n: H`...a BD aparece com <strong>dois</strong> nomes. Os dados ficaram contraditórios: é a anomalia de atualização.` },
+      { l: 6, g: { label: 'ORDER BY uc, nome_uc', cols: ['uc', 'nome_uc'], rows: [['BD', 'Bases de Dados'], ['BD', 'Bases de Dados I'], ['SO', 'Sistemas Operativos']] }, n: H`A culpa é do desenho: <code>nome_uc</code> depende só de <code>uc</code>, que é só parte da chave (aluno, uc). A tabela não está na 2FN.` },
+    ],
+  }, {
+    title: 'Normalizar: partir em duas tabelas',
+    db: { pauta: PAUTA },
+    code: C`
+CREATE TABLE ucs (
+    codigo TEXT PRIMARY KEY,
+    nome TEXT NOT NULL
+);
+INSERT INTO ucs
+SELECT DISTINCT uc, nome_uc FROM pauta;
+CREATE TABLE notas (
+    aluno INTEGER,
+    uc TEXT REFERENCES ucs(codigo),
+    nota INTEGER,
+    PRIMARY KEY (aluno, uc)
+);
+INSERT INTO notas
+SELECT aluno, uc, nota FROM pauta;`,
+    steps: [
+      { l: 1, create: { ucs: { cols: [['codigo', 'TEXT PRIMARY KEY'], ['nome', 'TEXT NOT NULL']] } }, n: H`O nome da UC depende da UC, por isso vai para uma tabela cuja chave é a UC.` },
+      { l: 6, g: { label: 'SELECT DISTINCT uc, nome_uc FROM pauta', cols: ['uc', 'nome_uc'], rows: [['BD', 'Bases de Dados'], ['SO', 'Sistemas Operativos']] }, n: H`Um <code>INSERT</code> pode receber as linhas de um <code>SELECT</code>, em vez de <code>VALUES</code>. Este SELECT dá cada UC uma só vez.` },
+      { l: 5, ins: { ucs: [['BD', 'Bases de Dados'], ['SO', 'Sistemas Operativos']] }, n: 'Essas linhas entram na tabela nova. Agora o nome de cada UC está escrito uma só vez.' },
+      { l: 7, g: null, create: { notas: { cols: [['aluno', 'INTEGER'], ['uc', 'TEXT REFERENCES ucs(codigo)'], ['nota', 'INTEGER']], key: ['aluno', 'uc'] } }, n: H`A nota depende do aluno <strong>e</strong> da UC: fica numa tabela com a chave (aluno, uc).` },
+      { l: 9, n: H`No lugar do nome da UC fica só o código, como chave estrangeira para <code>ucs</code>.` },
+      { l: 14, g: { label: 'SELECT aluno, uc, nota FROM pauta', cols: ['aluno', 'uc', 'nota'], rows: NOTAS_NORMAL.rows }, n: 'As notas vêm da pauta, sem o nome da UC.' },
+      { l: 13, ins: { notas: NOTAS_NORMAL.rows }, n: H`Pronto: mudar o nome de uma UC passa a ser um UPDATE a uma só linha de <code>ucs</code>. Para voltar a ver tudo junto, faz-se um JOIN.` },
+    ],
+  }],
+  mistakes: [
+    H`Guardar listas numa célula (<code>'BD, SO'</code>). Parte a 1FN; usa uma linha por valor, noutra tabela.`,
+    H`Copiar o nome (do curso, da UC, do cliente) para todas as linhas "para não ter de fazer JOIN". É exatamente isso que causa as anomalias.`,
+    H`Achar que a 2FN importa em todas as tabelas. Só pode falhar quando a chave tem mais do que uma coluna.`,
+    H`Partir as tabelas e esquecer a FK que as volta a ligar.`,
+  ],
+  quiz: [
+    { q: 'A tabela alunos(numero, nome, telefones) guarda telefones = "912345678, 934567890". Que forma normal falha?', opts: ['1FN', '2FN', '3FN', 'Nenhuma'], ok: 0,
+      exp: 'A 1FN pede um só valor por célula, e aqui há uma lista. A solução é uma tabela telefones(numero_aluno, telefone), com uma linha por telefone.' },
+    { q: 'Em pauta(aluno, uc, nome_uc, nota), com chave (aluno, uc), qual é o problema?', opts: ['nota depende só do aluno', 'nome_uc depende só de uc, que é só parte da chave', 'A chave devia ser só aluno', 'Não há problema nenhum'], ok: 1,
+      exp: 'O nome da UC não muda com o aluno: depende só de parte da chave. Isso parte a 2FN. A nota depende do par (aluno, uc), e essa está bem.' },
+    { q: 'Em alunos(numero, nome, curso, nome_curso), com chave numero, que forma normal falha?', opts: ['1FN', '2FN', '3FN', 'Nenhuma'], ok: 2,
+      exp: 'A chave tem uma só coluna, por isso a 2FN cumpre-se. Mas nome_curso depende de curso, que não é chave: é uma dependência transitiva (numero → curso → nome_curso), e isso parte a 3FN.' },
+    { q: 'Que resultado dá este script?', code: C`
+UPDATE pauta SET nome_uc = 'BD I' WHERE aluno = 102;
+SELECT COUNT(DISTINCT nome_uc) AS nomes
+FROM pauta WHERE uc = 'BD';`, opts: [res(['nomes'], [[1]]), res(['nomes'], [[2]]), res(['nomes'], [[3]]), res(['nomes'], [[0]])], ok: 1, mono: true, check: true,
+      exp: H`Só a linha do aluno 102 muda. A BD fica com dois nomes diferentes: "Bases de Dados" (alunos 101 e 104) e "BD I" (aluno 102). <code>COUNT(DISTINCT ...)</code> conta os valores diferentes: 2.` },
+  ],
+  exercises: [{
+    title: 'Tirar os cursos para fora',
+    text: 'A tabela alunos_cursos(numero, nome, curso, nome_curso) repete o nome do curso. Cria a tabela cursos(sigla chave primária, nome obrigatório), preenche-a com INSERT ... SELECT DISTINCT a partir de alunos_cursos e mostra-a, ordenada pela sigla.',
+    db: { alunos_cursos: ALUNOS_CURSOS },
+    run: out(['sigla', 'nome'], [['LEE', 'Engenharia Eletrotecnica'], ['LEI', 'Engenharia Informatica'], ['LEM', 'Engenharia Mecanica']]),
+    hint: H`Depois do CREATE TABLE: <code>INSERT INTO cursos SELECT DISTINCT curso, nome_curso FROM alunos_cursos;</code>`,
+    solution: C`
+CREATE TABLE cursos (
+    sigla TEXT PRIMARY KEY,
+    nome TEXT NOT NULL
+);
+INSERT INTO cursos
+SELECT DISTINCT curso, nome_curso FROM alunos_cursos;
+SELECT * FROM cursos
+ORDER BY sigla;`,
+  }, {
+    title: 'Voltar a juntar',
+    text: 'Esta base de dados já está normalizada, em ucs(codigo, nome) e notas(aluno, uc, nota). Mostra o aluno, o nome da UC (coluna uc) e a nota, ordenado pelo aluno e pelo nome da UC.',
+    db: { ucs: UCS_NORMAL, notas: NOTAS_NORMAL },
+    run: out(['aluno', 'uc', 'nota'], [[101, 'Bases de Dados', 16], [101, 'Sistemas Operativos', 13], [102, 'Bases de Dados', 9], [104, 'Bases de Dados', 12]]),
+    hint: H`Um JOIN entre notas e ucs: <code>ON u.codigo = n.uc</code>.`,
+    solution: C`
+SELECT n.aluno, u.nome AS uc, n.nota
+FROM notas n
+JOIN ucs u ON u.codigo = n.uc
+ORDER BY n.aluno, u.nome;`,
+  }],
+});
+
+</script>
+<script>
+(function () {
+  'use strict';
+  const $ = (s, el) => (el || document).querySelector(s);
+  const $$ = (s, el) => Array.from((el || document).querySelectorAll(s));
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+  // ---------- progresso (só neste browser) ----------
+  const STORE = COURSE.storageKey;
+  let progress = {};
+  try { progress = JSON.parse(localStorage.getItem(STORE) || '{}') || {}; } catch (e) { progress = {}; }
+  const saveProgress = () => { try { localStorage.setItem(STORE, JSON.stringify(progress)); } catch (e) { /* sem armazenamento */ } };
+  const isDone = id => !!progress[id];
+
+  // ---------- realce de sintaxe ----------
+  // Cada curso define SYNTAX: uma regex com um grupo por tipo de token e a classe CSS de cada grupo.
+  const TOK = SYNTAX.re;
+  function hlLine(line) {
+    let out = '';
+    let last = 0;
+    let m;
+    TOK.lastIndex = 0;
+    while ((m = TOK.exec(line))) {
+      if (!m[0].length) { TOK.lastIndex++; continue; }
+      out += esc(line.slice(last, m.index));
+      const group = m.findIndex((g, i) => i > 0 && g !== undefined);
+      const cls = SYNTAX.classes[group - 1];
+      out += '<span class="t-' + cls + '">' + esc(m[0]) + '</span>';
+      last = m.index + m[0].length;
+    }
+    return out + esc(line.slice(last));
+  }
+  const hlBlock = code => code.split('\n').map(hlLine).join('\n');
+  function highlightStatic(root) {
+    $$('pre.snip code', root).forEach(el => {
+      if (el.dataset.hl) return;
+      el.innerHTML = hlBlock(el.textContent);
+      el.dataset.hl = '1';
+    });
+  }
+
+  // ---------- ecrã (terminal) ----------
+  function renderTerm(s, withCaret) {
+    if (!s) return '<span class="ph">(ainda nada no ecrã)</span>';
+    const html = s.split(/(⟦[^⟧]*⟧)/).map(part => {
+      if (part.charAt(0) === '⟦') return '<span class="in">' + esc(part.slice(1, -1)) + '</span><span class="enter" aria-hidden="true">↵</span>\n';
+      return esc(part);
+    }).join('');
+    return html + (withCaret ? '<span class="caret" aria-hidden="true"></span>' : '');
+  }
+
+  // ---------- memória ----------
+  function prevValue(prevFrames, fi, frameName, varName) {
+    if (!prevFrames) return undefined;
+    const f = prevFrames[fi];
+    if (!f || f.name !== frameName) return null;
+    const v = f.vars.find(x => x.name === varName);
+    return v ? v.value : null;
+  }
+  const changed = (pv, v) => pv !== undefined && pv !== null && JSON.stringify(pv) !== JSON.stringify(v);
+
+  function scalarHtml(v) {
+    if (v === '?') return '<span class="garbage" title="lixo: valor desconhecido">?</span>';
+    const s = String(v);
+    const k = s.indexOf('→');
+    if (k > -1) return '<span class="ptr-addr">' + esc(s.slice(0, k).trim()) + '</span> <span class="ptr-arrow">' + esc(s.slice(k)) + '</span>';
+    return esc(s);
+  }
+
+  function varHtml(v, pv) {
+    const isNew = pv === null;
+    const val = v.value;
+    let cls = 'var';
+    let body = '';
+    if (Array.isArray(val) && val.length && typeof val[0] === 'object') {
+      cls += ' wide';
+      const fields = Object.keys(val[0]);
+      body = '<div class="t-wrap"><table class="mini"><thead><tr><th>índice</th>' + fields.map(f => '<th>' + esc(f) + '</th>').join('') + '</tr></thead><tbody>' +
+        val.map((row, i) => '<tr><td>[' + i + ']</td>' + fields.map(f => {
+          const c = Array.isArray(pv) && pv[i] && changed(pv[i][f], row[f]);
+          return '<td><span class="' + (c ? 'chg' : '') + '">' + scalarHtml(row[f]) + '</span></td>';
+        }).join('') + '</tr>').join('') + '</tbody></table></div>';
+    } else if (Array.isArray(val)) {
+      cls += val.length > 5 ? ' wide' : '';
+      body = '<div class="cells">' + val.map((c, i) => {
+        const ch = Array.isArray(pv) && changed(pv[i], c);
+        return '<div class="cell"><span class="cell-v' + (ch ? ' chg' : '') + '">' + scalarHtml(c) + '</span><span class="cell-i">[' + i + ']</span></div>';
+      }).join('') + '</div>';
+    } else if (val && typeof val === 'object') {
+      cls += ' wide';
+      body = '<div class="fields">' + Object.keys(val).map(f => {
+        const ch = pv && typeof pv === 'object' && changed(pv[f], val[f]);
+        return '<span class="f-name">.' + esc(f) + '</span><span><span class="' + (ch ? 'chg' : '') + '">' + scalarHtml(val[f]) + '</span></span>';
+      }).join('') + '</div>';
+    } else {
+      body = '<div class="var-val' + (changed(pv, val) ? ' chg' : '') + '">' + scalarHtml(val) + '</div>';
+    }
+    if (isNew) cls += ' is-new';
+    const addr = v.addr ? '<span title="endereço (exemplo)">@' + esc(v.addr) + '</span>' : '';
+    return '<div class="' + cls + '"><div class="var-top"><span class="var-type">' + esc(v.type) + '</span>' + addr + '</div>' +
+      '<div class="var-name">' + esc(v.name) + '</div>' + body + '</div>';
+  }
+
+  function memHtml(frames, prevFrames) {
+    if (!frames.length) return '<p class="mem-empty">O programa ainda não começou a correr.</p>';
+    return frames.map((f, fi) => {
+      const active = fi === frames.length - 1;
+      const vars = f.vars.length
+        ? '<div class="vars">' + f.vars.map(v => varHtml(v, prevValue(prevFrames, fi, f.name, v.name))).join('') + '</div>'
+        : '<p class="mem-empty">sem variáveis</p>';
+      return '<div class="frame' + (active ? ' active' : '') + '"><div class="frame-name"><span>' + esc(f.name) + '()</span>' +
+        (active && frames.length > 1 ? '<span>a correr</span>' : (!active ? '<span>em pausa</span>' : '')) + '</div>' + vars + '</div>';
+    }).join('');
+  }
+
+  // ---------- visualizador ----------
+  // Alguns cursos trocam o painel da direita (Memória + Ecrã) por outro, definido em VIZ_SIDE
+  // (por exemplo, no SQL: Base de dados + Resultado). Sem VIZ_SIDE fica o painel do C.
+  const SIDE = typeof VIZ_SIDE !== 'undefined' ? VIZ_SIDE : null;
+
+  function mountViz(host, ex, num) {
+    const steps = buildSteps(ex.steps, ex.db);
+    const lines = ex.code.split('\n');
+    const hasAddr = ex.steps.some(s => s.d && Object.values(s.d).some(vs => Object.values(vs).some(spec => spec[2])));
+    let cur = 0;
+    host.className = 'viz';
+    host.tabIndex = 0;
+    host.setAttribute('aria-label', 'Exemplo ' + num + ': ' + ex.title + '. Usa as setas esquerda e direita para avançar.');
+    host.innerHTML =
+      '<div class="viz-head">' +
+        '<div class="viz-title"><small>Exemplo ' + num + '</small><h3>' + esc(ex.title) + '</h3></div>' +
+        '<div class="viz-controls">' +
+          '<button class="btn" type="button" data-a="prev">← Anterior</button>' +
+          '<span class="viz-count" aria-live="polite"></span>' +
+          '<button class="btn btn-primary" type="button" data-a="next">Seguinte →</button>' +
+          '<button class="btn btn-ghost" type="button" data-a="reset">Recomeçar</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="viz-bar"><span></span></div>' +
+      '<div class="viz-note"><span class="viz-note-line"></span><div class="viz-note-text"></div></div>' +
+      '<div class="viz-grid">' +
+        '<div class="panel"><div class="panel-label"><span>Código</span><span>▶ = linha a correr</span></div><div class="code">' +
+          lines.map((l, i) => '<div class="ln" data-n="' + (i + 1) + '"><span class="no">' + (i + 1) + '</span><span class="arrow"></span><span class="src">' + (hlLine(l) || ' ') + '</span></div>').join('') +
+        '</div></div>' +
+        '<div class="viz-side">' + (SIDE ? SIDE.panelsHtml() :
+          '<div class="panel"><div class="panel-label"><span>Memória</span>' + (hasAddr ? '<span class="addr-note">endereços de exemplo</span>' : '<span>amarelo = mudou agora</span>') + '</div><div class="mem"></div></div>' +
+          '<div class="panel out"><div class="panel-label"><span>Ecrã</span></div><pre class="term"></pre></div>') +
+        '</div>' +
+      '</div>';
+
+    const btnPrev = $('[data-a="prev"]', host);
+    const btnNext = $('[data-a="next"]', host);
+    const count = $('.viz-count', host);
+    const bar = $('.viz-bar span', host);
+    const noteLine = $('.viz-note-line', host);
+    const noteText = $('.viz-note-text', host);
+    const mem = $('.mem', host);
+    const term = $('.term', host);
+    const codeBox = $('.code', host);
+    const lnEls = $$('.ln', host);
+
+    function render() {
+      const s = steps[cur];
+      const prev = cur > 0 ? steps[cur - 1] : null;
+      lnEls.forEach(el => {
+        const on = Number(el.dataset.n) === s.l;
+        el.classList.toggle('cur', on);
+        $('.arrow', el).textContent = on ? '▶' : '';
+      });
+      noteLine.textContent = 'linha ' + s.l;
+      noteText.innerHTML = s.n;
+      if (SIDE) {
+        SIDE.render(host, s, prev);
+      } else {
+        mem.innerHTML = memHtml(s.frames, prev ? prev.frames : null);
+        term.innerHTML = renderTerm(s.out, cur < steps.length - 1);
+        term.scrollTop = term.scrollHeight;
+      }
+      count.textContent = 'Passo ' + (cur + 1) + ' de ' + steps.length;
+      bar.style.width = ((cur + 1) / steps.length * 100) + '%';
+      btnPrev.disabled = cur === 0;
+      btnNext.disabled = cur === steps.length - 1;
+      btnNext.textContent = cur === steps.length - 1 ? 'Fim' : 'Seguinte →';
+    }
+    function go(i) { cur = Math.max(0, Math.min(steps.length - 1, i)); render(); }
+    host.addEventListener('click', e => {
+      const a = e.target.closest('[data-a]');
+      if (!a) return;
+      if (a.dataset.a === 'prev') go(cur - 1);
+      if (a.dataset.a === 'next') go(cur + 1);
+      if (a.dataset.a === 'reset') go(0);
+    });
+    host.addEventListener('keydown', e => {
+      if (e.target.closest('button') && (e.key === ' ' || e.key === 'Enter')) return;
+      if (e.key === 'ArrowRight') { e.preventDefault(); go(cur + 1); }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); go(cur - 1); }
+      if (e.key === 'Home') { e.preventDefault(); go(0); }
+    });
+    render();
+    void codeBox;
+  }
+
+  // ---------- quiz ----------
+  // Uma opção de resposta. No SQL, as respostas "mono" são resultados e aparecem como tabelinhas.
+  function optionHtml(q, text) {
+    if (q.mono && SIDE && SIDE.outputHtml) return '<span class="opt-txt">' + SIDE.outputHtml(text) + '</span>';
+    return '<span class="opt-txt' + (q.mono ? ' mono' : '') + '">' + esc(text) + '</span>';
+  }
+
+  function mountQuiz(host, lesson) {
+    const qs = lesson.quiz;
+    let answers = qs.map(() => null);
+    function draw() {
+      host.innerHTML = qs.map((q, qi) =>
+        '<div class="q" data-q="' + qi + '">' +
+          '<p class="q-text"><span class="q-num">' + (qi + 1) + '/' + qs.length + '</span><span>' + esc(q.q) + '</span></p>' +
+          (q.code ? '<pre class="snip"><code>' + hlBlock(q.code) + '</code></pre>' : '') +
+          '<div class="opts" role="group" aria-label="Opções">' + q.opts.map((o, oi) =>
+            '<button class="opt" type="button" data-o="' + oi + '"><span class="opt-key">' + 'ABCD'[oi] + '</span>' + optionHtml(q, o) + '</button>'
+          ).join('') + '</div>' +
+          '<div class="q-exp" hidden></div>' +
+        '</div>'
+      ).join('') + '<div class="score" hidden></div>';
+    }
+    function answer(qi, oi) {
+      if (answers[qi] !== null) return;
+      answers[qi] = oi;
+      const q = qs[qi];
+      const box = $('[data-q="' + qi + '"]', host);
+      $$('.opt', box).forEach((b, i) => {
+        b.disabled = true;
+        if (i === q.ok) b.classList.add('right');
+        else if (i === oi) b.classList.add('wrong');
+        else b.classList.add('dim');
+      });
+      const exp = $('.q-exp', box);
+      exp.innerHTML = (oi === q.ok ? '<strong class="ok">Certo.</strong> ' : '<strong class="bad">Não é bem.</strong> A resposta é a ' + 'ABCD'[q.ok] + '. ') + q.exp;
+      exp.hidden = false;
+      if (answers.every(a => a !== null)) finish();
+    }
+    function finish() {
+      const right = answers.filter((a, i) => a === qs[i].ok).length;
+      const prevBest = progress[lesson.id] ? progress[lesson.id].best : 0;
+      progress[lesson.id] = { best: Math.max(prevBest, right), total: qs.length };
+      saveProgress();
+      renderSidebar();
+      const msg = right === qs.length ? 'Acertaste todas. Podes passar à lição seguinte.'
+        : right * 2 >= qs.length ? 'Quase. Relê as explicações das que falhaste e corre outra vez o exemplo.'
+        : 'Volta a correr o exemplo passo a passo, com calma, e tenta outra vez.';
+      const sc = $('.score', host);
+      sc.innerHTML = '<div><span class="score-num">' + right + '/' + qs.length + '</span><p>' + msg + '</p></div><button class="btn" type="button" data-retry>Repetir perguntas</button>';
+      sc.hidden = false;
+    }
+    host.addEventListener('click', e => {
+      if (e.target.closest('[data-retry]')) { answers = qs.map(() => null); draw(); return; }
+      const b = e.target.closest('.opt');
+      if (!b) return;
+      answer(Number(b.closest('[data-q]').dataset.q), Number(b.dataset.o));
+    });
+    draw();
+  }
+
+  // ---------- exercícios ----------
+  // O que o programa da solução mostra. No SQL é o resultado da consulta, como tabela.
+  function runHtml(run) {
+    if (SIDE && SIDE.outputHtml) return '<div><div class="ex-label">Resultado esperado</div>' + SIDE.outputHtml(run) + '</div>';
+    return '<div><div class="ex-label">Exemplo de execução (a amarelo, o que escreves)</div><pre class="term">' + renderTerm(run, false) + '</pre></div>';
+  }
+
+  function exHtml(ex, i) {
+    return '<article class="ex">' +
+      '<h3>Exercício ' + (i + 1) + ': ' + esc(ex.title) + '</h3>' +
+      '<p>' + esc(ex.text) + '</p>' +
+      runHtml(ex.run) +
+      '<details><summary>Ver dica</summary><div class="det-body"><p>' + ex.hint + '</p></div></details>' +
+      '<details><summary>Ver solução</summary><div class="det-body"><pre class="snip"><code>' + hlBlock(ex.solution) + '</code></pre>' +
+        '<div class="sol-tools"><button class="btn" type="button" data-copy="' + i + '">Copiar código</button></div></div></details>' +
+    '</article>';
+  }
+
+  // ---------- vistas ----------
+  const view = $('#view');
+
+  function renderHome() {
+    view.innerHTML = '';
+    view.appendChild($('#tpl-home').content.cloneNode(true));
+    const next = LESSONS.find(l => !isDone(l.id));
+    const actions = $('#hero-actions');
+    if (!Object.keys(progress).length) {
+      actions.innerHTML = '<a class="btn btn-primary" href="#licao-0">Começar pela lição 0</a><a class="btn" href="#cabula">Ver a cábula</a>';
+    } else if (next) {
+      actions.innerHTML = '<a class="btn btn-primary" href="#licao-' + next.id + '">Continuar: lição ' + next.id + '</a><a class="btn" href="#cabula">Ver a cábula</a>';
+    } else {
+      actions.innerHTML = '<a class="btn btn-primary" href="#cabula">Rever a cábula</a><a class="btn" href="#licao-0">Recomeçar as lições</a>';
+    }
+    $('#home-lessons').innerHTML = LESSONS.map(l =>
+      '<a class="card-lesson" href="#licao-' + l.id + '"><span class="nav-num">' + l.id + '</span><strong>' + esc(l.title) + '</strong><span class="s">' + esc(l.short) + '</span>' +
+      (isDone(l.id) ? '<span class="done-tag">Feita · ' + progress[l.id].best + '/' + progress[l.id].total + '</span>' : '') + '</a>'
+    ).join('');
+  }
+
+  function renderCheat() {
+    view.innerHTML = '';
+    view.appendChild($('#tpl-cheat').content.cloneNode(true));
+    highlightStatic(view);
+  }
+
+  function renderLesson(id) {
+    const L = LESSONS[id];
+    const prev = LESSONS[id - 1];
+    const next = LESSONS[id + 1];
+    view.innerHTML =
+      '<section class="lesson-head"><span class="eyebrow">Lição ' + L.id + ' de ' + (LESSONS.length - 1) + '</span><h1>' + esc(L.title) + '</h1><p class="lead">' + esc(L.short.charAt(0).toUpperCase() + L.short.slice(1)) + '.</p></section>' +
+      '<section class="prose">' + L.body + '</section>' +
+      '<aside class="analogy"><span class="analogy-label">Pensa assim</span><p>' + L.analogy + '</p></aside>' +
+      (L.db && SIDE && SIDE.dbHtml ? '<section class="section"><div class="section-head"><h2>A base de dados desta lição</h2><p>Os exemplos, as perguntas e os exercícios usam estas tabelas.</p></div>' + SIDE.dbHtml(L.db) + '</section>' : '') +
+      '<section class="section"><div class="section-head"><h2>Vê a correr</h2><p>Carrega em "Seguinte" (ou usa as setas do teclado) e acompanha a linha amarela, a memória e o ecrã.</p></div>' +
+        L.examples.map((_, i) => '<div data-viz="' + i + '"></div>').join('') + '</section>' +
+      '<section class="section"><div class="section-head"><h2>Erros comuns</h2></div><ul class="mistakes">' + L.mistakes.map(m => '<li>' + m + '</li>').join('') + '</ul></section>' +
+      '<section class="section"><div class="section-head"><h2>Testa-te</h2><p>Responde sem correr o código. Se precisares, faz a tabela de execução no papel.</p></div><div class="quiz" id="quiz"></div></section>' +
+      '<section class="section"><div class="section-head"><h2>Pratica</h2><p>Escreve o programa no computador antes de abrires a solução.</p></div><div class="exs">' + L.exercises.map(exHtml).join('') + '</div></section>' +
+      '<nav class="pager" aria-label="Navegação entre lições">' +
+        (prev ? '<a href="#licao-' + prev.id + '"><small>← Anterior</small><span>' + prev.id + '. ' + esc(prev.title) + '</span></a>' : '<a href="#inicio"><small>← Início</small><span>Como usar</span></a>') +
+        (next ? '<a class="next" href="#licao-' + next.id + '"><small>Seguinte →</small><span>' + next.id + '. ' + esc(next.title) + '</span></a>' : '<a class="next" href="#cabula"><small>Seguinte →</small><span>' + esc(COURSE.cheatTitle) + '</span></a>') +
+      '</nav>';
+    L.examples.forEach((ex, i) => mountViz($('[data-viz="' + i + '"]', view), ex, i + 1));
+    mountQuiz($('#quiz', view), L);
+    highlightStatic(view);
+    view.querySelectorAll('[data-copy]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const code = L.exercises[Number(btn.dataset.copy)].solution;
+        try {
+          await navigator.clipboard.writeText(code);
+          btn.textContent = 'Copiado';
+        } catch (e) {
+          const pre = btn.closest('.det-body').querySelector('pre');
+          const r = document.createRange();
+          r.selectNodeContents(pre);
+          const sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(r);
+          btn.textContent = 'Selecionado: usa Ctrl+C';
+        }
+        setTimeout(() => { btn.textContent = 'Copiar código'; }, 2200);
+      });
+    });
+  }
+
+  // ---------- barra lateral ----------
+  function currentKey() {
+    const h = location.hash.replace('#', '');
+    if (h === 'cabula') return 'cabula';
+    const m = h.match(/^licao-(\d+)$/);
+    if (m && LESSONS[Number(m[1])]) return 'licao-' + m[1];
+    return 'inicio';
+  }
+  function renderSidebar() {
+    const key = currentKey();
+    const done = LESSONS.filter(l => isDone(l.id)).length;
+    $('#progress').innerHTML = '<span>' + done + ' de ' + LESSONS.length + ' lições feitas</span><div class="progress-track"><div class="progress-fill" style="width:' + (done / LESSONS.length * 100) + '%"></div></div>';
+    const cur = k => (key === k ? ' aria-current="page"' : '');
+    $('#nav').innerHTML =
+      '<a href="#inicio"' + cur('inicio') + '><span class="nav-icon">~</span><span>Início</span><span></span></a>' +
+      '<div class="nav-label">Lições</div>' +
+      LESSONS.map(l => '<a href="#licao-' + l.id + '"' + cur('licao-' + l.id) + '><span class="nav-num">' + l.id + '</span><span>' + esc(l.title) + '</span><span class="nav-done">' + (isDone(l.id) ? '✓' : '') + '</span></a>').join('') +
+      '<div class="nav-label">Consulta</div>' +
+      '<a href="#cabula"' + cur('cabula') + '><span class="nav-icon">{ }</span><span>' + esc(COURSE.cheatTitle) + '</span><span></span></a>';
+  }
+
+  // ---------- menu no telemóvel ----------
+  const sidebar = $('#sidebar');
+  const menuBtn = $('#menu-btn');
+  let scrim = null;
+  function setMenu(open) {
+    sidebar.classList.toggle('open', open);
+    menuBtn.setAttribute('aria-expanded', String(open));
+    if (open && !scrim) {
+      scrim = document.createElement('div');
+      scrim.className = 'scrim';
+      scrim.addEventListener('click', () => setMenu(false));
+      document.body.appendChild(scrim);
+    } else if (!open && scrim) {
+      scrim.remove();
+      scrim = null;
+    }
+  }
+  menuBtn.addEventListener('click', () => setMenu(!sidebar.classList.contains('open')));
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') setMenu(false); });
+
+  // ---------- rotas ----------
+  function route() {
+    const key = currentKey();
+    if (key === 'cabula') renderCheat();
+    else if (key.indexOf('licao-') === 0) renderLesson(Number(key.slice(6)));
+    else renderHome();
+    renderSidebar();
+    setMenu(false);
+    window.scrollTo(0, 0);
+  }
+  window.addEventListener('hashchange', route);
+  route();
+})();
+</script>
+</body>
+</html>

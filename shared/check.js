@@ -4,7 +4,7 @@
 //      (gcc, sqlite3, python...) e compara a saída com o que a página mostra;
 //   3. só com --smoke: faz o build e corre o smoke test no browser (shared/smoke.js).
 //      Está desligado por omissão porque abrir o Edge e correr .exe novos dispara a firewall desta máquina.
-// Uso: node shared/check.js [slug...] [--smoke]
+// Uso: node shared/check.js [slug...] [--smoke] [--no-run]   (--no-run: só revê o conteúdo, não corre programas)
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
@@ -42,7 +42,7 @@ function makeReport() {
 // Os passos de um exemplo: o motor aceita-os e cada passo aponta para uma linha de código a sério.
 function reviewSteps(label, ex, report, lineReport) {
   let steps;
-  try { steps = buildSteps(ex.steps); } catch (e) { report.check(label + ': motor', false, e.message); return; }
+  try { steps = buildSteps(ex.steps, ex.db); } catch (e) { report.check(label + ': motor', false, e.message); return; }
   const lines = ex.code.split('\n');
   steps.forEach((s, si) => {
     const text = lines[s.l - 1];
@@ -93,8 +93,9 @@ function runPrograms(course, lessons, report) {
     return;
   }
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'dozero-' + course.config.slug + '-'));
-  const run = (code, stdin, label, item) => {
-    const result = runner.run(code, stdin, tmpDir, item);
+  // item é o exemplo, pergunta ou exercício; lesson é a lição (o runner de SQL vai lá buscar a base de dados).
+  const run = (code, stdin, label, item, lesson) => {
+    const result = runner.run(code, stdin, tmpDir, item, lesson);
     if (result.warnings) report.warn(label + ': avisos de ' + runner.toolName, result.warnings);
     if (result.out !== undefined) result.out = normalize(result.out);
     return result;
@@ -104,9 +105,11 @@ function runPrograms(course, lessons, report) {
   lessons.forEach(L => {
     L.examples.forEach((ex, ei) => {
       const label = `Lição ${L.id} exemplo ${ei + 1} (${ex.title})`;
+      // Um runner pode ter a sua própria verificação dos exemplos (o de SQL compara tabelas e resultados passo a passo).
+      if (runner.checkExample) { runner.checkExample(ex, L, { label, report, nonAscii }); return; }
       const shown = ex.steps.map(s => s.o || '').join('');
       nonAscii(label, shown);
-      const result = run(ex.code, inputsOf(shown).join('\n') + '\n', label, ex);
+      const result = run(ex.code, inputsOf(shown).join('\n') + '\n', label, ex, L);
       if (result.error) { report.check(label, false, result.error); return; }
       const expected = stripInputs(shown);
       report.check(label + ': saída igual à da página', result.out === expected, `página:\n${JSON.stringify(expected)}\nreal:\n${JSON.stringify(result.out)}`);
@@ -115,7 +118,7 @@ function runPrograms(course, lessons, report) {
     L.quiz.forEach((q, qi) => {
       if (!q.check) return;
       const label = `Lição ${L.id} quiz ${qi + 1}`;
-      const result = run(runner.wrapQuiz(q.code, q), '', label, q);
+      const result = run(runner.wrapQuiz(q.code, q, L), '', label, q, L);
       if (result.error) { report.check(label, false, result.error); return; }
       const got = result.out.replace(/\s+$/, '');
       const matching = q.opts.map((o, i) => i).filter(i => q.opts[i].replace(/\s+$/, '') === got);
@@ -126,7 +129,7 @@ function runPrograms(course, lessons, report) {
     L.exercises.forEach((ex, xi) => {
       const label = `Lição ${L.id} exercício ${xi + 1} (${ex.title})`;
       nonAscii(label, ex.run);
-      const result = run(ex.solution, inputsOf(ex.run).join('\n') + '\n', label, ex);
+      const result = run(ex.solution, inputsOf(ex.run).join('\n') + '\n', label, ex, L);
       if (result.error) { report.check(label, false, result.error); return; }
       const expected = stripInputs(ex.run);
       report.check(label + ': saída igual ao exemplo de execução', result.out === expected, `página:\n${JSON.stringify(expected)}\nreal:\n${JSON.stringify(result.out)}`);
@@ -143,7 +146,8 @@ async function checkCourse(slug, options) {
   const lineReport = [];
 
   reviewContent(course, lessons, report, lineReport);
-  runPrograms(course, lessons, report);
+  if (options.run) runPrograms(course, lessons, report);
+  else report.warn('programas NÃO corridos (--no-run): as saídas não foram verificadas');
 
   const outDir = path.join(ROOT, 'out', slug);
   fs.mkdirSync(outDir, { recursive: true });
@@ -170,7 +174,7 @@ async function checkCourse(slug, options) {
   let allOk = true;
   try {
     for (const slug of slugsFromArgs(args)) {
-      const ok = await checkCourse(slug, { smoke: args.includes('--smoke') });
+      const ok = await checkCourse(slug, { smoke: args.includes('--smoke'), run: !args.includes('--no-run') });
       allOk = allOk && ok;
     }
   } catch (e) {

@@ -1,0 +1,70 @@
+  <section class="hero">
+    <span class="eyebrow">Bases de Dados · 1.º ano de Engenharia Informática</span>
+    <h1>Aprender SQL a ver as tabelas a mudar</h1>
+    <p>Onze lições curtas, do primeiro <code>SELECT</code> aos <code>JOIN</code> e à normalização. Em cada exemplo carregas em "Seguinte" e vês que linhas passam o <code>WHERE</code>, como o <code>GROUP BY</code> faz os grupos e como o <code>JOIN</code> junta as tabelas.</p>
+    <div class="hero-actions" id="hero-actions"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>Como usar</h2></div>
+    <ol class="steps">
+      <li><h3>Lê a explicação</h3><p>É curta de propósito. Se já fizeste o C do Zero, vais reconhecer muitas ideias.</p></li>
+      <li><h3>Corre o exemplo</h3><p>Antes de cada "Seguinte", tenta adivinhar que linhas vão passar e que resultado vai sair.</p></li>
+      <li><h3>Responde às perguntas</h3><p>Quase todas são "que resultado dá esta consulta?". Cada resposta traz a explicação.</p></li>
+      <li><h3>Faz os exercícios</h3><p>Escreve a consulta num SQLite antes de veres a solução, e compara com o resultado esperado.</p></li>
+    </ol>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>Lições</h2><p>Segue a ordem: cada lição usa o que veio antes.</p></div>
+    <div class="grid-lessons" id="home-lessons"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>Para o teste: a ordem em que o SQL trabalha</h2>
+      <p>Escreve-se por uma ordem, mas o SGBD executa por outra. Saber isto resolve metade das dúvidas.</p>
+    </div>
+    <div class="two">
+      <div class="prose">
+        <p>Uma consulta escreve-se começando pelo <code>SELECT</code>, mas o SGBD começa pelo <code>FROM</code>: primeiro tem de saber de que tabela vêm as linhas. Depois filtra, agrupa, e só no fim escolhe as colunas e ordena.</p>
+        <p>É por isso que o <code>WHERE</code> não pode usar <code>COUNT(*)</code> (os grupos ainda não existem) e que o <code>ORDER BY</code> já pode usar os nomes dados com <code>AS</code> (o SELECT já correu).</p>
+        <p>Nas perguntas "que resultado dá?", faz no papel o que o visualizador faz: escreve a tabela, risca as linhas que o WHERE tira, junta os grupos, e só no fim escolhe as colunas.</p>
+      </div>
+      <div class="t-wrap">
+        <table class="t trace">
+          <thead><tr><th>Ordem</th><th>Parte</th><th>O que faz</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>FROM / JOIN</td><td>vai buscar as tabelas e junta-as</td></tr>
+            <tr><td>2</td><td>WHERE</td><td>tira as linhas que não interessam</td></tr>
+            <tr><td>3</td><td>GROUP BY</td><td>junta as linhas em grupos</td></tr>
+            <tr><td>4</td><td>HAVING</td><td>tira os grupos que não interessam</td></tr>
+            <tr class="hl"><td>5</td><td>SELECT</td><td>escolhe e calcula as colunas</td></tr>
+            <tr><td>6</td><td>DISTINCT</td><td>tira as linhas repetidas</td></tr>
+            <tr><td>7</td><td>ORDER BY</td><td>ordena</td></tr>
+            <tr><td>8</td><td>LIMIT</td><td>fica só com as primeiras</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="two">
+    <div class="box">
+      <h2>Onde praticar</h2>
+      <ul>
+        <li><strong>No browser, sem instalar nada:</strong> <a href="https://sqliteonline.com">SQLite Online</a> ou <a href="https://www.db-fiddle.com">DB Fiddle</a> (escolhe SQLite). Abre "Ver o SQL que cria estas tabelas" na lição, copia, e depois escreve as tuas consultas.</li>
+        <li><strong>No computador:</strong> o <a href="https://sqlitebrowser.org">DB Browser for SQLite</a> mostra as tabelas em grelha, como aqui.</li>
+        <li>Este curso usa o <strong>SQLite</strong>. Na cadeira podem usar MySQL, PostgreSQL ou Oracle: o SQL das lições é praticamente igual, mudam alguns tipos e pormenores (a cábula indica os principais).</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h2>Para quem está a explicar</h2>
+      <ul>
+        <li>Pede-lhe que diga que linhas vão passar <em>antes</em> de carregar em "Seguinte".</li>
+        <li>Desenhem as tabelas no papel. Nos JOIN, liguem com setas cada linha ao seu par.</li>
+        <li>Quando uma consulta dá um resultado estranho, tirem partes (o ORDER BY, o GROUP BY) e vejam o resultado a cada passo.</li>
+        <li>Leiam juntos as mensagens de erro: dizem quase sempre qual é a coluna ou a tabela com problema.</li>
+      </ul>
+    </div>
+  </section>

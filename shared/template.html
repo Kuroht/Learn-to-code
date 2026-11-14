@@ -554,8 +554,12 @@ details[open] summary { border-bottom: 1px solid var(--line); }
   }
 
   // ---------- visualizador ----------
+  // Alguns cursos trocam o painel da direita (Memória + Ecrã) por outro, definido em VIZ_SIDE
+  // (por exemplo, no SQL: Base de dados + Resultado). Sem VIZ_SIDE fica o painel do C.
+  const SIDE = typeof VIZ_SIDE !== 'undefined' ? VIZ_SIDE : null;
+
   function mountViz(host, ex, num) {
-    const steps = buildSteps(ex.steps);
+    const steps = buildSteps(ex.steps, ex.db);
     const lines = ex.code.split('\n');
     const hasAddr = ex.steps.some(s => s.d && Object.values(s.d).some(vs => Object.values(vs).some(spec => spec[2])));
     let cur = 0;
@@ -578,9 +582,9 @@ details[open] summary { border-bottom: 1px solid var(--line); }
         '<div class="panel"><div class="panel-label"><span>Código</span><span>▶ = linha a correr</span></div><div class="code">' +
           lines.map((l, i) => '<div class="ln" data-n="' + (i + 1) + '"><span class="no">' + (i + 1) + '</span><span class="arrow"></span><span class="src">' + (hlLine(l) || ' ') + '</span></div>').join('') +
         '</div></div>' +
-        '<div class="viz-side">' +
+        '<div class="viz-side">' + (SIDE ? SIDE.panelsHtml() :
           '<div class="panel"><div class="panel-label"><span>Memória</span>' + (hasAddr ? '<span class="addr-note">endereços de exemplo</span>' : '<span>amarelo = mudou agora</span>') + '</div><div class="mem"></div></div>' +
-          '<div class="panel out"><div class="panel-label"><span>Ecrã</span></div><pre class="term"></pre></div>' +
+          '<div class="panel out"><div class="panel-label"><span>Ecrã</span></div><pre class="term"></pre></div>') +
         '</div>' +
       '</div>';
 
@@ -605,9 +609,13 @@ details[open] summary { border-bottom: 1px solid var(--line); }
       });
       noteLine.textContent = 'linha ' + s.l;
       noteText.innerHTML = s.n;
-      mem.innerHTML = memHtml(s.frames, prev ? prev.frames : null);
-      term.innerHTML = renderTerm(s.out, cur < steps.length - 1);
-      term.scrollTop = term.scrollHeight;
+      if (SIDE) {
+        SIDE.render(host, s, prev);
+      } else {
+        mem.innerHTML = memHtml(s.frames, prev ? prev.frames : null);
+        term.innerHTML = renderTerm(s.out, cur < steps.length - 1);
+        term.scrollTop = term.scrollHeight;
+      }
       count.textContent = 'Passo ' + (cur + 1) + ' de ' + steps.length;
       bar.style.width = ((cur + 1) / steps.length * 100) + '%';
       btnPrev.disabled = cur === 0;
@@ -633,6 +641,12 @@ details[open] summary { border-bottom: 1px solid var(--line); }
   }
 
   // ---------- quiz ----------
+  // Uma opção de resposta. No SQL, as respostas "mono" são resultados e aparecem como tabelinhas.
+  function optionHtml(q, text) {
+    if (q.mono && SIDE && SIDE.outputHtml) return '<span class="opt-txt">' + SIDE.outputHtml(text) + '</span>';
+    return '<span class="opt-txt' + (q.mono ? ' mono' : '') + '">' + esc(text) + '</span>';
+  }
+
   function mountQuiz(host, lesson) {
     const qs = lesson.quiz;
     let answers = qs.map(() => null);
@@ -642,7 +656,7 @@ details[open] summary { border-bottom: 1px solid var(--line); }
           '<p class="q-text"><span class="q-num">' + (qi + 1) + '/' + qs.length + '</span><span>' + esc(q.q) + '</span></p>' +
           (q.code ? '<pre class="snip"><code>' + hlBlock(q.code) + '</code></pre>' : '') +
           '<div class="opts" role="group" aria-label="Opções">' + q.opts.map((o, oi) =>
-            '<button class="opt" type="button" data-o="' + oi + '"><span class="opt-key">' + 'ABCD'[oi] + '</span><span class="opt-txt' + (q.mono ? ' mono' : '') + '">' + esc(o) + '</span></button>'
+            '<button class="opt" type="button" data-o="' + oi + '"><span class="opt-key">' + 'ABCD'[oi] + '</span>' + optionHtml(q, o) + '</button>'
           ).join('') + '</div>' +
           '<div class="q-exp" hidden></div>' +
         '</div>'
@@ -687,11 +701,17 @@ details[open] summary { border-bottom: 1px solid var(--line); }
   }
 
   // ---------- exercícios ----------
+  // O que o programa da solução mostra. No SQL é o resultado da consulta, como tabela.
+  function runHtml(run) {
+    if (SIDE && SIDE.outputHtml) return '<div><div class="ex-label">Resultado esperado</div>' + SIDE.outputHtml(run) + '</div>';
+    return '<div><div class="ex-label">Exemplo de execução (a amarelo, o que escreves)</div><pre class="term">' + renderTerm(run, false) + '</pre></div>';
+  }
+
   function exHtml(ex, i) {
     return '<article class="ex">' +
       '<h3>Exercício ' + (i + 1) + ': ' + esc(ex.title) + '</h3>' +
       '<p>' + esc(ex.text) + '</p>' +
-      '<div><div class="ex-label">Exemplo de execução (a amarelo, o que escreves)</div><pre class="term">' + renderTerm(ex.run, false) + '</pre></div>' +
+      runHtml(ex.run) +
       '<details><summary>Ver dica</summary><div class="det-body"><p>' + ex.hint + '</p></div></details>' +
       '<details><summary>Ver solução</summary><div class="det-body"><pre class="snip"><code>' + hlBlock(ex.solution) + '</code></pre>' +
         '<div class="sol-tools"><button class="btn" type="button" data-copy="' + i + '">Copiar código</button></div></div></details>' +
@@ -733,6 +753,7 @@ details[open] summary { border-bottom: 1px solid var(--line); }
       '<section class="lesson-head"><span class="eyebrow">Lição ' + L.id + ' de ' + (LESSONS.length - 1) + '</span><h1>' + esc(L.title) + '</h1><p class="lead">' + esc(L.short.charAt(0).toUpperCase() + L.short.slice(1)) + '.</p></section>' +
       '<section class="prose">' + L.body + '</section>' +
       '<aside class="analogy"><span class="analogy-label">Pensa assim</span><p>' + L.analogy + '</p></aside>' +
+      (L.db && SIDE && SIDE.dbHtml ? '<section class="section"><div class="section-head"><h2>A base de dados desta lição</h2><p>Os exemplos, as perguntas e os exercícios usam estas tabelas.</p></div>' + SIDE.dbHtml(L.db) + '</section>' : '') +
       '<section class="section"><div class="section-head"><h2>Vê a correr</h2><p>Carrega em "Seguinte" (ou usa as setas do teclado) e acompanha a linha amarela, a memória e o ecrã.</p></div>' +
         L.examples.map((_, i) => '<div data-viz="' + i + '"></div>').join('') + '</section>' +
       '<section class="section"><div class="section-head"><h2>Erros comuns</h2></div><ul class="mistakes">' + L.mistakes.map(m => '<li>' + m + '</li>').join('') + '</ul></section>' +

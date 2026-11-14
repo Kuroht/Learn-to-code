@@ -1,0 +1,152 @@
+  <section class="lesson-head">
+    <span class="eyebrow">Resumo</span>
+    <h1>Cábula de SQL</h1>
+    <p class="lead">Tudo o que as lições ensinam, numa página. Boa para ter aberta enquanto fazes exercícios.</p>
+  </section>
+  <div class="cheat">
+    <div class="box">
+      <h3>Uma consulta completa</h3>
+<pre class="snip"><code class="sql">SELECT curso, COUNT(*) AS n      -- 5. colunas
+FROM alunos                      -- 1. tabela
+WHERE nota &gt;= 10                 -- 2. linhas
+GROUP BY curso                   -- 3. grupos
+HAVING COUNT(*) &gt;= 2             -- 4. grupos que ficam
+ORDER BY n DESC                  -- 6. ordem
+LIMIT 3;                         -- 7. quantas</code></pre>
+      <p>Os números dizem a ordem em que o SGBD trabalha.</p>
+    </div>
+
+    <div class="box">
+      <h3>Criar e mudar dados</h3>
+<pre class="snip"><code class="sql">CREATE TABLE alunos (
+    numero INTEGER PRIMARY KEY,
+    nome TEXT NOT NULL,
+    curso TEXT REFERENCES cursos(sigla),
+    nota INTEGER
+);
+INSERT INTO alunos VALUES (101, 'Ana', 'LEI', 17);
+INSERT INTO alunos (numero, nome) VALUES (102, 'Rui');
+UPDATE alunos SET nota = nota + 1 WHERE numero = 102;
+DELETE FROM alunos WHERE nota &lt; 10;
+DROP TABLE alunos;               -- apaga a própria tabela</code></pre>
+      <p><strong>UPDATE e DELETE sem WHERE afetam todas as linhas.</strong> Testa o WHERE primeiro com um SELECT.</p>
+    </div>
+
+    <div class="box">
+      <h3>Condições (WHERE e HAVING)</h3>
+      <div class="t-wrap"><table class="t">
+        <tbody>
+          <tr><td><code>= &lt;&gt; != &lt; &gt; &lt;= &gt;=</code></td><td>comparar (igual é um só <code>=</code>)</td></tr>
+          <tr><td><code>AND OR NOT</code></td><td>e, ou, não (usa parênteses)</td></tr>
+          <tr><td><code>BETWEEN 10 AND 14</code></td><td>inclui o 10 e o 14</td></tr>
+          <tr><td><code>IN ('LEI', 'LEM')</code></td><td>igual a um destes</td></tr>
+          <tr><td><code>LIKE 'M%'</code></td><td><code>%</code> qualquer texto, <code>_</code> um carácter</td></tr>
+          <tr><td><code>IS NULL</code>, <code>IS NOT NULL</code></td><td>nunca <code>= NULL</code></td></tr>
+        </tbody>
+      </table></div>
+      <p>Texto entre plicas: <code>'LEI'</code>. As aspas são para nomes de colunas.</p>
+    </div>
+
+    <div class="box">
+      <h3>Funções de agregação</h3>
+      <div class="t-wrap"><table class="t">
+        <tbody>
+          <tr><td><code>COUNT(*)</code></td><td>número de linhas</td></tr>
+          <tr><td><code>COUNT(col)</code></td><td>linhas com valor (sem os NULL)</td></tr>
+          <tr><td><code>COUNT(DISTINCT col)</code></td><td>valores diferentes</td></tr>
+          <tr><td><code>SUM AVG MIN MAX</code></td><td>soma, média, menor, maior (ignoram NULL)</td></tr>
+          <tr><td><code>ROUND(x, 2)</code></td><td>arredonda a 2 casas</td></tr>
+          <tr><td><code>COALESCE(x, 0)</code></td><td>x, ou 0 se x for NULL</td></tr>
+        </tbody>
+      </table></div>
+      <p>Inteiro / inteiro dá inteiro, como em C: <code>7 / 2</code> é 3. Usa <code>AVG</code> ou <code>7 / 2.0</code>.</p>
+    </div>
+
+    <div class="box">
+      <h3>JOIN</h3>
+<pre class="snip"><code class="sql">-- só as linhas com par
+SELECT a.nome, c.nome AS curso
+FROM alunos a
+JOIN cursos c ON a.curso = c.sigla;
+
+-- todas as da esquerda; sem par fica NULL
+SELECT a.nome
+FROM alunos a
+LEFT JOIN inscricoes i ON i.aluno = a.numero
+WHERE i.aluno IS NULL;           -- "quem não tem nenhuma"</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Chaves e relações</h3>
+      <div class="t-wrap"><table class="t">
+        <tbody>
+          <tr><td>Chave primária (PK)</td><td>identifica a linha; única e não NULL</td></tr>
+          <tr><td>Chave estrangeira (FK)</td><td>guarda a PK de uma linha de outra tabela</td></tr>
+          <tr><td>1:N</td><td>FK no lado N (<code>alunos.curso</code>)</td></tr>
+          <tr><td>N:M</td><td>tabela de ligação com as duas FK; PK = o par</td></tr>
+          <tr><td>SQLite</td><td><code>PRAGMA foreign_keys = ON;</code> para as FK serem verificadas</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="box">
+      <h3>Formas normais</h3>
+      <div class="t-wrap"><table class="t">
+        <tbody>
+          <tr><td>1FN</td><td>um valor por célula (nada de listas)</td></tr>
+          <tr><td>2FN</td><td>o que não é chave depende da chave <strong>toda</strong></td></tr>
+          <tr><td>3FN</td><td>o que não é chave não depende de outra coluna que não é chave</td></tr>
+        </tbody>
+      </table></div>
+      <p>Quando falha: tira essas colunas para uma tabela nova e deixa uma FK.</p>
+    </div>
+
+    <div class="box">
+      <h3>Mensagens de erro do SQLite</h3>
+      <div class="t-wrap"><table class="t">
+        <thead><tr><th>Mensagem</th><th>Costuma ser</th></tr></thead>
+        <tbody>
+          <tr><td><code>no such table: aluno</code></td><td>nome da tabela mal escrito, ou ainda não criada</td></tr>
+          <tr><td><code>no such column: idade</code></td><td>coluna mal escrita, ou texto sem plicas (<code>= LEI</code>)</td></tr>
+          <tr><td><code>no such column: "Ana" - should this be a string literal in single-quotes?</code></td><td>texto entre aspas em vez de plicas</td></tr>
+          <tr><td><code>near "SELEC": syntax error</code></td><td>palavra mal escrita, vírgula a mais ou a menos perto daí</td></tr>
+          <tr><td><code>incomplete input</code></td><td>a instrução acabou a meio (falta a condição, um parêntese...)</td></tr>
+          <tr><td><code>ambiguous column name: nome</code></td><td>num JOIN, as duas tabelas têm essa coluna: usa <code>a.nome</code></td></tr>
+          <tr><td><code>misuse of aggregate function COUNT()</code></td><td>função de agregação no WHERE: vai para o HAVING</td></tr>
+          <tr><td><code>HAVING clause on a non-aggregate query</code></td><td>HAVING sem GROUP BY nem funções: usa WHERE</td></tr>
+          <tr><td><code>UNIQUE constraint failed: alunos.numero</code></td><td>chave primária repetida</td></tr>
+          <tr><td><code>NOT NULL constraint failed: alunos.nome</code></td><td>faltou um valor obrigatório</td></tr>
+          <tr><td><code>FOREIGN KEY constraint failed</code></td><td>a FK aponta para uma linha que não existe, ou apagaste uma linha que ainda é apontada</td></tr>
+          <tr><td><code>table alunos has 4 columns but 3 values were supplied</code></td><td>INSERT com valores a menos: indica as colunas</td></tr>
+          <tr><td><code>table alunos already exists</code></td><td>CREATE TABLE repetido</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="box">
+      <h3>SQLite e os outros SGBD</h3>
+      <div class="t-wrap"><table class="t">
+        <thead><tr><th>SQLite</th><th>MySQL / PostgreSQL / Oracle</th></tr></thead>
+        <tbody>
+          <tr><td><code>INTEGER</code>, <code>REAL</code>, <code>TEXT</code></td><td><code>INT</code>, <code>DECIMAL(4,1)</code>, <code>VARCHAR(50)</code></td></tr>
+          <tr><td>FK só com <code>PRAGMA foreign_keys = ON</code></td><td>FK sempre verificadas</td></tr>
+          <tr><td>aceita <code>SELECT nome, COUNT(*)</code> sem GROUP BY</td><td>dá erro (e com razão)</td></tr>
+          <tr><td><code>LIMIT 3</code></td><td>Oracle: <code>FETCH FIRST 3 ROWS ONLY</code></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="box">
+      <h3>Antes de entregar</h3>
+      <ul class="checklist">
+        <li>O texto está entre plicas e as colunas sem nada.</li>
+        <li>Os UPDATE e DELETE têm WHERE (e testaste-o com um SELECT).</li>
+        <li>Os NULL são testados com <code>IS NULL</code>.</li>
+        <li>Com GROUP BY, o SELECT só tem colunas do grupo e funções.</li>
+        <li>As condições sobre funções estão no HAVING, não no WHERE.</li>
+        <li>Num JOIN, há um <code>ON</code> certo e as colunas repetidas levam a alcunha da tabela.</li>
+        <li>Para "quem não tem", usaste LEFT JOIN e IS NULL.</li>
+        <li>Se a ordem interessa, há ORDER BY.</li>
+      </ul>
+    </div>
+  </div>

@@ -60,7 +60,20 @@ Exercise `run` uses the same `⟦...⟧` convention. All of `o` joined together 
   visualization (tables for SQL, references for Python/C#, ownership for Rust), add it to the shared template/engine
   in a way that doesn't change existing courses, then re-run `npm run check` for **every** course.
 - Each course: `course.js`, `lessons*.js`, `home.html`, `cheat.html`, `syntax.js`, `runner.js`.
-- `runner.js` exports `toolName`, `installHint`, `isAvailable()`, `wrapQuiz(code)` and `run(code, stdin, tmpDir)` → `{ out }` or `{ error }` (+ optional `warnings`).
+- `runner.js` exports `toolName`, `installHint`, `isAvailable()`, `wrapQuiz(code, quiz, lesson)` and `run(code, stdin, tmpDir, item, lesson)` → `{ out }` or `{ error }` (+ optional `warnings`).
+  Optional `checkExample(example, lesson, { label, report })` replaces the default "compare `o` with stdout" check for examples.
+- `course.js → viz: 'tables'` swaps the Memory + Screen panel for Database + Result (`shared/viz-tables.js/.css`).
+
+## SQL course specifics (`courses/sql`)
+
+- Runs inside Node with `node:sqlite` (no executables). Foreign keys are **off** unless the script says `PRAGMA foreign_keys = ON`, like the real `sqlite3`.
+- A lesson, example, quiz or exercise can have `db: { table: { cols: [[name, 'TYPE ...']], key?, rows } }`: the starting database
+  (shown as grids, and turned into SQL for the check). Quizzes and exercises use the lesson's `db` unless they set their own (`db: false` = empty).
+- Output format (quiz options, exercise `run`): like `sqlite3` with `.headers on`: `col1|col2` then one line per row, `NULL` for null,
+  REAL always with a decimal (`14.0`), result sets separated by a blank line, errors as `Erro: <SQLite message>`. Use the `res()` / `out()` helpers.
+- Example steps use `create`, `ins`, `upd`, `del`, `tm` (row marks), `g` (working grid) and `err` (see the top of `lessons1.js`).
+  The check runs each statement in SQLite and compares, at the statement's last step, the tables and (for queries) the final grid.
+- Write queries in examples with one clause per line, and step through them in execution order (FROM, WHERE, GROUP BY, HAVING, SELECT, ORDER BY, LIMIT).
 - `course.js → storageKey` is where student progress lives in localStorage: never change it once a course is published.
 - Design: keep the layout, light/dark, mobile, keyboard arrows and the highlighted current line. Each course only
   changes its accent colour (`course.js → theme`: `light`/`dark` × `accent`/`accentSoft`). Check contrast in both themes.

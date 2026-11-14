@@ -7,7 +7,7 @@ Each course is a single, self-contained HTML page: short lessons, a step-by-step
 | Course | Folder | Status |
 |---|---|---|
 | C do Zero | `courses/c` | done |
-| SQL do Zero | `courses/sql` | next |
+| SQL do Zero | `courses/sql` | done, in review |
 | Python, C#, Rust, TypeScript | | planned, in that order |
 
 ## Commands
@@ -18,6 +18,7 @@ npm run build            # builds every course into docs/<slug>/index.html, plus
 npm run build -- c       # builds one course
 npm run check -- c       # check one course: content + every program run with the real toolchain
 npm run check -- c --smoke        # same, plus build + browser smoke test (opt-in: opens Edge/Chrome)
+npm run check -- c --no-run       # content only: runs no programs
 npm run smoke -- c       # only the browser smoke test
 ```
 
@@ -34,7 +35,7 @@ it highlights, for manual review) and `shots/` (screenshots in light, dark and m
 | Course | Needs |
 |---|---|
 | C | `gcc` |
-| SQL | `sqlite3` |
+| SQL | nothing extra: uses `node:sqlite` (Node 22.13+) |
 | Python | `python3` (or `python`) |
 | C# | `dotnet` |
 | Rust | `rustc` / `cargo` |

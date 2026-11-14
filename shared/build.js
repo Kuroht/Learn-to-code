@@ -32,14 +32,18 @@ function buildCourse(slug) {
   const { config } = course;
   const engine = read('engine.js');
   // O objeto COURSE dá ao código da página o que muda de curso para curso.
-  const courseJs = 'const COURSE = ' + JSON.stringify({ slug, title: config.title, storageKey: config.storageKey, cheatTitle: config.cheatTitle }) + ';\n' + course.syntaxSource;
+  // Um curso com viz: 'tables' (SQL) leva também o visualizador de tabelas e o seu CSS.
+  const vizJs = config.viz ? '\n' + read('viz-' + config.viz + '.js') : '';
+  const vizCss = config.viz ? '<style>\n' + read('viz-' + config.viz + '.css') + '</style>\n' : '';
+  const courseJs = 'const COURSE = ' + JSON.stringify({ slug, title: config.title, storageKey: config.storageKey, cheatTitle: config.cheatTitle }) + ';\n' + course.syntaxSource + vizJs;
   const inlined = engine + courseJs + course.lessonsSource;
   if (inlined.includes('</script')) throw new Error(slug + ': o texto "</script" partia a página');
 
   let page = read('template.html');
   page = fill(page, '{{TITLE}}', esc(config.title));
   page = fill(page, '{{MARK}}', esc(config.mark));
-  page = fill(page, '<!--__THEME__-->\n', themeCss(config.theme) ? themeCss(config.theme) + '\n' : '');
+  const theme = themeCss(config.theme);
+  page = fill(page, '<!--__THEME__-->\n', vizCss + (theme ? theme + '\n' : ''));
   page = fill(page, '<!--__HOME__-->\n', course.homeHtml);
   page = fill(page, '<!--__CHEAT__-->\n', course.cheatHtml);
   page = fill(page, '/*__COURSE__*/', courseJs);

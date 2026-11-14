@@ -1,0 +1,41 @@
+/* ---------- visualizador de tabelas (SQL) ---------- */
+/* Usa as variáveis do template, por isso funciona nos temas claro e escuro. */
+.dbt { display: grid; gap: 4px; }
+.dbt + .dbt { margin-top: 4px; }
+.dbt-name { font-family: var(--font-mono); font-size: .8rem; font-weight: 600; color: var(--accent); display: flex; justify-content: space-between; gap: 8px; }
+.dbt-name span { color: var(--muted); font-weight: 400; }
+.dbt.is-new table.grid { box-shadow: 0 0 0 2px var(--accent); }
+table.grid { border-collapse: separate; border-spacing: 0; font-family: var(--font-mono); font-size: .82rem; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; min-width: 100%; }
+.grid th, .grid td { padding: 3px 9px; text-align: left; border-bottom: 1px solid var(--line); white-space: nowrap; vertical-align: top; }
+.grid tbody tr:last-child td { border-bottom: 0; }
+.grid th { background: var(--code-bg); font-weight: 600; font-size: .78rem; }
+.grid .col-name { color: var(--ink); }
+.grid .col-type { display: block; font-weight: 400; font-size: .66rem; color: var(--t-ty); }
+.tag { display: inline-block; margin-left: 5px; font-size: .62rem; font-weight: 700; border-radius: 4px; padding: 0 4px; vertical-align: 1px; }
+.tag-pk { background: var(--mark); color: var(--ink); box-shadow: inset 0 0 0 1px var(--mark-edge); }
+.tag-fk { background: var(--accent-soft); color: var(--accent); }
+.grid td .null { color: var(--muted); font-style: italic; }
+.grid td.null { color: var(--muted); font-style: italic; }
+.grid td.empty { color: var(--muted); font-style: italic; font-family: var(--font-body); }
+.grid td .chg { background: var(--mark); box-shadow: 0 0 0 2px var(--mark-edge); border-radius: 3px; padding: 0 2px; }
+.grid tr.row-new td { background: var(--ok-soft); }
+.grid tr.row-hit td { background: var(--mark); }
+.grid tr.row-keep td { background: var(--ok-soft); }
+.grid tr.row-keep td:first-child { box-shadow: inset 3px 0 0 var(--ok); }
+.grid tr.row-drop td { background: var(--bad-soft); color: var(--muted); text-decoration: line-through; text-decoration-color: var(--bad); }
+.grid tr.row-drop td:first-child { box-shadow: inset 3px 0 0 var(--bad); }
+.grid tr.grp-b td { background: var(--accent-soft); }
+.grid tr.grp-start td { border-top: 2px solid var(--accent); }
+.grid-label { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; margin-bottom: 6px; font-size: .8rem; color: var(--muted); }
+.grid-label code { white-space: normal; }
+.sql-err { display: grid; gap: 4px; border: 1px solid var(--bad); background: var(--bad-soft); border-radius: 8px; padding: 8px 10px; }
+.sql-err strong { color: var(--bad); font-size: .8rem; text-transform: uppercase; letter-spacing: .06em; }
+.sql-err code { background: none !important; padding: 0 !important; white-space: normal !important; overflow-wrap: anywhere; }
+.out-grids { display: grid; gap: 8px; justify-items: start; }
+.out-grids .t-wrap, .out-grids table { max-width: 100%; }
+table.mini-grid { min-width: 0; }
+.ex .out-grids { padding: 2px 0; }
+.opt .out-grids { overflow-x: auto; max-width: 100%; }
+.db-tables { display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-start; }
+.db-tables .dbt { max-width: 100%; }
+.db-tables + details { margin-top: 4px; }
