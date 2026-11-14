@@ -98,6 +98,7 @@ LESSONS.push({
 <li>Uma app React é feita de <strong>componentes</strong>. Um componente é uma <strong>função</strong> com nome em maiúscula que devolve o que aparece no ecrã.</li>
 <li>O que a função devolve escreve-se em <strong>JSX</strong>: parece HTML, mas está dentro do JavaScript (num ficheiro <code>.tsx</code>). O JSX devolvido tem de ter um só elemento à volta de tudo.</li>
 <li>Cria-se um projeto com <code>npm create vite@latest</code> (escolhe React e TypeScript) e corre-se com <code>npm run dev</code>. O componente principal está em <code>src/App.tsx</code>.</li>
+<li>O projeto também traz um <code>src/main.tsx</code>, já feito: procura o <code>&lt;div id="root"&gt;</code> do <code>index.html</code> e desenha lá a App, dentro de um <code>&lt;StrictMode&gt;</code> (lição 9). Não precisas de lhe mexer.</li>
 <li>Neste curso vais construir uma app de tarefas, lição a lição. O painel "Componentes" mostra a árvore de componentes, como as React DevTools do browser.</li>
 </ul>`,
   analogy: 'Com o DOM, eras um pintor que retocava o quadro a cada mudança. Com o React, entregas a descrição do quadro ("um título, uma lista com estas tarefas") e um assistente compara-a com o que está pintado e retoca só o que mudou.',

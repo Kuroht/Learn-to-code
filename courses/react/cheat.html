@@ -21,6 +21,17 @@
     </div>
 
     <div class="box">
+      <h3>main.tsx (já vem feito no Vite)</h3>
+<pre class="snip"><code class="tsx">createRoot(document.getElementById("root")!).render(
+  &lt;StrictMode&gt;
+    &lt;App /&gt;
+  &lt;/StrictMode&gt;
+);
+// StrictMode, só no npm run dev: corre componentes e
+// efeitos duas vezes de propósito (console.log a dobrar)</code></pre>
+    </div>
+
+    <div class="box">
       <h3>Props</h3>
 <pre class="snip"><code class="tsx">interface TarefaProps {
   texto: string;

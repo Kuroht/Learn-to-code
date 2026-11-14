@@ -166,6 +166,14 @@ export default function App() {
   );
 }`;
 
+// A mesma app da lição 9, mas o "servidor" falha: para ver o estado de erro a acontecer.
+const APP_9_ERRO = APP_9.replace(/function carregarTarefas[\s\S]*?\n}\n/, J`
+function carregarTarefas(): Promise<Tarefa[]> {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => reject(new Error("sem rede")), 500);
+  });
+}` + '\n');
+
 // ---------------------------------------------------------------- 8
 LESSONS.push({
   id: 8,
@@ -316,6 +324,7 @@ LESSONS.push({
 <li>A lista no fim são as <strong>dependências</strong>: o efeito corre depois do primeiro render e outra vez sempre que uma delas mudar. Com <code>[]</code>, corre uma só vez, quando o componente aparece.</li>
 <li>Pedir dados demora (uma Promise, curso de JavaScript, lição 8). Enquanto se espera, a app tem de mostrar alguma coisa. Há sempre três casos além do normal: <strong>a carregar</strong>, <strong>erro</strong> e <strong>vazio</strong>.</li>
 <li>O efeito pode devolver uma função de <strong>limpeza</strong>, que o React corre quando o componente desaparece (por exemplo, <code>return () =&gt; clearInterval(id)</code>).</li>
+<li>No <code>npm run dev</code>, o <code>&lt;StrictMode&gt;</code> do <code>main.tsx</code> corre de propósito cada componente e cada efeito duas vezes (o efeito corre, é limpo e volta a correr), para apanhar efeitos sem limpeza. Se um <code>console.log</code> aparece duas vezes, é isso, não é um erro teu. Na versão final (<code>npm run build</code>) corre uma vez só. As apps deste curso correm sem StrictMode.</li>
 <li>Numa app a sério usavas <code>fetch("/api/tarefas")</code>; aqui, <code>carregarTarefas</code> faz de conta, com um <code>setTimeout</code> de meio segundo.</li>
 </ul>`,
   analogy: 'O render é pôr a mesa; o efeito é o que fazes depois de a mesa estar posta, como telefonar a encomendar a comida. Enquanto a comida não chega, a mesa diz "a carregar"; se a pizzaria estiver fechada, diz porquê.',
@@ -329,7 +338,17 @@ LESSONS.push({
       { l: linhaDe(APP_9, 'if (aCarregar)'), rr: ['App'], sel: '.a-carregar', chk: [['.a-carregar', 'text', 'A carregar...'], ['li', 'count', 0]], n: H`Primeiro render: ainda a carregar, por isso a App devolve logo o parágrafo "A carregar...". Um <code>return</code> mais cedo, como num <code>if</code> de C.` },
       { l: linhaDe(APP_9, 'carregarTarefas()'), n: H`Depois de esse primeiro render aparecer no ecrã, o React corre o efeito: o pedido começa. Com <code>[]</code>, isto só acontece uma vez.` },
       { l: linhaDe(APP_9, '.finally('), wait: 600, rr: ['App'], sel: 'li', chk: [['li', 'count', 2], ['.a-carregar', 'count', 0]], n: H`Meio segundo depois, a Promise cumpre-se: <code>setTarefas</code> recebe a lista e o <code>finally</code> põe <code>aCarregar</code> a false. A App renderiza com os dados (vê o estado no painel).` },
-      { l: linhaDe(APP_9, 'tarefas.length === 0'), wait: 600, n: H`Se o servidor devolvesse uma lista vazia, aparecia "Ainda não há tarefas." em vez de uma lista sem nada. E se a Promise falhasse, o <code>catch</code> guardava a mensagem de erro.` },
+      { l: linhaDe(APP_9, 'tarefas.length === 0'), wait: 600, n: H`Se o servidor devolvesse uma lista vazia, aparecia "Ainda não há tarefas." em vez de uma lista sem nada. E se a Promise falhasse? É o exemplo seguinte.` },
+    ],
+  }, {
+    title: 'Quando o servidor falha',
+    code: APP_9_ERRO,
+    prev: APP_9,
+    steps: [
+      { l: linhaDe(APP_9_ERRO, 'reject(new Error'), n: H`A mesma app, mas agora o "servidor" falha passado meio segundo, como se não houvesse rede: a Promise é rejeitada com <code>reject</code> em vez de cumprida com <code>resolve</code>.` },
+      { l: linhaDe(APP_9_ERRO, 'if (aCarregar)'), rr: ['App'], chk: [['.a-carregar', 'count', 1]], n: 'O começo é igual: primeiro render, a carregar.' },
+      { l: linhaDe(APP_9_ERRO, '.catch('), wait: 600, rr: ['App'], sel: '.erro', chk: [['.erro', 'text', 'Não foi possível carregar as tarefas.'], ['.erro', 'color', 'vermelho'], ['li', 'count', 0]], n: H`A Promise falhou: o <code>then</code> é saltado, o <code>catch</code> guarda a mensagem no estado <code>erro</code>, e o <code>finally</code> corre na mesma, pondo <code>aCarregar</code> a false.` },
+      { l: linhaDe(APP_9_ERRO, 'if (erro !== "")'), wait: 600, n: H`No render novo, já não está a carregar, mas há erro: a App devolve o parágrafo vermelho. Sem o <code>catch</code>, a app ficava para sempre em "A carregar...", e o utilizador nunca sabia porquê.` },
     ],
   }],
   mistakes: [
@@ -399,6 +418,8 @@ export default function App() {
   return <p>A carregar...</p>;
 }`, ask: ['p', 'text'], opts: ['A carregar...', 'Erro: sem rede', 'Erro: ', 'A app rebenta com um erro'], ok: 1, check: true,
       exp: H`O <code>catch</code> apanha a falha e guarda a mensagem no estado; a App renderiza o parágrafo de erro. Sem o catch, o utilizador ficava para sempre a ver "A carregar...".` },
+    { q: 'Num projeto Vite, com npm run dev, um console.log("efeito") dentro de useEffect(..., []) aparece quantas vezes na consola do browser?', opts: ['0', '1', '2: o StrictMode corre o efeito, limpa-o e volta a corrê-lo, de propósito', 'Uma vez por cada render, para sempre'], ok: 2,
+      exp: H`Em desenvolvimento, o <code>&lt;StrictMode&gt;</code> do <code>main.tsx</code> repete o efeito para mostrar logo os efeitos que se esquecem da limpeza. Na versão final (<code>npm run build</code>) aparece uma vez só.` },
   ],
   exercises: [{
     title: 'Mensagem do dia',
