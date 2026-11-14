@@ -80,6 +80,17 @@ Exercise `run` uses the same `⟦...⟧` convention. All of `o` joined together 
 - Visualizer: `viz: 'refs'` with `vizLabels` Pilha (stack) / Heap. Value types sit in the stack (`['int', '19']`), structs as
   inline objects (`['Ponto', { X: '1' }]`), strings inline (simplification, said in lesson 8), classes/arrays/lists in the heap.
 
+## HTML e CSS course specifics (`courses/html`)
+
+- `viz: 'page'` (`shared/viz-page.js/.css`): the right side shows the rendered page (iframe), the DOM tree and a box-model
+  inspector, all computed live by the browser. Step fields: `sel` (highlighted elements), `box` (inspector), `width` (page width,
+  for media queries), `chk` (claims verified by the check). Example `build: [from, to]` reveals those lines up to the step's line.
+- Verified in headless Edge/Chrome (the owner allowed this for this course). A measurement is `[selector, what]` with `what` =
+  `count`, `text`, `width`/`height` (offset px) or a CSS property; named colours come back in Portuguese (`vermelho`, `azul`...).
+  Quizzes use `ask: [selector, what]` (and optional `width`); exercises use `tests: [[selector, what, expected]]` instead of `run`.
+- Examples after lesson 0 omit the skeleton (the browser adds it). Page text may use accents (the pages are UTF-8).
+- The default page is 800px wide with the body's 8px margin, so a block is 784px wide; keep that in mind for width claims.
+
 ## Rust course specifics (`courses/rust`)
 
 - **Windows on the owner's machine blocks the .exe files rustc produces.** The runner compiles for `wasm32-wasip1`

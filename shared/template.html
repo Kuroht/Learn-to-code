@@ -156,7 +156,7 @@ code, pre, kbd { font-family: var(--font-mono); font-size: .88em; }
 .nav-icon { width: 26px; text-align: center; color: var(--muted); font-family: var(--font-mono); font-size: .8rem; }
 
 main { padding: 36px clamp(16px, 4vw, 52px) 96px; min-width: 0; }
-.content { max-width: 1060px; margin: 0 auto; display: grid; gap: 40px; }
+.content { max-width: 1060px; margin: 0 auto; display: grid; gap: 40px; grid-template-columns: minmax(0, 1fr); }
 .prose { max-width: 68ch; display: grid; gap: 14px; }
 .prose ul { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
 
@@ -393,6 +393,13 @@ details[open] summary { border-bottom: 1px solid var(--line); }
   .viz-controls { width: 100%; }
   .viz-count { min-width: 0; flex: 1; }
 }
+/* Num ecrã estreito, nada pode alargar a página: as tabelas do texto ganham scroll próprio
+   e o código no meio das frases pode partir a linha. */
+@media (max-width: 600px) {
+  table.t { display: block; overflow-x: auto; }
+  :not(pre) > code { white-space: normal; overflow-wrap: anywhere; }
+  .t td code { white-space: nowrap; }
+}
 @media (max-width: 480px) {
   body { font-size: 16px; }
   .viz { padding: 12px; }
@@ -610,7 +617,7 @@ details[open] summary { border-bottom: 1px solid var(--line); }
       noteLine.textContent = 'linha ' + s.l;
       noteText.innerHTML = s.n;
       if (SIDE) {
-        SIDE.render(host, s, prev, { renderTerm, isLast: cur === steps.length - 1 });
+        SIDE.render(host, s, prev, { renderTerm, isLast: cur === steps.length - 1, ex });
       } else {
         mem.innerHTML = memHtml(s.frames, prev ? prev.frames : null);
         term.innerHTML = renderTerm(s.out, cur < steps.length - 1);
@@ -711,7 +718,7 @@ details[open] summary { border-bottom: 1px solid var(--line); }
     return '<article class="ex">' +
       '<h3>Exercício ' + (i + 1) + ': ' + esc(ex.title) + '</h3>' +
       '<p>' + esc(ex.text) + '</p>' +
-      runHtml(ex.run) +
+      (SIDE && SIDE.exerciseHtml ? SIDE.exerciseHtml(ex) : runHtml(ex.run)) +
       '<details><summary>Ver dica</summary><div class="det-body"><p>' + ex.hint + '</p></div></details>' +
       '<details><summary>Ver solução</summary><div class="det-body"><pre class="snip"><code>' + hlBlock(ex.solution) + '</code></pre>' +
         '<div class="sol-tools"><button class="btn" type="button" data-copy="' + i + '">Copiar código</button></div></div></details>' +

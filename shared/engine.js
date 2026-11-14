@@ -207,7 +207,8 @@ function buildSteps(raw, initialTables) {
     const allValues = frames.flatMap(f => f.vars.map(v => v.value)).concat(Object.values(heap).map(o => o.value));
     allValues.flatMap(refsIn).forEach(id => { if (!heap[id]) throw new Error('referência para um objeto inexistente: @' + id + where); });
     orphans = unreachable(frames, heap);
-    res.push({ l: s.l, frames, out, n: s.n || '', tables, tmarks: s.tm || {}, grid, err: s.err || '', heap, orphans });
+    // sel, box, chk e width são do curso de HTML: o visualizador da página lê-os de cada passo.
+    res.push({ l: s.l, frames, out, n: s.n || '', tables, tmarks: s.tm || {}, grid, err: s.err || '', heap, orphans, sel: s.sel || null, box: s.box || null, width: s.width || null });
   });
   return res;
 }

@@ -76,7 +76,8 @@ function reviewContent(course, lessons, report, lineReport) {
     });
     L.exercises.forEach((ex, i) => {
       texts.push([`${where} exercício ${i + 1}`, [ex.title, ex.text, ex.hint].join(' ')]);
-      ['title', 'text', 'run', 'hint', 'solution'].forEach(f => report.check(`${where} exercício ${i + 1}: campo ${f}`, typeof ex[f] === 'string' && ex[f].trim().length > 0));
+      // Os exercícios de HTML não têm "run": o resultado esperado é a página da solução, verificada pelos testes (tests).
+      ['title', 'text', 'hint', 'solution'].concat(ex.tests ? [] : ['run']).forEach(f => report.check(`${where} exercício ${i + 1}: campo ${f}`, typeof ex[f] === 'string' && ex[f].trim().length > 0));
     });
   });
   texts.forEach(([where, text]) => {
@@ -86,16 +87,17 @@ function reviewContent(course, lessons, report, lineReport) {
 }
 
 // 2. Corre o código com a ferramenta real e compara com a página.
-function runPrograms(course, lessons, report) {
+// Os métodos do runner podem devolver logo o resultado ou uma Promise (o de HTML usa um browser): usa-se sempre await.
+async function runPrograms(course, lessons, report) {
   const runner = require(course.runnerPath);
-  if (!runner.isAvailable()) {
+  if (!(await runner.isAvailable())) {
     report.check(`${runner.toolName} instalado`, false, `Sem o ${runner.toolName} não dá para correr os programas, por isso o curso NÃO está verificado.\n${runner.installHint}`);
     return;
   }
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'dozero-' + course.config.slug + '-'));
   // item é o exemplo, pergunta ou exercício; lesson é a lição (o runner de SQL vai lá buscar a base de dados).
-  const run = (code, stdin, label, item, lesson) => {
-    const result = runner.run(code, stdin, tmpDir, item, lesson);
+  const run = async (code, stdin, label, item, lesson) => {
+    const result = await runner.run(code, stdin, tmpDir, item, lesson);
     if (result.warnings) report.warn(label + ': avisos de ' + runner.toolName, result.warnings);
     if (result.out !== undefined) result.out = normalize(result.out);
     return result;
@@ -110,43 +112,46 @@ function runPrograms(course, lessons, report) {
       L.quiz.filter(q => q.check).map(q => runner.wrapQuiz(q.code, q, L)),
       L.exercises.map(ex => ex.solution),
     ));
-    const problem = runner.prepare(all, tmpDir);
+    const problem = await runner.prepare(all, tmpDir);
     if (problem) { report.check(`${runner.toolName}: preparar os programas`, false, problem); return; }
   }
 
-  lessons.forEach(L => {
-    L.examples.forEach((ex, ei) => {
+  for (const L of lessons) {
+    for (const [ei, ex] of L.examples.entries()) {
       const label = `Lição ${L.id} exemplo ${ei + 1} (${ex.title})`;
       // Um runner pode ter a sua própria verificação dos exemplos (o de SQL compara tabelas e resultados passo a passo).
-      if (runner.checkExample) { runner.checkExample(ex, L, { label, report, nonAscii }); return; }
+      if (runner.checkExample) { await runner.checkExample(ex, L, { label, report, nonAscii }); continue; }
       const shown = ex.steps.map(s => s.o || '').join('');
       nonAscii(label, shown);
-      const result = run(ex.code, inputsOf(shown).join('\n') + '\n', label, ex, L);
-      if (result.error) { report.check(label, false, result.error); return; }
+      const result = await run(ex.code, inputsOf(shown).join('\n') + '\n', label, ex, L);
+      if (result.error) { report.check(label, false, result.error); continue; }
       const expected = stripInputs(shown);
       report.check(label + ': saída igual à da página', result.out === expected, `página:\n${JSON.stringify(expected)}\nreal:\n${JSON.stringify(result.out)}`);
-    });
+    }
 
-    L.quiz.forEach((q, qi) => {
-      if (!q.check) return;
+    for (const [qi, q] of L.quiz.entries()) {
+      if (!q.check) continue;
       const label = `Lição ${L.id} quiz ${qi + 1}`;
-      const result = run(runner.wrapQuiz(q.code, q, L), '', label, q, L);
-      if (result.error) { report.check(label, false, result.error); return; }
+      const result = await run(runner.wrapQuiz(q.code, q, L), '', label, q, L);
+      if (result.error) { report.check(label, false, result.error); continue; }
       const got = result.out.replace(/\s+$/, '');
       const matching = q.opts.map((o, i) => i).filter(i => q.opts[i].replace(/\s+$/, '') === got);
       report.check(label + ': a opção certa é a saída real', matching.includes(q.ok), `marcada: ${JSON.stringify(q.opts[q.ok])}\nreal: ${JSON.stringify(result.out)}`);
       report.check(label + ': só uma opção coincide', matching.length === 1, `coincidem: ${matching.map(i => 'ABCD'[i]).join(', ')}`);
-    });
+    }
 
-    L.exercises.forEach((ex, xi) => {
+    for (const [xi, ex] of L.exercises.entries()) {
       const label = `Lição ${L.id} exercício ${xi + 1} (${ex.title})`;
+      // Um runner pode verificar os exercícios à sua maneira (o de HTML testa a página da solução no browser).
+      if (runner.checkExercise) { await runner.checkExercise(ex, L, { label, report }); continue; }
       nonAscii(label, ex.run);
-      const result = run(ex.solution, inputsOf(ex.run).join('\n') + '\n', label, ex, L);
-      if (result.error) { report.check(label, false, result.error); return; }
+      const result = await run(ex.solution, inputsOf(ex.run).join('\n') + '\n', label, ex, L);
+      if (result.error) { report.check(label, false, result.error); continue; }
       const expected = stripInputs(ex.run);
       report.check(label + ': saída igual ao exemplo de execução', result.out === expected, `página:\n${JSON.stringify(expected)}\nreal:\n${JSON.stringify(result.out)}`);
-    });
-  });
+    }
+  }
+  if (runner.finish) await runner.finish();
   fs.rmSync(tmpDir, { recursive: true, force: true });
 }
 
@@ -158,7 +163,7 @@ async function checkCourse(slug, options) {
   const lineReport = [];
 
   reviewContent(course, lessons, report, lineReport);
-  if (options.run) runPrograms(course, lessons, report);
+  if (options.run) await runPrograms(course, lessons, report);
   else report.warn('programas NÃO corridos (--no-run): as saídas não foram verificadas');
 
   const outDir = path.join(ROOT, 'out', slug);

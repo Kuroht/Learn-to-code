@@ -1,0 +1,2675 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML e CSS do Zero</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Caderno de laboratório: papel azulado, tinta azul-escura, marcador amarelo na linha que está a correr.
+     Layout: barra lateral com as lições + coluna de leitura; o visualizador alarga para código | memória + ecrã. */
+  --paper: #f2f4f8;
+  --panel: #ffffff;
+  --ink: #161d2e;
+  --muted: #586276;
+  --line: #d9dfea;
+  --accent: #2547d0;
+  --accent-ink: #ffffff;
+  --accent-soft: #e6ebfc;
+  --mark: #ffe58a;
+  --mark-edge: #d9a514;
+  --ok: #17804a;
+  --ok-soft: #e1f3e8;
+  --bad: #bf3329;
+  --bad-soft: #fbe6e3;
+  --code-bg: #f8f9fc;
+  --term-bg: #121826;
+  --term-ink: #dfe6f3;
+  --term-in: #ffd866;
+  --t-kw: #7a2bc2;
+  --t-ty: #0b7584;
+  --t-str: #a0450a;
+  --t-num: #ad1767;
+  --t-com: #737d90;
+  --t-pp: #39691a;
+  --t-fn: #2547d0;
+  --shadow: 0 1px 2px rgba(22, 29, 46, .06), 0 6px 20px rgba(22, 29, 46, .05);
+  --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0f121a;
+    --panel: #161b25;
+    --ink: #e6e9f1;
+    --muted: #98a1b4;
+    --line: #283041;
+    --accent: #8ea5ff;
+    --accent-ink: #0f121a;
+    --accent-soft: #1d2645;
+    --mark: rgba(255, 210, 60, .2);
+    --mark-edge: #e9bd3a;
+    --ok: #4cc47f;
+    --ok-soft: rgba(76, 196, 127, .14);
+    --bad: #ff7d70;
+    --bad-soft: rgba(255, 125, 112, .14);
+    --code-bg: #121620;
+    --term-bg: #0a0d14;
+    --t-kw: #c79bf2;
+    --t-ty: #63d3e2;
+    --t-str: #f4a46d;
+    --t-num: #ff8cc4;
+    --t-com: #7e899f;
+    --t-pp: #a8d873;
+    --t-fn: #8ea5ff;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 6px 20px rgba(0, 0, 0, .25);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0f121a;
+  --panel: #161b25;
+  --ink: #e6e9f1;
+  --muted: #98a1b4;
+  --line: #283041;
+  --accent: #8ea5ff;
+  --accent-ink: #0f121a;
+  --accent-soft: #1d2645;
+  --mark: rgba(255, 210, 60, .2);
+  --mark-edge: #e9bd3a;
+  --ok: #4cc47f;
+  --ok-soft: rgba(76, 196, 127, .14);
+  --bad: #ff7d70;
+  --bad-soft: rgba(255, 125, 112, .14);
+  --code-bg: #121620;
+  --term-bg: #0a0d14;
+  --t-kw: #c79bf2;
+  --t-ty: #63d3e2;
+  --t-str: #f4a46d;
+  --t-num: #ff8cc4;
+  --t-com: #7e899f;
+  --t-pp: #a8d873;
+  --t-fn: #8ea5ff;
+  --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 6px 20px rgba(0, 0, 0, .25);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 17px/1.6 var(--font-body);
+}
+a { color: var(--accent); text-underline-offset: 3px; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+h1, h2, h3, h4 { font-family: var(--font-display); line-height: 1.15; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(2rem, 1.5rem + 2vw, 2.9rem); font-weight: 800; letter-spacing: -.02em; }
+h2 { font-size: 1.55rem; font-weight: 800; letter-spacing: -.01em; }
+h3 { font-size: 1.15rem; font-weight: 600; }
+h4 { font-size: 1.05rem; font-weight: 600; }
+p { margin: 0; }
+code, pre, kbd { font-family: var(--font-mono); font-size: .88em; }
+:not(pre) > code {
+  background: var(--accent-soft);
+  padding: .08em .35em;
+  border-radius: 5px;
+  white-space: nowrap;
+}
+
+/* ---------- estrutura ---------- */
+.app { display: grid; grid-template-columns: 276px minmax(0, 1fr); min-height: 100vh; }
+.sidebar {
+  position: sticky; top: 0; height: 100vh; overflow-y: auto;
+  background: var(--panel); border-right: 1px solid var(--line);
+  padding: 22px 14px 28px; display: flex; flex-direction: column; gap: 18px;
+}
+.brand { display: flex; align-items: baseline; gap: 8px; padding: 0 10px; text-decoration: none; color: var(--ink); }
+.brand-mark {
+  font-family: var(--font-mono); font-weight: 600; font-size: .95rem;
+  background: var(--ink); color: var(--panel); padding: 2px 7px; border-radius: 6px;
+}
+.brand-name { font-family: var(--font-display); font-weight: 800; font-size: 1.35rem; letter-spacing: -.01em; }
+.progress { padding: 0 10px; display: grid; gap: 6px; font-size: .85rem; color: var(--muted); }
+.progress-track { height: 6px; background: var(--line); border-radius: 99px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--ok); border-radius: 99px; transition: width .3s; }
+.nav { display: grid; gap: 2px; }
+.nav-label { font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); padding: 10px 10px 4px; }
+.nav a {
+  display: grid; grid-template-columns: 26px minmax(0, 1fr) auto; align-items: center; gap: 8px;
+  padding: 7px 10px; border-radius: 8px; color: var(--ink); text-decoration: none; font-size: .95rem; line-height: 1.3;
+}
+.nav a:hover { background: var(--paper); }
+.nav a[aria-current="page"] { background: var(--accent-soft); color: var(--accent); font-weight: 700; }
+.nav-num {
+  font-family: var(--font-mono); font-size: .78rem; color: var(--muted); text-align: center;
+  border: 1px solid var(--line); border-radius: 6px; padding: 1px 0;
+}
+.nav a[aria-current="page"] .nav-num { border-color: var(--accent); color: var(--accent); }
+.nav-done { color: var(--ok); font-size: .85rem; font-weight: 700; }
+.nav-icon { width: 26px; text-align: center; color: var(--muted); font-family: var(--font-mono); font-size: .8rem; }
+
+main { padding: 36px clamp(16px, 4vw, 52px) 96px; min-width: 0; }
+.content { max-width: 1060px; margin: 0 auto; display: grid; gap: 40px; grid-template-columns: minmax(0, 1fr); }
+.prose { max-width: 68ch; display: grid; gap: 14px; }
+.prose ul { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
+
+.topbar { display: none; }
+
+/* ---------- tabelas ---------- */
+.t-wrap { overflow-x: auto; }
+table.t { border-collapse: collapse; width: 100%; font-size: .93rem; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.t th, .t td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.t th { font-size: .78rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); background: var(--code-bg); }
+.t tr:last-child td { border-bottom: 0; }
+.t td code { white-space: nowrap; }
+
+/* ---------- código ---------- */
+pre { margin: 0; }
+pre.snip {
+  background: var(--code-bg); border: 1px solid var(--line); border-radius: 10px;
+  padding: 12px 14px; overflow-x: auto; line-height: 1.55;
+}
+.t-kw { color: var(--t-kw); font-weight: 600; }
+.t-ty { color: var(--t-ty); font-weight: 600; }
+.t-str { color: var(--t-str); }
+.t-num { color: var(--t-num); }
+.t-com { color: var(--t-com); font-style: italic; }
+.t-pp { color: var(--t-pp); }
+.t-fn { color: var(--t-fn); }
+
+/* ---------- cabeçalho da lição ---------- */
+.lesson-head { display: grid; gap: 10px; }
+.eyebrow { font-family: var(--font-mono); font-size: .82rem; color: var(--accent); font-weight: 600; letter-spacing: .02em; }
+.lead { font-size: 1.15rem; color: var(--muted); max-width: 60ch; }
+.analogy {
+  max-width: 68ch; background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--mark-edge);
+  border-radius: 10px; padding: 14px 18px; display: grid; gap: 4px;
+}
+.analogy-label { font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+.section { display: grid; gap: 16px; }
+.section-head { display: grid; gap: 4px; }
+.section-head p { color: var(--muted); }
+
+/* ---------- visualizador ---------- */
+.viz {
+  background: var(--panel); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow);
+  padding: 16px; display: grid; gap: 12px;
+}
+.viz:focus-visible { outline-offset: 4px; border-radius: 14px; }
+.viz-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; }
+.viz-title { display: grid; gap: 2px; }
+.viz-title small { font-family: var(--font-mono); color: var(--muted); font-size: .78rem; }
+.viz-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.viz-count { font-family: var(--font-mono); font-size: .82rem; color: var(--muted); min-width: 9.5em; text-align: center; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.btn {
+  font: inherit; font-size: .92rem; font-weight: 700; cursor: pointer;
+  border: 1px solid var(--line); background: var(--panel); color: var(--ink);
+  padding: 7px 14px; border-radius: 9px; line-height: 1.2;
+}
+.btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+.btn:disabled { opacity: .45; cursor: default; }
+.btn-primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn-primary:hover:not(:disabled) { color: var(--accent-ink); filter: brightness(1.08); }
+.btn-ghost { border-color: transparent; color: var(--muted); }
+.viz-bar { height: 4px; background: var(--line); border-radius: 99px; overflow: hidden; }
+.viz-bar span { display: block; height: 100%; background: var(--accent); transition: width .2s; }
+.viz-note {
+  background: var(--accent-soft); border-radius: 10px; padding: 12px 14px; min-height: 3.4em;
+  display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; align-items: start;
+}
+.viz-note code { background: var(--panel); }
+.viz-note-line { font-family: var(--font-mono); font-size: .78rem; font-weight: 600; color: var(--accent); background: var(--panel); border-radius: 6px; padding: 2px 7px; margin-top: 2px; white-space: nowrap; }
+.viz-grid { display: grid; grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr); gap: 12px; align-items: start; }
+.viz-side { display: grid; gap: 12px; }
+.panel { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--code-bg); }
+.panel-label {
+  font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .09em; color: var(--muted);
+  padding: 7px 12px; border-bottom: 1px solid var(--line); background: var(--panel);
+  display: flex; justify-content: space-between; gap: 8px;
+}
+.code { overflow-x: auto; padding: 8px 0; font-family: var(--font-mono); font-size: .86rem; line-height: 1.65; }
+.ln { display: grid; grid-template-columns: 2.6em 1.3em minmax(0, 1fr); white-space: pre; min-width: max-content; padding-right: 14px; }
+.ln .no { text-align: right; color: var(--t-com); opacity: .8; user-select: none; }
+.ln .arrow { text-align: center; color: var(--mark-edge); user-select: none; }
+.ln.cur { background: var(--mark); box-shadow: inset 3px 0 0 var(--mark-edge); }
+.ln.cur .no { color: var(--ink); opacity: 1; font-weight: 600; }
+
+.mem { padding: 10px; display: grid; gap: 10px; min-height: 92px; }
+.mem-empty { color: var(--muted); font-size: .9rem; padding: 6px 4px; }
+.frame { border: 1px dashed var(--line); border-radius: 9px; padding: 8px; display: grid; gap: 8px; background: var(--panel); }
+.frame.active { border: 1px solid var(--accent); }
+.frame-name { font-family: var(--font-mono); font-size: .78rem; font-weight: 600; color: var(--muted); display: flex; justify-content: space-between; }
+.frame.active .frame-name { color: var(--accent); }
+.vars { display: flex; flex-wrap: wrap; gap: 8px; }
+.var {
+  border: 1px solid var(--line); border-radius: 8px; padding: 6px 9px 7px; background: var(--code-bg);
+  display: grid; gap: 2px; min-width: 76px; max-width: 100%;
+}
+.var.wide { flex-basis: 100%; }
+.var-top { display: flex; justify-content: space-between; gap: 10px; font-family: var(--font-mono); font-size: .7rem; color: var(--muted); }
+.var-type { color: var(--t-ty); }
+.var-name { font-family: var(--font-mono); font-weight: 600; font-size: .9rem; }
+.var-val { font-family: var(--font-mono); font-size: 1.05rem; font-variant-numeric: tabular-nums; border-radius: 5px; padding: 0 3px; margin: 0 -3px; overflow-wrap: anywhere; }
+.chg { background: var(--mark); box-shadow: 0 0 0 2px var(--mark-edge); }
+.var.is-new { border-color: var(--accent); }
+.garbage { color: var(--muted); font-style: italic; }
+.ptr-addr { color: var(--t-num); }
+.ptr-arrow { color: var(--accent); font-size: .9rem; font-weight: 600; }
+.cells { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 2px; }
+.cell { display: grid; text-align: center; min-width: 2.7em; }
+.cell-v { font-family: var(--font-mono); font-size: .92rem; border: 1px solid var(--line); background: var(--panel); border-radius: 5px; padding: 2px 4px; }
+.cell-i { font-family: var(--font-mono); font-size: .66rem; color: var(--muted); }
+.fields { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 10px; font-family: var(--font-mono); font-size: .88rem; margin-top: 2px; }
+.fields .f-name { color: var(--muted); }
+.mini { border-collapse: collapse; font-family: var(--font-mono); font-size: .84rem; margin-top: 4px; }
+.mini th, .mini td { border: 1px solid var(--line); padding: 2px 8px; text-align: left; }
+.mini th { font-weight: 600; color: var(--muted); font-size: .72rem; background: var(--panel); }
+.addr-note { font-size: .74rem; color: var(--muted); }
+
+.term {
+  background: var(--term-bg); color: var(--term-ink); font-family: var(--font-mono); font-size: .86rem;
+  line-height: 1.6; padding: 10px 14px; white-space: pre-wrap; overflow-wrap: anywhere; min-height: 4.8em; max-height: 15em; overflow-y: auto;
+}
+.term .in { color: var(--term-in); font-weight: 600; }
+.term .enter { color: var(--term-in); opacity: .55; font-size: .8em; margin-left: 2px; }
+.term .caret { display: inline-block; width: .55em; height: 1.05em; background: var(--term-ink); opacity: .55; vertical-align: text-bottom; }
+.term .ph { color: #7e899f; font-style: italic; }
+.panel.out { background: var(--term-bg); border-color: var(--term-bg); }
+.panel.out .panel-label { background: var(--term-bg); color: #9aa6bd; border-color: #263046; }
+
+/* ---------- erros comuns ---------- */
+.mistakes { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; max-width: 76ch; }
+.mistakes li { background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--bad); border-radius: 9px; padding: 10px 14px; }
+
+/* ---------- quiz ---------- */
+.quiz { display: grid; gap: 14px; }
+.q { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: grid; gap: 12px; }
+.q-text { font-weight: 700; display: flex; gap: 10px; align-items: baseline; }
+.q-num { font-family: var(--font-mono); font-size: .78rem; color: var(--muted); font-weight: 400; white-space: nowrap; }
+.opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 8px; }
+.opt {
+  font: inherit; text-align: left; cursor: pointer; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; align-items: start;
+  border: 1px solid var(--line); background: var(--code-bg); color: var(--ink); border-radius: 9px; padding: 9px 12px;
+}
+.opt:hover:not(:disabled) { border-color: var(--accent); }
+.opt:disabled { cursor: default; }
+.opt-key { font-family: var(--font-mono); font-size: .78rem; font-weight: 600; color: var(--muted); border: 1px solid var(--line); border-radius: 5px; padding: 0 6px; margin-top: 2px; background: var(--panel); }
+.opt-txt.mono { font-family: var(--font-mono); font-size: .9rem; white-space: pre; overflow-x: auto; }
+.opt.right { border-color: var(--ok); background: var(--ok-soft); }
+.opt.right .opt-key { border-color: var(--ok); color: var(--ok); }
+.opt.wrong { border-color: var(--bad); background: var(--bad-soft); }
+.opt.wrong .opt-key { border-color: var(--bad); color: var(--bad); }
+.opt.dim { opacity: .55; }
+.q-exp { border-radius: 9px; padding: 10px 14px; background: var(--code-bg); border: 1px solid var(--line); }
+.q-exp strong.ok { color: var(--ok); }
+.q-exp strong.bad { color: var(--bad); }
+.score {
+  background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;
+}
+.score-num { font-family: var(--font-display); font-weight: 800; font-size: 1.6rem; font-variant-numeric: tabular-nums; }
+
+/* ---------- exercícios ---------- */
+.exs { display: grid; gap: 14px; }
+.ex { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: grid; gap: 12px; }
+.ex-label { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .09em; color: var(--muted); margin-bottom: 4px; }
+.ex .term { border-radius: 9px; max-height: none; min-height: 0; }
+details { border: 1px solid var(--line); border-radius: 9px; background: var(--code-bg); }
+summary { cursor: pointer; padding: 9px 14px; font-weight: 700; color: var(--accent); }
+details[open] summary { border-bottom: 1px solid var(--line); }
+.det-body { padding: 12px 14px; display: grid; gap: 10px; }
+.det-body pre.snip { background: var(--panel); }
+.sol-tools { display: flex; justify-content: flex-end; }
+
+/* ---------- navegação entre lições ---------- */
+.pager { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; border-top: 1px solid var(--line); padding-top: 24px; }
+.pager a {
+  display: grid; gap: 2px; text-decoration: none; color: var(--ink); background: var(--panel);
+  border: 1px solid var(--line); border-radius: 10px; padding: 10px 16px; min-width: 220px;
+}
+.pager a:hover { border-color: var(--accent); }
+.pager small { color: var(--muted); font-size: .8rem; }
+.pager .next { text-align: right; margin-left: auto; }
+
+/* ---------- início ---------- */
+.hero { display: grid; gap: 16px; padding-top: 8px; }
+.hero p { font-size: 1.15rem; color: var(--muted); max-width: 58ch; }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.hero-actions .btn { padding: 10px 18px; font-size: 1rem; text-decoration: none; display: inline-block; }
+.steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; counter-reset: s; }
+.steps li { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; display: grid; gap: 6px; counter-increment: s; align-content: start; }
+.steps li::before { content: counter(s); font-family: var(--font-mono); font-weight: 600; font-size: .8rem; color: var(--accent); border: 1px solid var(--accent); border-radius: 6px; width: 1.8em; text-align: center; }
+.steps p { color: var(--muted); font-size: .95rem; }
+.grid-lessons { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; }
+.card-lesson {
+  display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 12px; text-decoration: none; color: var(--ink);
+  background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px; align-content: start;
+}
+.card-lesson:hover { border-color: var(--accent); }
+.card-lesson .nav-num { grid-row: span 2; width: 28px; height: 24px; line-height: 20px; }
+.card-lesson strong { font-family: var(--font-display); font-weight: 600; font-size: 1.02rem; line-height: 1.25; }
+.card-lesson span.s { color: var(--muted); font-size: .88rem; line-height: 1.35; }
+.card-lesson .done-tag { grid-column: 2; font-size: .78rem; font-weight: 700; color: var(--ok); }
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; align-items: start; }
+.box { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; display: grid; gap: 10px; }
+.box ul { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
+.trace td, .trace th { font-family: var(--font-mono); font-size: .84rem; text-align: center; }
+.trace td:last-child, .trace th:last-child { text-align: left; }
+.trace tr.hl td { background: var(--mark); }
+
+/* ---------- cábula ---------- */
+.cheat { columns: 2 380px; column-gap: 14px; }
+.cheat .box { break-inside: avoid; margin-bottom: 14px; }
+.cheat h3 { font-size: 1.05rem; }
+.cheat .t { font-size: .86rem; }
+.checklist { list-style: none; padding: 0 !important; }
+.checklist li { padding-left: 1.6em; position: relative; }
+.checklist li::before { content: ""; position: absolute; left: 0; top: .3em; width: .95em; height: .95em; border: 2px solid var(--muted); border-radius: 3px; }
+
+/* ---------- telemóvel ---------- */
+@media (max-width: 960px) {
+  .app { grid-template-columns: minmax(0, 1fr); }
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    position: sticky; top: 0; z-index: 20; background: var(--panel); border-bottom: 1px solid var(--line); padding: 10px 16px;
+  }
+  .sidebar {
+    position: fixed; z-index: 30; left: 0; top: 0; width: min(300px, 86vw); height: 100%;
+    transform: translateX(-102%); transition: transform .2s; box-shadow: var(--shadow);
+  }
+  .sidebar.open { transform: none; }
+  .scrim { position: fixed; inset: 0; background: rgba(10, 13, 20, .45); z-index: 25; }
+  main { padding-top: 24px; }
+}
+@media (max-width: 820px) {
+  .viz-grid { grid-template-columns: minmax(0, 1fr); }
+  .viz-controls { width: 100%; }
+  .viz-count { min-width: 0; flex: 1; }
+}
+/* Num ecrã estreito, nada pode alargar a página: as tabelas do texto ganham scroll próprio
+   e o código no meio das frases pode partir a linha. */
+@media (max-width: 600px) {
+  table.t { display: block; overflow-x: auto; }
+  :not(pre) > code { white-space: normal; overflow-wrap: anywhere; }
+  .t td code { white-space: nowrap; }
+}
+@media (max-width: 480px) {
+  body { font-size: 16px; }
+  .viz { padding: 12px; }
+  .pager a { min-width: 0; flex: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; scroll-behavior: auto !important; }
+}
+</style>
+<style>
+/* ---------- visualizador de páginas (HTML e CSS) ---------- */
+.page-box { background: #ffffff; overflow-x: auto; border-radius: 0 0 10px 10px; }
+iframe.preview { display: block; width: 100%; min-height: 220px; border: 0; background: #ffffff; color-scheme: light; }
+.ex iframe.preview { min-height: 160px; border: 1px solid var(--line); border-radius: 9px; }
+.dom { font-family: var(--font-mono); font-size: .8rem; gap: 0; min-height: 60px; }
+.tnode { padding: 1px 6px; border-radius: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tnode.hit { background: var(--mark); box-shadow: inset 3px 0 0 var(--mark-edge); }
+.t-tag { color: var(--t-kw); font-weight: 600; }
+.t-id { color: var(--t-num); margin-left: 4px; }
+.t-cls { color: var(--t-ty); margin-left: 4px; }
+.t-txt { color: var(--muted); margin-left: 8px; font-style: italic; }
+.insp { font-size: .8rem; }
+.insp-head { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; color: var(--muted); }
+.bx { position: relative; border: 1px dashed var(--muted); border-radius: 4px; padding: 2px 6px; text-align: center; font-family: var(--font-mono); font-size: .74rem; }
+.bx-m { background: rgba(249, 168, 77, .18); }
+.bx-b { background: rgba(253, 221, 155, .35); border-style: solid; }
+.bx-p { background: rgba(147, 196, 125, .3); }
+.bx-c { background: rgba(111, 168, 220, .35); border-style: solid; padding: 6px; margin: 2px auto; min-width: 70px; }
+.bx-l { position: absolute; left: 5px; top: 1px; font-size: .62rem; color: var(--muted); }
+.bx-t { display: block; }
+.bx-mid { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+.bx-mid > .bx { flex: 1; }
+.insp-props { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 10px; margin-top: 8px; }
+.insp-props span { color: var(--muted); }
+.insp-props code { background: none !important; padding: 0 !important; overflow-wrap: anywhere; white-space: normal !important; }
+</style>
+<style>
+:root { --accent: #a8246f; --accent-soft: #fbe6f2; --t-fn: #a8246f; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --accent: #ff8fca; --accent-soft: #3b1a2e; --t-fn: #ff8fca; } }
+:root[data-theme="dark"] { --accent: #ff8fca; --accent-soft: #3b1a2e; --t-fn: #ff8fca; }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <a class="brand" href="#inicio"><span class="brand-mark">.html</span><span class="brand-name">HTML e CSS do Zero</span></a>
+    <button class="btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="sidebar">Lições</button>
+  </header>
+  <aside class="sidebar" id="sidebar" aria-label="Lições">
+    <a class="brand" href="#inicio"><span class="brand-mark">.html</span><span class="brand-name">HTML e CSS do Zero</span></a>
+    <div class="progress" id="progress"></div>
+    <nav class="nav" id="nav"></nav>
+  </aside>
+  <main id="main" tabindex="-1">
+    <noscript><p>Esta página precisa de JavaScript para funcionar.</p></noscript>
+    <div class="content" id="view"></div>
+  </main>
+</div>
+
+<template id="tpl-home">
+  <section class="hero">
+    <span class="eyebrow">Desenvolvimento web · antes do JavaScript</span>
+    <h1>Aprender HTML e CSS a ver a página a nascer</h1>
+    <p>Onze lições curtas, da primeira etiqueta ao flexbox e às páginas que se adaptam ao telemóvel. Em cada exemplo carregas em "Seguinte" e vês a página a mudar, a árvore DOM e o tamanho de cada caixa.</p>
+    <div class="hero-actions" id="hero-actions"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>Como usar</h2></div>
+    <ol class="steps">
+      <li><h3>Lê a explicação</h3><p>É curta de propósito. Fica com a ideia principal e passa ao exemplo.</p></li>
+      <li><h3>Corre o exemplo</h3><p>Antes de cada "Seguinte", tenta adivinhar como a página vai ficar. O contorno amarelo mostra de que elemento se fala.</p></li>
+      <li><h3>Responde às perguntas</h3><p>"De que cor fica?", "que largura tem?", "quantos elementos há?". As respostas foram medidas num browser a sério.</p></li>
+      <li><h3>Faz os exercícios no computador</h3><p>Escreve o ficheiro, abre-o no browser e compara com o resultado esperado antes de veres a solução.</p></li>
+    </ol>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>Lições</h2><p>Segue a ordem: as lições 0 a 4 são de HTML, as seguintes de CSS.</p></div>
+    <div class="grid-lessons" id="home-lessons"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>HTML e CSS: quem faz o quê</h2>
+      <p>A separação que torna tudo mais fácil.</p>
+    </div>
+    <div class="two">
+      <div class="prose">
+        <p>O <strong>HTML</strong> diz o que cada coisa é: um título, um parágrafo, um menu, um formulário. O <strong>CSS</strong> diz que aspeto tem: cor, tamanho, espaços, posição.</p>
+        <p>Por isso escolhes o elemento HTML pelo significado (um <code>&lt;h2&gt;</code> porque é um subtítulo) e mudas o aspeto no CSS (mesmo que o queiras pequeno e azul).</p>
+        <p>Quando uma regra de CSS "não funciona", faz três perguntas: o seletor encontra o elemento? Há outra regra mais específica a ganhar? A declaração está bem escrita (com <code>;</code> e unidade)?</p>
+      </div>
+      <div class="t-wrap">
+        <table class="t trace">
+          <thead><tr><th>Queres</th><th>Usa</th></tr></thead>
+          <tbody>
+            <tr><td>um título</td><td>HTML: &lt;h1&gt;</td></tr>
+            <tr><td>texto vermelho</td><td>CSS: color: red</td></tr>
+            <tr><td>uma lista</td><td>HTML: &lt;ul&gt; e &lt;li&gt;</td></tr>
+            <tr class="hl"><td>caixas lado a lado</td><td>CSS: display: flex</td></tr>
+            <tr><td>espaço à volta</td><td>CSS: padding / margin</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="two">
+    <div class="box">
+      <h2>Onde praticar</h2>
+      <ul>
+        <li><strong>No teu computador:</strong> escreve um ficheiro <code>index.html</code> num editor (o VS Code, por exemplo) e abre-o no browser. Depois de cada mudança, guarda e atualiza a página (F5).</li>
+        <li><strong>No browser, sem instalar nada:</strong> <a href="https://codepen.io/pen/">CodePen</a>, com o HTML e o CSS em caixas separadas e a página a atualizar sozinha.</li>
+        <li>Carrega em F12 em qualquer página para abrir as ferramentas do browser: mostram a árvore DOM, as regras de cada elemento e o modelo de caixa, como o visualizador.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h2>Para quem está a explicar</h2>
+      <ul>
+        <li>Pede-lhe que diga como a página vai ficar <em>antes</em> de carregar em "Seguinte", sobretudo nas lições da cascata e do modelo de caixa.</li>
+        <li>Usem as ferramentas do browser (F12) juntos: ver qual regra ganhou e porquê ensina mais do que qualquer explicação.</li>
+        <li>No modelo de caixa, façam as contas no papel antes de ver o inspetor.</li>
+        <li>Lembra que o CSS não dá erros: se nada muda, há um engano silencioso para encontrar.</li>
+      </ul>
+    </div>
+  </section>
+</template>
+
+<template id="tpl-cheat">
+  <section class="lesson-head">
+    <span class="eyebrow">Resumo</span>
+    <h1>Cábula de HTML e CSS</h1>
+    <p class="lead">Tudo o que as lições ensinam, numa página. Boa para ter aberta enquanto fazes exercícios.</p>
+  </section>
+  <div class="cheat">
+    <div class="box">
+      <h3>Esqueleto de uma página</h3>
+<pre class="snip"><code class="html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Título do separador&lt;/title&gt;
+  &lt;link rel="stylesheet" href="estilo.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  ...
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Elementos de HTML</h3>
+      <div class="t-wrap"><table class="t">
+        <tbody>
+          <tr><td><code>h1</code> ... <code>h6</code>, <code>p</code></td><td>títulos e parágrafos</td></tr>
+          <tr><td><code>strong</code>, <code>em</code>, <code>br</code></td><td>importante, ênfase, mudar de linha</td></tr>
+          <tr><td><code>ul</code>, <code>ol</code>, <code>li</code></td><td>listas (com marcas, numerada) e os itens</td></tr>
+          <tr><td><code>a href="..."</code></td><td>ligação</td></tr>
+          <tr><td><code>img src="..." alt="..."</code></td><td>imagem (o alt é obrigatório)</td></tr>
+          <tr><td><code>header</code>, <code>nav</code>, <code>main</code>, <code>footer</code></td><td>zonas da página</td></tr>
+          <tr><td><code>section</code>, <code>article</code></td><td>secção, artigo</td></tr>
+          <tr><td><code>div</code>, <code>span</code></td><td>caixas sem significado (bloco, em linha)</td></tr>
+          <tr><td><code>form</code>, <code>label</code>, <code>input</code>, <code>button</code></td><td>formulários</td></tr>
+          <tr><td><code>table</code>, <code>tr</code>, <code>th</code>, <code>td</code></td><td>tabelas</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="box">
+      <h3>Seletores de CSS</h3>
+      <div class="t-wrap"><table class="t">
+        <tbody>
+          <tr><td><code>p</code></td><td>todos os p</td></tr>
+          <tr><td><code>.aviso</code></td><td>class="aviso"</td></tr>
+          <tr><td><code>#topo</code></td><td>id="topo"</td></tr>
+          <tr><td><code>nav a</code></td><td>a dentro de um nav</td></tr>
+          <tr><td><code>ul &gt; li</code></td><td>li filhos diretos de um ul</td></tr>
+          <tr><td><code>h1, h2</code></td><td>h1 e h2</td></tr>
+          <tr><td><code>a:hover</code></td><td>uma ligação com o rato por cima</td></tr>
+        </tbody>
+      </table></div>
+      <p>Ganha o mais específico (id &gt; classe &gt; elemento); com empate, o que vem depois.</p>
+    </div>
+
+    <div class="box">
+      <h3>Propriedades mais usadas</h3>
+<pre class="snip"><code class="css">color: blue;
+background-color: #f2f4f8;
+font-size: 1.25rem;
+font-family: Arial, sans-serif;
+font-weight: bold;
+text-align: center;
+width: 300px;   max-width: 600px;
+padding: 10px 20px;     /* cima/baixo esquerda/direita */
+border: 1px solid gray;
+margin: 0 auto;         /* centra um bloco com largura */
+display: block | inline | inline-block | none | flex;</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Modelo de caixa</h3>
+      <div class="t-wrap"><table class="t">
+        <tbody>
+          <tr><td>conteúdo</td><td>o <code>width</code> e o <code>height</code> (por omissão)</td></tr>
+          <tr><td><code>padding</code></td><td>dentro da borda, com o fundo</td></tr>
+          <tr><td><code>border</code></td><td>a borda</td></tr>
+          <tr><td><code>margin</code></td><td>fora da borda, transparente</td></tr>
+        </tbody>
+      </table></div>
+      <p>Largura total = width + padding + borda (dos dois lados). Com <code>box-sizing: border-box</code>, é só o width.</p>
+    </div>
+
+    <div class="box">
+      <h3>Flexbox</h3>
+<pre class="snip"><code class="css">.pai {
+  display: flex;
+  gap: 20px;
+  flex-direction: row;            /* ou column */
+  justify-content: space-between; /* center, flex-start... */
+  align-items: center;
+}
+.filho { flex: 1; }               /* ocupa o que sobra */</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Unidades e media queries</h3>
+<pre class="snip"><code class="css">width: 50%;        /* do pai */
+font-size: 2rem;   /* 2 × a letra da página (32px) */
+font-size: 1.5em;  /* 1,5 × a letra do pai */
+
+@media (max-width: 600px) {
+  nav { display: none; }   /* só em ecrãs estreitos */
+}</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Quando algo não aparece como esperavas</h3>
+      <div class="t-wrap"><table class="t">
+        <thead><tr><th>Sintoma</th><th>Costuma ser</th></tr></thead>
+        <tbody>
+          <tr><td>a regra não faz nada</td><td>falta um <code>;</code> ou uma <code>}</code>; propriedade mal escrita; valor sem unidade (<code>20</code> em vez de <code>20px</code>)</td></tr>
+          <tr><td>a regra só funciona em parte dos elementos</td><td>outra regra mais específica ganha (vê-a com F12)</td></tr>
+          <tr><td>o seletor não encontra nada</td><td>faltou o <code>.</code> da classe ou o <code>#</code> do id; ou puseste o ponto no HTML</td></tr>
+          <tr><td>o width não muda nada</td><td>o elemento é inline: usa <code>inline-block</code> ou <code>block</code></td></tr>
+          <tr><td>as caixas não cabem lado a lado</td><td>o padding e a borda somam-se ao width: usa <code>border-box</code></td></tr>
+          <tr><td>os acentos aparecem trocados</td><td>falta o <code>&lt;meta charset="utf-8"&gt;</code></td></tr>
+          <tr><td>a imagem não aparece</td><td>caminho errado no <code>src</code> (maiúsculas contam, e a pasta tem de ser a certa)</td></tr>
+          <tr><td>no telemóvel fica tudo minúsculo</td><td>falta o <code>&lt;meta name="viewport"&gt;</code></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="box">
+      <h3>Antes de entregar</h3>
+      <ul class="checklist">
+        <li>Todas as etiquetas que abriste estão fechadas, pela ordem certa.</li>
+        <li>Há um só <code>h1</code> e os títulos seguem a ordem (h2 dentro de h1, h3 dentro de h2).</li>
+        <li>Todas as imagens têm <code>alt</code> e todos os campos têm <code>label</code>.</li>
+        <li>As ligações para outros sites começam por <code>https://</code>.</li>
+        <li>O CSS está num ficheiro à parte (ou num <code>&lt;style&gt;</code>), não em atributos <code>style</code>.</li>
+        <li>As cores, tamanhos e espaços repetidos estão numa classe, não copiados.</li>
+        <li>Abriste a página num ecrã estreito (F12, modo telemóvel) para ver se se adapta.</li>
+      </ul>
+    </div>
+  </div>
+</template>
+
+<script>
+const COURSE = {"slug":"html","title":"HTML e CSS do Zero","storageKey":"htmldozero-progresso-v1","cheatTitle":"Cábula de HTML e CSS","vizLabels":null};
+// Realce de sintaxe para HTML e CSS (no mesmo ficheiro). Cada grupo corresponde a uma classe em "classes":
+// comentários, textos entre aspas, etiquetas, nomes de atributos, propriedades CSS e números/cores.
+const SYNTAX = {
+  re: /(<!--.*?-->|\/\*.*?\*\/)|("[^"]*")|(<!DOCTYPE|<\/?[a-zA-Z][a-zA-Z0-9]*|\/?>)|\b([a-z-]+)(?==)|\b([a-z-]+)(?=\s*:\s*[^;{}<>]*;)|(#[0-9a-fA-F]{3,6}\b|\b\d+(?:\.\d+)?(?:px|rem|em|%|vw|vh|fr)?)/g,
+  classes: ['com', 'str', 'kw', 'ty', 'fn', 'num'],
+};
+
+// ===== Visualizador de páginas (curso de HTML e CSS) =====
+// Troca o painel "Memória + Ecrã" por três: a própria página (um iframe), a árvore DOM e um inspetor
+// com o modelo de caixa do elemento em destaque. Tudo o que aparece é calculado pelo browser que mostra
+// a página, por isso nunca contradiz o que se vê. Só entra nas páginas com viz: 'page'.
+// Campos de um passo: sel (seletor dos elementos em destaque), box (seletor do elemento no inspetor),
+// width (largura da página em px, para as media queries). Um exemplo com build: [de, até] mostra as linhas
+// desse intervalo a aparecer uma a uma, até à linha do passo.
+
+// O HTML da página num passo: as linhas do intervalo "build" que ainda não chegaram desaparecem.
+// Também corre em Node (o runner usa-o para verificar cada passo).
+function pageAt(ex, line) {
+  const lines = ex.code.split('\n');
+  if (!ex.build) return ex.code;
+  const [from, to] = ex.build;
+  return lines.filter((_, i) => i + 1 < from || i + 1 > to || i + 1 <= line).join('\n');
+}
+
+const VIZ_SIDE = (function () {
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  // O destaque é só um contorno, para não mudar as cores da página que se está a estudar.
+  const HL_STYLE = '<style>.__hl { outline: 3px solid #f5b400 !important; outline-offset: 2px !important; }</style>';
+
+  // A árvore DOM do body, com os elementos em destaque marcados.
+  function treeHtml(el, depth, hits) {
+    if (depth > 8) return '';
+    return Array.from(el.children).map(child => {
+      const tag = child.tagName.toLowerCase();
+      if (tag === 'script' || tag === 'style') return '';
+      const id = child.id ? '<span class="t-id">#' + esc(child.id) + '</span>' : '';
+      const cls = child.classList.length ? '<span class="t-cls">.' + esc(Array.from(child.classList).filter(c => c !== '__hl').join('.')) + '</span>' : '';
+      const own = Array.from(child.childNodes).filter(n => n.nodeType === 3).map(n => n.textContent).join(' ').trim();
+      const text = own ? '<span class="t-txt">' + esc(own.length > 28 ? own.slice(0, 28) + '…' : own) + '</span>' : '';
+      return '<div class="tnode' + (hits.includes(child) ? ' hit' : '') + '" style="padding-left:' + (depth * 14) + 'px">' +
+        '<span class="t-tag">&lt;' + tag + '&gt;</span>' + id + cls + text + '</div>' + treeHtml(child, depth + 1, hits);
+    }).join('');
+  }
+
+  // O modelo de caixa de um elemento: margem, borda, enchimento (padding) e conteúdo, em píxeis.
+  function boxHtml(el, win) {
+    const cs = win.getComputedStyle(el);
+    const px = p => Math.round(parseFloat(cs.getPropertyValue(p)) || 0);
+    const side = name => [px(name + '-top'), px(name + '-right'), px(name + '-bottom'), px(name + '-left')];
+    const b = ['border-top-width', 'border-right-width', 'border-bottom-width', 'border-left-width'].map(px);
+    const m = side('margin');
+    const p = side('padding');
+    const cw = Math.round(el.clientWidth - p[1] - p[3]);
+    const ch = Math.round(el.clientHeight - p[0] - p[2]);
+    const tag = el.tagName.toLowerCase() + (el.id ? '#' + el.id : '') + (el.classList.length ? '.' + Array.from(el.classList).filter(c => c !== '__hl').join('.') : '');
+    const ring = (label, v, inner, cls) => '<div class="bx ' + cls + '"><span class="bx-l">' + label + '</span>' +
+      '<span class="bx-t">' + v[0] + '</span><div class="bx-mid"><span>' + v[3] + '</span>' + inner + '<span>' + v[1] + '</span></div><span class="bx-t">' + v[2] + '</span></div>';
+    const content = '<div class="bx bx-c">' + (el.clientWidth ? cw + ' × ' + ch : 'inline') + '</div>';
+    return '<div class="insp-head"><code>' + esc(tag) + '</code><span>largura total: ' + el.offsetWidth + 'px</span></div>' +
+      ring('margin', m, ring('border', b, ring('padding', p, content, 'bx-p'), 'bx-b'), 'bx-m') +
+      '<div class="insp-props"><span>display</span><code>' + esc(cs.display) + '</code><span>color</span><code>' + esc(cs.color) + '</code>' +
+      '<span>background</span><code>' + esc(cs.backgroundColor) + '</code><span>font-size</span><code>' + esc(cs.fontSize) + '</code></div>';
+  }
+
+  // Depois de a página carregar: destaca os elementos, desenha a árvore e o inspetor.
+  function decorate(host, step) {
+    const frame = host.querySelector('.preview');
+    const doc = frame.contentDocument;
+    if (!doc || !doc.body) return;
+    doc.querySelectorAll('.__hl').forEach(e => e.classList.remove('__hl'));
+    let hits = [];
+    if (step.sel) { try { hits = Array.from(doc.querySelectorAll(step.sel)); } catch (e) { hits = []; } }
+    hits.forEach(e => e.classList.add('__hl'));
+    host.querySelector('.dom').innerHTML = treeHtml(doc.body, 0, hits) || '<p class="mem-empty">O body ainda está vazio.</p>';
+    const target = step.box ? doc.querySelector(step.box) : hits[0];
+    host.querySelector('.insp').innerHTML = target ? boxHtml(target, frame.contentWindow) : '<p class="mem-empty">Nenhum elemento em destaque.</p>';
+  }
+
+  return {
+    panelsHtml() {
+      return '<div class="panel"><div class="panel-label"><span>Página</span><span>contorno amarelo = em destaque</span></div><div class="page-box"><iframe class="preview" title="Página do exemplo"></iframe></div></div>' +
+        '<div class="panel"><div class="panel-label"><span>Árvore (DOM)</span></div><div class="mem dom"></div></div>' +
+        '<div class="panel"><div class="panel-label"><span>Inspetor</span><span>modelo de caixa, em px</span></div><div class="mem insp"></div></div>';
+    },
+    // helpers.ex vem do template: o exemplo inteiro (código e intervalo "build").
+    render(host, step, prev, helpers) {
+      const frame = host.querySelector('.preview');
+      frame.style.width = step.width ? step.width + 'px' : '100%';
+      const html = pageAt(helpers.ex, step.l) + HL_STYLE;
+      if (host.__html === html) { decorate(host, step); return; }
+      host.__html = html;
+      frame.onload = () => decorate(host, step);
+      frame.srcdoc = html;
+    },
+    // Nos exercícios, o "resultado esperado" é a página da solução, desenhada pelo browser.
+    exerciseHtml(ex) {
+      return '<div><div class="ex-label">Resultado esperado</div><div class="page-box"><iframe class="preview" title="Resultado esperado" srcdoc="' + esc(ex.solution) + '"></iframe></div></div>';
+    },
+  };
+})();
+
+if (typeof module !== 'undefined') module.exports = { pageAt };
+
+</script>
+<script>
+// ===== Motor do visualizador: transforma a lista de passos de um exemplo em fotografias da memória. =====
+// É partilhado por todos os cursos e corre tanto na página como nos testes (shared/check.js).
+function parseVarPath(key) {
+  const m = key.match(/^([A-Za-z_]\w*)(.*)$/);
+  if (!m) throw new Error('caminho inválido: ' + key);
+  const path = [];
+  const re = /\[(\d+)\]|\.([A-Za-z_]\w*)/g;
+  let t;
+  let consumed = 0;
+  while ((t = re.exec(m[2]))) {
+    path.push(t[1] !== undefined ? Number(t[1]) : t[2]);
+    consumed += t[0].length;
+  }
+  if (consumed !== m[2].length) throw new Error('caminho inválido: ' + key);
+  return { name: m[1], path };
+}
+
+// ---------- tabelas (cursos de SQL) ----------
+// Uma coluna escreve-se como no CREATE TABLE: ['numero', 'INTEGER PRIMARY KEY'] ou ['curso', 'INTEGER REFERENCES cursos(id)'].
+function parseColumn(spec) {
+  const [name, def] = spec;
+  const fk = /REFERENCES\s+(\w+)\s*\((\w+)\)/i.exec(def);
+  return {
+    name,
+    def,
+    type: def.split(/\s+/)[0].toUpperCase(),
+    pk: /PRIMARY\s+KEY/i.test(def),
+    fk: fk ? fk[1] + '.' + fk[2] : null,
+  };
+}
+
+// Transforma { cols, key?, rows? } numa tabela do motor. Cada linha leva um id interno,
+// para o visualizador saber que linha é qual mesmo depois de outras serem apagadas.
+function makeTable(spec, nextId) {
+  const cols = spec.cols.map(parseColumn);
+  (spec.key || []).forEach(k => {
+    const col = cols.find(c => c.name === k);
+    if (!col) throw new Error('chave com coluna inexistente: ' + k);
+    col.pk = true;
+  });
+  const table = { cols, rows: [] };
+  (spec.rows || []).forEach(cells => addRow(table, cells, nextId));
+  return table;
+}
+
+function addRow(table, cells, nextId) {
+  if (cells.length !== table.cols.length) throw new Error('linha com ' + cells.length + ' valores numa tabela com ' + table.cols.length + ' colunas');
+  table.rows.push({ id: nextId(), cells: cells.slice() });
+}
+
+// Aplica as operações de tabelas de um passo: create, ins, upd, del, drop.
+function applyTableOps(tables, s, where, nextId) {
+  const find = name => {
+    if (!tables[name]) throw new Error('tabela inexistente: ' + name + where);
+    return tables[name];
+  };
+  if (s.create) {
+    for (const [name, spec] of Object.entries(s.create)) {
+      if (tables[name]) throw new Error('tabela repetida: ' + name + where);
+      tables[name] = makeTable(spec, nextId);
+    }
+  }
+  if (s.ins) {
+    for (const [name, rows] of Object.entries(s.ins)) rows.forEach(cells => addRow(find(name), cells, nextId));
+  }
+  if (s.upd) {
+    for (const [name, changes] of Object.entries(s.upd)) {
+      const t = find(name);
+      for (const [index, sets] of Object.entries(changes)) {
+        const row = t.rows[Number(index)];
+        if (!row) throw new Error('linha inexistente: ' + name + '[' + index + ']' + where);
+        for (const [col, value] of Object.entries(sets)) {
+          const c = t.cols.findIndex(x => x.name === col);
+          if (c < 0) throw new Error('coluna inexistente: ' + name + '.' + col + where);
+          row.cells[c] = value;
+        }
+      }
+    }
+  }
+  if (s.del) {
+    for (const [name, indexes] of Object.entries(s.del)) {
+      const t = find(name);
+      indexes.forEach(i => { if (!t.rows[i]) throw new Error('apagar linha inexistente: ' + name + '[' + i + ']' + where); });
+      t.rows = t.rows.filter((_, i) => !indexes.includes(i));
+    }
+  }
+  if (s.drop) s.drop.forEach(name => { find(name); delete tables[name]; });
+  // tm: marcas que só valem neste passo, por exemplo as linhas que o WHERE de um UPDATE encontrou.
+  if (s.tm) {
+    for (const [name, marks] of Object.entries(s.tm)) {
+      const t = find(name);
+      Object.keys(marks).forEach(i => { if (!t.rows[i]) throw new Error('marca em linha inexistente: ' + name + '[' + i + ']' + where); });
+    }
+  }
+}
+
+// g: a grelha de trabalho de uma consulta (o que o FROM, o WHERE, o GROUP BY... já construíram).
+function checkGrid(g, where) {
+  if (g === null) return;
+  if (!Array.isArray(g.cols) || !Array.isArray(g.rows)) throw new Error('grelha sem cols ou rows' + where);
+  g.rows.forEach(r => { if (r.length !== g.cols.length) throw new Error('linha da grelha com ' + r.length + ' valores e ' + g.cols.length + ' colunas' + where); });
+  if (g.marks && g.marks.length !== g.rows.length) throw new Error('marks da grelha com tamanho diferente das linhas' + where);
+  if (g.groups && g.groups.reduce((a, b) => a + b, 0) !== g.rows.length) throw new Error('groups da grelha não somam o número de linhas' + where);
+}
+
+// ---------- referências e objetos (cursos de Python, C#, ...) ----------
+// Um valor que começa por @ é uma referência para um objeto do heap: '@o1'.
+const isRef = v => typeof v === 'string' && v.charAt(0) === '@';
+
+// Todas as referências que um valor contém (o próprio valor, os elementos de uma lista, os campos de um objeto).
+function refsIn(value) {
+  if (isRef(value)) return [value.slice(1)];
+  if (Array.isArray(value)) return value.flatMap(refsIn);
+  if (value && typeof value === 'object') return Object.values(value).flatMap(refsIn);
+  return [];
+}
+
+// Os objetos a que já ninguém chega, partindo dos nomes de todos os frames.
+function unreachable(frames, heap) {
+  const seen = new Set();
+  const visit = id => {
+    if (seen.has(id) || !heap[id]) return;
+    seen.add(id);
+    refsIn(heap[id].value).forEach(visit);
+  };
+  frames.forEach(f => f.vars.forEach(v => refsIn(v.value).forEach(visit)));
+  return Object.keys(heap).filter(id => !seen.has(id));
+}
+
+// initialTables: a base de dados com que o exemplo começa ({ nome: { cols, rows } }), ou nada.
+function buildSteps(raw, initialTables) {
+  let frames = [];
+  let out = '';
+  let lastId = 0;
+  const nextId = () => ++lastId;
+  let tables = {};
+  for (const [name, spec] of Object.entries(initialTables || {})) tables[name] = makeTable(spec, nextId);
+  let grid = null;
+  // heap: os objetos ({ id: { type, value } }). Um objeto sem nomes aparece desbotado num passo e desaparece no seguinte.
+  let heap = {};
+  let orphans = [];
+  const res = [];
+  raw.forEach((s, idx) => {
+    frames = JSON.parse(JSON.stringify(frames));
+    tables = JSON.parse(JSON.stringify(tables));
+    heap = JSON.parse(JSON.stringify(heap));
+    orphans.forEach(id => { delete heap[id]; });
+    const where = ' (passo ' + (idx + 1) + ')';
+    applyTableOps(tables, s, where, nextId);
+    // obj: cria ou muda objetos: { o1: ['list', ['@o2', 3]] }
+    if (s.obj) {
+      for (const [id, spec] of Object.entries(s.obj)) heap[id] = { type: spec[0], value: JSON.parse(JSON.stringify(spec[1])) };
+    }
+    if (s.g !== undefined) {
+      checkGrid(s.g, where);
+      grid = JSON.parse(JSON.stringify(s.g));
+    }
+    const findFrame = name => {
+      for (let i = frames.length - 1; i >= 0; i--) if (frames[i].name === name) return frames[i];
+      throw new Error('frame inexistente: ' + name + where);
+    };
+    if (s.pop) {
+      if (!frames.length) throw new Error('pop sem frames' + where);
+      frames.pop();
+    }
+    if (s.push) frames.push({ name: s.push, vars: [] });
+    if (s.x) {
+      for (const [fn, names] of Object.entries(s.x)) {
+        const f = findFrame(fn);
+        names.forEach(n => {
+          if (!f.vars.some(v => v.name === n)) throw new Error('apagar variável inexistente: ' + n + where);
+        });
+        f.vars = f.vars.filter(v => !names.includes(v.name));
+      }
+    }
+    if (s.d) {
+      for (const [fn, vars] of Object.entries(s.d)) {
+        const f = findFrame(fn);
+        for (const [name, spec] of Object.entries(vars)) {
+          if (f.vars.some(v => v.name === name)) throw new Error('variável repetida: ' + name + where);
+          const [type, value, addr] = spec;
+          f.vars.push({ name, type, value: JSON.parse(JSON.stringify(value)), addr: addr || null });
+        }
+      }
+    }
+    if (s.u) {
+      for (const [fn, sets] of Object.entries(s.u)) {
+        const f = findFrame(fn);
+        for (const [key, value] of Object.entries(sets)) {
+          const { name, path } = parseVarPath(key);
+          const v = f.vars.find(x => x.name === name);
+          if (!v) throw new Error('atualizar variável inexistente: ' + name + where);
+          if (!path.length) { v.value = value; continue; }
+          let target = v.value;
+          for (let i = 0; i < path.length - 1; i++) {
+            target = target[path[i]];
+            if (target === undefined) throw new Error('caminho inexistente: ' + key + where);
+          }
+          const last = path[path.length - 1];
+          if (target[last] === undefined) throw new Error('caminho inexistente: ' + key + where);
+          target[last] = value;
+        }
+      }
+    }
+    if (s.o) out += s.o;
+    // Todas as referências têm de apontar para objetos que existem.
+    const allValues = frames.flatMap(f => f.vars.map(v => v.value)).concat(Object.values(heap).map(o => o.value));
+    allValues.flatMap(refsIn).forEach(id => { if (!heap[id]) throw new Error('referência para um objeto inexistente: @' + id + where); });
+    orphans = unreachable(frames, heap);
+    // sel, box, chk e width são do curso de HTML: o visualizador da página lê-os de cada passo.
+    res.push({ l: s.l, frames, out, n: s.n || '', tables, tmarks: s.tm || {}, grid, err: s.err || '', heap, orphans, sel: s.sel || null, box: s.box || null, width: s.width || null });
+  });
+  return res;
+}
+
+if (typeof module !== 'undefined') module.exports = { buildSteps, parseVarPath, makeTable };
+
+</script>
+<script>
+// ===== HTML e CSS do Zero — conteúdo das lições (parte 1) =====
+// Formato de um passo do visualizador da página:
+//   l: linha em destaque   n: explicação
+//   sel: seletor dos elementos com contorno amarelo na página e na árvore DOM
+//   box: seletor do elemento mostrado no inspetor (modelo de caixa)
+//   chk: [[seletor, o quê, valor esperado], ...]  afirmações verificadas no browser pelo check
+//        o quê: 'count', 'text', 'width', 'height' ou uma propriedade CSS (as cores com nome em português)
+//   width: largura da página em px (para as media queries)
+// Um exemplo com build: [de, até] mostra as linhas desse intervalo a aparecer até à linha do passo.
+// Perguntas com check: true têm ask: [seletor, o quê], e a resposta certa é a medição no browser.
+// Os exercícios têm tests: [[seletor, o quê, valor], ...] em vez de "run".
+const C = (s, ...v) => String.raw(s, ...v).replace(/^\n/, '').replace(/\n\s*$/, '');
+const H = (s, ...v) => String.raw(s, ...v);
+const LESSONS = [];
+
+// ---------------------------------------------------------------- 0
+LESSONS.push({
+  id: 0,
+  title: 'O que é uma página web',
+  short: 'etiquetas, elementos e o esqueleto de um ficheiro HTML',
+  body: H`
+<p>Uma página web é um ficheiro de texto (por exemplo <code>index.html</code>) que o browser lê e desenha. O <strong>HTML</strong> não é uma linguagem de programação como o C: não tem variáveis nem ciclos. É uma linguagem de <strong>marcação</strong>: diz o que cada pedaço de texto <em>é</em> (um título, um parágrafo, uma lista).</p>
+<ul>
+<li>Marca-se com <strong>etiquetas</strong> (tags): <code>&lt;p&gt;</code> abre um parágrafo e <code>&lt;/p&gt;</code> fecha-o. Tudo junto, <code>&lt;p&gt;Olá&lt;/p&gt;</code>, é um <strong>elemento</strong>.</li>
+<li>Os elementos encaixam uns dentro dos outros, como caixas: fecha-se sempre primeiro o que se abriu por último.</li>
+<li>Todo o ficheiro tem um esqueleto: <code>&lt;!DOCTYPE html&gt;</code>, depois <code>&lt;html&gt;</code> com um <code>&lt;head&gt;</code> (informação sobre a página, que não aparece) e um <code>&lt;body&gt;</code> (o que aparece).</li>
+<li>Os espaços e as mudanças de linha a mais no texto não contam: o browser junta-os num só espaço.</li>
+</ul>
+<p>Para ver uma página, basta abrir o ficheiro no browser. Não há compilação.</p>`,
+  analogy: 'O HTML é como as marcas que um professor faz num texto antes de o mandar para a gráfica: "isto é título", "isto é um parágrafo", "isto é uma lista". O browser é a gráfica: lê as marcas e imprime cada coisa com o aspeto certo.',
+  examples: [{
+    title: 'O esqueleto de uma página',
+    build: [8, 10],
+    code: C`
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="utf-8">
+  <title>A minha página</title>
+</head>
+<body>
+  <h1>Olá, mundo!</h1>
+  <p>Esta é a minha primeira página.</p>
+  <p>O browser lê o HTML e desenha-o.</p>
+</body>
+</html>`,
+    steps: [
+      { l: 1, n: H`<code>&lt;!DOCTYPE html&gt;</code> diz ao browser que este é um documento HTML moderno. Vai sempre na primeira linha.` },
+      { l: 2, n: H`<code>&lt;html&gt;</code> embrulha a página toda. <code>lang="pt"</code> é um <strong>atributo</strong>: uma informação extra sobre o elemento (aqui, a língua).` },
+      { l: 4, n: H`Dentro do <code>&lt;head&gt;</code> fica o que não aparece na página. <code>charset="utf-8"</code> faz os acentos aparecerem bem.` },
+      { l: 5, n: H`O <code>&lt;title&gt;</code> é o texto que aparece no separador do browser, não na página.` },
+      { l: 7, n: H`O <code>&lt;body&gt;</code> é o corpo: o que se vê. Por enquanto está vazio, por isso a página está em branco.` },
+      { l: 8, sel: 'h1', chk: [['h1', 'count', 1]], n: H`<code>&lt;h1&gt;</code> é o título principal. O browser desenha-o grande e em negrito, sem lhe pedirmos.` },
+      { l: 9, sel: 'p', chk: [['p', 'count', 1]], n: H`<code>&lt;p&gt;</code> é um parágrafo. Repara na árvore DOM: o h1 e o p estão os dois dentro do body.` },
+      { l: 10, sel: 'p', chk: [['p', 'count', 2]], n: 'Outro parágrafo. Cada parágrafo começa numa linha nova, com um espaço por cima e por baixo.' },
+      { l: 11, n: H`<code>&lt;/body&gt;</code> e <code>&lt;/html&gt;</code> fecham o que foi aberto, pela ordem inversa.` },
+    ],
+  }],
+  mistakes: [
+    H`Esquecer de fechar uma etiqueta (<code>&lt;p&gt;texto</code> sem <code>&lt;/p&gt;</code>). O browser tenta adivinhar, e às vezes adivinha mal.`,
+    H`Fechar pela ordem errada: <code>&lt;p&gt;&lt;strong&gt;olá&lt;/p&gt;&lt;/strong&gt;</code>. Fecha-se primeiro o último que se abriu.`,
+    H`Pôr conteúdo visível dentro do <code>&lt;head&gt;</code>: tudo o que se quer ver vai no <code>&lt;body&gt;</code>.`,
+    H`Esperar que vários espaços ou linhas em branco apareçam na página: o browser junta-os num só espaço.`,
+    H`Esquecer o <code>&lt;meta charset="utf-8"&gt;</code> e ver os acentos aparecerem trocados.`,
+  ],
+  quiz: [
+    { q: 'Quantos elementos <li> tem esta página?', code: C`
+<ul>
+  <li>Pão</li>
+  <li>Leite</li>
+</ul>
+<p>Fim da lista</p>`, ask: ['li', 'count'], opts: ['1', '2', '3', '4'], ok: 1, check: true,
+      exp: H`Há dois <code>&lt;li&gt;</code> (itens de lista). O <code>&lt;ul&gt;</code> é a lista que os contém, e o <code>&lt;p&gt;</code> é um parágrafo à parte.` },
+    { q: 'Que texto aparece na página?', code: C`<p>Um    espaço       largo</p>`, ask: ['p', 'text'], opts: ['Um    espaço       largo', 'Um espaço largo', 'Umespaçolargo', 'Um\nespaço\nlargo'], ok: 1, mono: true, check: true,
+      exp: 'O browser junta qualquer sequência de espaços (e mudanças de linha) num só espaço.' },
+    { q: 'Onde fica o conteúdo que se vê na página?', opts: ['No <head>', 'No <body>', 'No <title>', 'Antes do <!DOCTYPE html>'], ok: 1, mono: true,
+      exp: H`O <code>&lt;head&gt;</code> tem informação sobre a página (o título do separador, o charset); o que se vê vai no <code>&lt;body&gt;</code>.` },
+    { q: 'Qual destas linhas está bem escrita?', opts: ['<p>Olá <strong>mundo</strong></p>', '<p>Olá <strong>mundo</p></strong>', '<p>Olá <strong>mundo<p></strong>', 'p>Olá mundo</p'], ok: 0, mono: true,
+      exp: H`O <code>&lt;strong&gt;</code> foi aberto dentro do <code>&lt;p&gt;</code>, por isso tem de fechar antes dele. Cada etiqueta fecha com uma barra: <code>&lt;/p&gt;</code>.` },
+  ],
+  exercises: [{
+    title: 'Apresenta-te',
+    text: 'Escreve uma página completa (com o esqueleto) com o título "Ana Silva" num h1 e dois parágrafos: um com o curso e outro com o ano.',
+    hint: H`Copia o esqueleto do exemplo e troca o conteúdo do <code>&lt;body&gt;</code>.`,
+    tests: [['h1', 'text', 'Ana Silva'], ['p', 'count', 2]],
+    solution: C`
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="utf-8">
+  <title>Sobre mim</title>
+</head>
+<body>
+  <h1>Ana Silva</h1>
+  <p>Engenharia Informática</p>
+  <p>1.º ano</p>
+</body>
+</html>`,
+  }, {
+    title: 'Título do separador',
+    text: 'Escreve uma página cujo separador do browser diga "O meu curso" e cujo título principal (h1) diga "Engenharia Informática".',
+    hint: H`O texto do separador vai no <code>&lt;title&gt;</code>, dentro do head; o da página vai no <code>&lt;h1&gt;</code>, dentro do body.`,
+    tests: [['title', 'text', 'O meu curso'], ['h1', 'text', 'Engenharia Informática']],
+    solution: C`
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="utf-8">
+  <title>O meu curso</title>
+</head>
+<body>
+  <h1>Engenharia Informática</h1>
+</body>
+</html>`,
+  }],
+});
+
+// ---------------------------------------------------------------- 1
+LESSONS.push({
+  id: 1,
+  title: 'Texto, títulos e listas',
+  short: 'h1 a h6, p, strong, em, br, listas ul e ol',
+  body: H`
+<p>A partir daqui, para poupar espaço, os exemplos mostram só o conteúdo do <code>&lt;body&gt;</code>. O browser acrescenta o resto do esqueleto sozinho, mas nos teus ficheiros escreve-o sempre.</p>
+<table class="t">
+<thead><tr><th>Elemento</th><th>Serve para</th></tr></thead>
+<tbody>
+<tr><td><code>&lt;h1&gt;</code> a <code>&lt;h6&gt;</code></td><td>títulos, do mais importante (h1) ao menos importante (h6)</td></tr>
+<tr><td><code>&lt;p&gt;</code></td><td>um parágrafo</td></tr>
+<tr><td><code>&lt;strong&gt;</code></td><td>texto importante (aparece em negrito)</td></tr>
+<tr><td><code>&lt;em&gt;</code></td><td>ênfase (aparece em itálico)</td></tr>
+<tr><td><code>&lt;br&gt;</code></td><td>muda de linha dentro de um parágrafo (não se fecha)</td></tr>
+<tr><td><code>&lt;ul&gt;</code> / <code>&lt;ol&gt;</code></td><td>lista com marcas / lista numerada, com um <code>&lt;li&gt;</code> por item</td></tr>
+<tr><td><code>&lt;!-- ... --&gt;</code></td><td>comentário: o browser ignora-o</td></tr>
+</tbody>
+</table>
+<p>Escolhe o elemento pelo que o texto <strong>é</strong>, não pelo aspeto: o aspeto muda-se depois com CSS. Um h2 é um subtítulo, mesmo que o queiras pequeno.</p>`,
+  analogy: 'Os títulos h1 a h6 são como o índice de um livro: capítulo (h1), secção (h2), subsecção (h3). Quem lê (e o Google, e um leitor de ecrã para cegos) usa-os para perceber como o texto está organizado.',
+  examples: [{
+    title: 'Uma receita',
+    build: [1, 13],
+    code: C`
+<h1>Receita de panquecas</h1>
+<p>Uma receita <strong>fácil</strong> e <em>rápida</em>.</p>
+<h2>Ingredientes</h2>
+<ul>
+  <li>2 ovos</li>
+  <li>1 chávena de farinha</li>
+  <li>1 chávena de leite</li>
+</ul>
+<h2>Passos</h2>
+<ol>
+  <li>Mistura tudo.</li>
+  <li>Frita em lume brando.</li>
+</ol>`,
+    steps: [
+      { l: 1, sel: 'h1', n: 'O título principal da página.' },
+      { l: 2, sel: 'strong', chk: [['strong', 'font-weight', '700']], n: H`<code>&lt;strong&gt;</code> marca a palavra como importante; o browser mostra-a em negrito (peso 700).` },
+      { l: 2, sel: 'em', chk: [['em', 'font-style', 'italic']], n: H`<code>&lt;em&gt;</code> dá ênfase, em itálico. Os dois ficam <strong>dentro</strong> do parágrafo: são elementos em linha (inline), não começam linha nova.` },
+      { l: 3, sel: 'h2', n: 'Um subtítulo, menor do que o h1.' },
+      { l: 8, sel: 'ul li', chk: [['ul li', 'count', 3]], n: H`Uma lista com marcas: o <code>&lt;ul&gt;</code> é a lista e cada <code>&lt;li&gt;</code> é um item.` },
+      { l: 13, sel: 'ol li', chk: [['ol li', 'count', 2]], n: H`Com <code>&lt;ol&gt;</code> a lista fica numerada. O browser conta sozinho: não escreves os números.` },
+    ],
+  }],
+  mistakes: [
+    H`Usar <code>&lt;h1&gt;</code> só porque o texto é grande: a escolha do título é pela importância; o tamanho trata-se com CSS.`,
+    H`Pôr texto solto dentro de um <code>&lt;ul&gt;</code> sem <code>&lt;li&gt;</code>.`,
+    H`Usar muitos <code>&lt;br&gt;</code> para afastar parágrafos. Usa <code>&lt;p&gt;</code> diferentes (e CSS para os espaços).`,
+    H`Escrever os números à mão numa lista: usa <code>&lt;ol&gt;</code>.`,
+  ],
+  quiz: [
+    { q: 'Quantos elementos <li> tem esta página?', code: C`
+<ol>
+  <li>Programação</li>
+  <li>Matemática
+    <ul>
+      <li>Álgebra</li>
+      <li>Cálculo</li>
+    </ul>
+  </li>
+</ol>`, ask: ['li', 'count'], opts: ['2', '3', '4', '5'], ok: 2, check: true,
+      exp: H`Uma lista pode estar dentro de um item de outra lista. Há 2 itens na lista de fora e 2 na de dentro: 4 <code>&lt;li&gt;</code> ao todo.` },
+    { q: 'Que texto aparece na página?', code: C`<p>Olá <!-- não mostrar --> mundo</p>`, ask: ['p', 'text'], opts: ['Olá mundo', 'Olá <!-- não mostrar --> mundo', 'Olá não mostrar mundo', 'Olá'], ok: 0, mono: true, check: true,
+      exp: 'O comentário é ignorado, e os espaços que ficam à volta dele juntam-se num só.' },
+    { q: 'Que texto aparece na página?', code: C`<p>Rua das Flores, 12<br>Vila Real</p>`, ask: ['p', 'text'], opts: ['Rua das Flores, 12 Vila Real', 'Rua das Flores, 12\nVila Real', 'Rua das Flores, 12<br>Vila Real', 'Vila Real'], ok: 1, mono: true, check: true,
+      exp: H`O <code>&lt;br&gt;</code> muda de linha dentro do mesmo parágrafo. Repara que não tem etiqueta de fecho.` },
+    { q: 'Que lista usas para os passos de uma receita, que têm ordem?', opts: ['<ul>', '<ol>', '<li>', '<p>'], ok: 1, mono: true,
+      exp: H`A ordem importa, por isso é uma lista numerada: <code>&lt;ol&gt;</code> (ordered list). <code>&lt;ul&gt;</code> é para itens sem ordem, como ingredientes.` },
+  ],
+  exercises: [{
+    title: 'Lista de compras',
+    text: 'Faz uma página com o título "Compras" (h1) e uma lista com marcas com três itens: pão, leite e fruta.',
+    hint: H`Um <code>&lt;ul&gt;</code> com três <code>&lt;li&gt;</code>.`,
+    tests: [['h1', 'text', 'Compras'], ['ul li', 'count', 3], ['li', 'text', 'pão']],
+    solution: C`
+<h1>Compras</h1>
+<ul>
+  <li>pão</li>
+  <li>leite</li>
+  <li>fruta</li>
+</ul>`,
+  }, {
+    title: 'O meu top 3',
+    text: 'Faz uma lista numerada com as tuas três UCs preferidas. Na primeira, marca o nome da UC como importante.',
+    hint: H`Um <code>&lt;ol&gt;</code> e, dentro do primeiro <code>&lt;li&gt;</code>, um <code>&lt;strong&gt;</code>.`,
+    tests: [['ol li', 'count', 3], ['li:first-child strong', 'count', 1]],
+    solution: C`
+<h1>As minhas UCs preferidas</h1>
+<ol>
+  <li><strong>Programação</strong></li>
+  <li>Bases de Dados</li>
+  <li>Sistemas Digitais</li>
+</ol>`,
+  }],
+});
+
+// ---------------------------------------------------------------- 2
+LESSONS.push({
+  id: 2,
+  title: 'Ligações e imagens',
+  short: 'a com href, caminhos relativos, img com src e alt',
+  body: H`
+<p>A "web" é feita de ligações entre páginas. Uma ligação escreve-se com <code>&lt;a&gt;</code> e o atributo <code>href</code> diz para onde vai:</p>
+<ul>
+<li><code>&lt;a href="https://www.utad.pt"&gt;UTAD&lt;/a&gt;</code>: um endereço completo, para outro site.</li>
+<li><code>&lt;a href="contactos.html"&gt;Contactos&lt;/a&gt;</code>: um <strong>caminho relativo</strong>, um ficheiro na mesma pasta. <code>fotos/praia.jpg</code> estaria na subpasta fotos; <code>../index.html</code>, na pasta de cima.</li>
+<li><code>&lt;a href="#fim"&gt;</code>: salta para o elemento com <code>id="fim"</code> na mesma página.</li>
+</ul>
+<p>Uma imagem escreve-se com <code>&lt;img src="logo.png" alt="Logótipo da UTAD"&gt;</code> (não tem etiqueta de fecho). O <code>alt</code> é o texto que aparece se a imagem não carregar e o que um leitor de ecrã lê a quem não vê: é obrigatório.</p>`,
+  analogy: 'Um href é a morada escrita num envelope. Uma morada completa (https://...) funciona de qualquer lado; uma relativa ("no 2.º andar") só faz sentido a partir de onde estás.',
+  examples: [{
+    title: 'Ligações e uma imagem',
+    code: C`
+<h1>Os meus links</h1>
+<p>Visita a <a href="https://www.utad.pt">página da UTAD</a>.</p>
+<p><a href="contactos.html">Contactos</a> (outra página do mesmo site)</p>
+<p><a href="#fim">Saltar para o fim</a></p>
+<img src="logo.png" alt="Logótipo da UTAD">
+<p id="fim">Fim da página.</p>`,
+    steps: [
+      { l: 2, sel: 'a[href^="https"]', n: H`Uma ligação para outro site: o <code>href</code> tem o endereço completo. O texto entre as etiquetas é o que aparece (sublinhado, a azul).` },
+      { l: 3, sel: 'a[href="contactos.html"]', n: H`Um caminho relativo: o browser procura <code>contactos.html</code> na mesma pasta desta página.` },
+      { l: 4, sel: 'a[href="#fim"]', chk: [['a', 'count', 3]], n: H`<code>#fim</code> salta para o elemento com <code>id="fim"</code>, nesta mesma página.` },
+      { l: 5, sel: 'img', n: H`Não existe nenhum <code>logo.png</code> ao lado deste exemplo, por isso a imagem não carrega e o browser mostra o texto do <code>alt</code>. É exatamente para isto que ele serve.` },
+      { l: 6, sel: '#fim', n: H`O destino da terceira ligação. Um <code>id</code> não se pode repetir na mesma página.` },
+    ],
+  }],
+  mistakes: [
+    H`Esquecer o <code>https://</code> num endereço de outro site: <code>href="www.utad.pt"</code> é lido como um ficheiro na mesma pasta.`,
+    H`Esquecer o <code>alt</code> nas imagens, ou escrever <code>alt="imagem"</code>, que não diz nada.`,
+    H`Usar caminhos do teu computador (<code>C:\Users\...\foto.jpg</code>): só funcionam no teu computador. Usa caminhos relativos.`,
+    H`Escrever "clica aqui" como texto da ligação: o texto deve dizer para onde vai.`,
+  ],
+  quiz: [
+    { q: 'Que texto aparece na página?', code: C`<a href="horario.html">Ver o horário</a>`, ask: ['a', 'text'], opts: ['horario.html', 'Ver o horário', 'a', 'href'], ok: 1, check: true,
+      exp: H`O que aparece é o conteúdo do elemento. O <code>href</code> não se vê: é para onde se vai ao carregar.` },
+    { q: 'Quantas ligações tem esta página?', code: C`
+<p>Ver <a href="a.html">A</a> e <a href="b.html">B</a>.</p>
+<img src="foto.jpg" alt="Foto">
+<p>Contacto: aluno@utad.pt</p>`, ask: ['a', 'count'], opts: ['1', '2', '3', '4'], ok: 1, check: true,
+      exp: H`Só os elementos <code>&lt;a&gt;</code> são ligações. Um email escrito no texto não é uma ligação (para isso seria <code>&lt;a href="mailto:..."&gt;</code>).` },
+    { q: 'Para que serve o atributo alt de uma imagem?', opts: ['Para mudar o tamanho', 'Para dar o texto que aparece se a imagem não carregar, e que os leitores de ecrã leem', 'Para dizer onde está o ficheiro', 'Para pôr uma legenda por baixo'], ok: 1,
+      exp: H`O <code>src</code> diz onde está o ficheiro; o <code>alt</code> descreve a imagem por palavras, para quem não a consegue ver.` },
+    { q: 'Uma página em site/index.html liga para a fotografia em site/fotos/praia.jpg. Que href usa?', opts: ['fotos/praia.jpg', '../fotos/praia.jpg', 'C:/site/fotos/praia.jpg', 'praia.jpg'], ok: 0, mono: true,
+      exp: H`A partir da pasta <code>site</code>, a fotografia está na subpasta <code>fotos</code>. O <code>../</code> subia uma pasta, e o caminho do disco só funcionava no teu computador.` },
+  ],
+  exercises: [{
+    title: 'Menu de navegação',
+    text: 'Faz um parágrafo com três ligações: Início (index.html), Horário (horario.html) e UTAD (https://www.utad.pt).',
+    hint: H`Três elementos <code>&lt;a&gt;</code>, cada um com o seu <code>href</code>.`,
+    tests: [['a', 'count', 3], ['a[href="horario.html"]', 'text', 'Horário'], ['a[href^="https"]', 'text', 'UTAD']],
+    solution: C`
+<p>
+  <a href="index.html">Início</a>
+  <a href="horario.html">Horário</a>
+  <a href="https://www.utad.pt">UTAD</a>
+</p>`,
+  }, {
+    title: 'Saltar para uma secção',
+    text: 'Faz uma página com uma ligação "Ir para os contactos" que salta para um título h2 "Contactos" mais abaixo, na mesma página.',
+    hint: H`O h2 leva <code>id="contactos"</code> e a ligação <code>href="#contactos"</code>.`,
+    tests: [['a[href="#contactos"]', 'count', 1], ['h2#contactos', 'text', 'Contactos']],
+    solution: C`
+<p><a href="#contactos">Ir para os contactos</a></p>
+<h1>A minha página</h1>
+<p>Algum texto.</p>
+<h2 id="contactos">Contactos</h2>
+<p>aluno@utad.pt</p>`,
+  }],
+});
+
+// ---------------------------------------------------------------- 3
+LESSONS.push({
+  id: 3,
+  title: 'Estrutura e a árvore DOM',
+  short: 'header, nav, main, footer, div, span e pais e filhos',
+  body: H`
+<p>Uma página tem zonas: o cabeçalho, o menu, o conteúdo principal, o rodapé. O HTML tem elementos para cada uma, chamados <strong>semânticos</strong> (dizem o que a zona é):</p>
+<table class="t">
+<thead><tr><th>Elemento</th><th>Zona</th></tr></thead>
+<tbody>
+<tr><td><code>&lt;header&gt;</code></td><td>o cabeçalho (logótipo, título)</td></tr>
+<tr><td><code>&lt;nav&gt;</code></td><td>o menu de navegação</td></tr>
+<tr><td><code>&lt;main&gt;</code></td><td>o conteúdo principal (só um por página)</td></tr>
+<tr><td><code>&lt;article&gt;</code>, <code>&lt;section&gt;</code></td><td>um artigo independente; uma secção de um tema</td></tr>
+<tr><td><code>&lt;footer&gt;</code></td><td>o rodapé</td></tr>
+<tr><td><code>&lt;div&gt;</code>, <code>&lt;span&gt;</code></td><td>caixas sem significado, só para agrupar (div em bloco, span dentro do texto)</td></tr>
+</tbody>
+</table>
+<p>O browser transforma o HTML numa <strong>árvore</strong>, o <strong>DOM</strong>: cada elemento é um nó, e os que estão lá dentro são os seus <strong>filhos</strong>. Vais usar esta árvore no CSS (para escolher elementos) e no JavaScript (para os mudar). No visualizador, o painel "Árvore (DOM)" mostra-a.</p>`,
+  analogy: 'O DOM é uma árvore genealógica: o body é o avô, o main é o pai, o article é o filho, e o h2 e o p dentro dele são irmãos.',
+  examples: [{
+    title: 'Um blogue',
+    build: [1, 13],
+    code: C`
+<header>
+  <h1>Blogue da Ana</h1>
+  <nav><a href="#">Início</a> <a href="#">Sobre</a></nav>
+</header>
+<main>
+  <article>
+    <h2>Primeiro artigo</h2>
+    <p>Hoje aprendi <span>HTML</span>.</p>
+  </article>
+</main>
+<footer>
+  <p>Feito por Ana</p>
+</footer>`,
+    steps: [
+      { l: 1, sel: 'header', n: H`O <code>&lt;header&gt;</code> ainda está vazio. Repara na árvore DOM: é filho do body.` },
+      { l: 3, sel: 'nav a', chk: [['header nav a', 'count', 2]], n: H`O menu: um <code>&lt;nav&gt;</code> com duas ligações. Na árvore, o h1 e o nav são irmãos, filhos do header.` },
+      { l: 7, sel: 'article h2', n: H`O conteúdo principal vai no <code>&lt;main&gt;</code>; cada artigo num <code>&lt;article&gt;</code>.` },
+      { l: 8, sel: 'span', chk: [['article p span', 'count', 1]], n: H`Um <code>&lt;span&gt;</code> agrupa um bocado de texto, sem mudar o aspeto. Serve para depois lhe dar estilo com CSS.` },
+      { l: 13, sel: 'footer', chk: [['body > *', 'count', 3]], n: 'O rodapé. O body tem 3 filhos diretos (header, main e footer), e cada um tem os seus.' },
+    ],
+  }],
+  mistakes: [
+    H`Fazer tudo com <code>&lt;div&gt;</code>: funciona, mas um <code>&lt;nav&gt;</code> ou um <code>&lt;footer&gt;</code> dizem ao browser (e a quem lê o código) o que cada zona é.`,
+    H`Pôr mais do que um <code>&lt;main&gt;</code> na página.`,
+    H`Confundir pai com antepassado: o pai é só o elemento imediatamente à volta.`,
+    H`Usar <code>&lt;span&gt;</code> para blocos grandes ou <code>&lt;div&gt;</code> no meio de uma frase.`,
+  ],
+  quiz: [
+    { q: 'Quantos elementos <p> há dentro do <main>?', code: C`
+<header><p>Topo</p></header>
+<main>
+  <p>Um</p>
+  <section><p>Dois</p></section>
+</main>
+<footer><p>Rodapé</p></footer>`, ask: ['main p', 'count'], opts: ['1', '2', '3', '4'], ok: 1, check: true,
+      exp: H`Contam todos os descendentes, não só os filhos diretos: o "Um" e o "Dois" (que está dentro de uma section, dentro do main). Os do header e do footer ficam de fora.` },
+    { q: 'Que texto tem o h2 que está dentro do article?', code: C`
+<h2>Notícias</h2>
+<article>
+  <h2>Exames na próxima semana</h2>
+</article>`, ask: ['article h2', 'text'], opts: ['Notícias', 'Exames na próxima semana', 'Notícias Exames na próxima semana', '(nenhum elemento)'], ok: 1, check: true,
+      exp: H`<code>article h2</code> quer dizer "um h2 dentro de um article". O primeiro h2 está fora.` },
+    { q: 'Em que elemento pões o menu com as ligações principais do site?', opts: ['<nav>', '<menu-site>', '<header>', '<span>'], ok: 0, mono: true,
+      exp: H`O menu de navegação vai num <code>&lt;nav&gt;</code> (que pode estar dentro do header). <code>&lt;menu-site&gt;</code> não existe.` },
+    { q: 'Em <main><article><p>Olá</p></article></main>, quem é o pai do <p>?', opts: ['O main', 'O article', 'O body', 'Não tem pai'], ok: 1, mono: true,
+      exp: 'O pai é o elemento imediatamente à volta: o article. O main é o avô.' },
+  ],
+  exercises: [{
+    title: 'Esqueleto de um site',
+    text: 'Faz uma página com um header (com um h1 "O meu site"), um main com dois parágrafos e um footer com um parágrafo de copyright.',
+    hint: H`Três zonas seguidas, filhas do body: <code>&lt;header&gt;</code>, <code>&lt;main&gt;</code> e <code>&lt;footer&gt;</code>.`,
+    tests: [['header h1', 'text', 'O meu site'], ['main p', 'count', 2], ['footer p', 'count', 1]],
+    solution: C`
+<header>
+  <h1>O meu site</h1>
+</header>
+<main>
+  <p>Bem-vindo ao meu site.</p>
+  <p>Aqui falo do que aprendo.</p>
+</main>
+<footer>
+  <p>© 2026 Ana Silva</p>
+</footer>`,
+  }, {
+    title: 'Dois artigos',
+    text: 'Dentro de um main, põe dois article, cada um com um h2 e um parágrafo.',
+    hint: H`<code>&lt;article&gt;&lt;h2&gt;...&lt;/h2&gt;&lt;p&gt;...&lt;/p&gt;&lt;/article&gt;</code>, duas vezes.`,
+    tests: [['main article', 'count', 2], ['article h2', 'count', 2], ['article p', 'count', 2]],
+    solution: C`
+<main>
+  <article>
+    <h2>Aula de HTML</h2>
+    <p>Aprendi as etiquetas principais.</p>
+  </article>
+  <article>
+    <h2>Aula de CSS</h2>
+    <p>Aprendi a mudar as cores.</p>
+  </article>
+</main>`,
+  }],
+});
+
+// ===== HTML e CSS do Zero — conteúdo das lições (parte 2) =====
+
+// ---------------------------------------------------------------- 4
+LESSONS.push({
+  id: 4,
+  title: 'Formulários e tabelas',
+  short: 'form, label, input, button, e tabelas com tr, th e td',
+  body: H`
+<p>Um <strong>formulário</strong> recolhe dados do utilizador. Cada campo é um <code>&lt;input&gt;</code> (sem etiqueta de fecho), e o atributo <code>type</code> diz que tipo de dado espera:</p>
+<ul>
+<li><code>type="text"</code>, <code>"email"</code>, <code>"password"</code>, <code>"number"</code>, <code>"checkbox"</code>... O browser adapta o campo (num telemóvel, um email mostra o teclado com @).</li>
+<li>Cada campo tem um <code>&lt;label&gt;</code>: <code>&lt;label for="nome"&gt;</code> liga-se ao <code>&lt;input id="nome"&gt;</code>. Carregar no texto da label põe o cursor no campo, e os leitores de ecrã sabem o que o campo pede.</li>
+<li>Um <code>&lt;button&gt;</code> dentro do <code>&lt;form&gt;</code> envia-o. (O que acontece depois é trabalho de JavaScript ou do servidor.)</li>
+</ul>
+<p>Uma <strong>tabela</strong> é para dados em linhas e colunas: <code>&lt;table&gt;</code>, uma <code>&lt;tr&gt;</code> por linha, e dentro dela <code>&lt;th&gt;</code> (célula de cabeçalho) ou <code>&lt;td&gt;</code> (célula normal). <code>&lt;thead&gt;</code> e <code>&lt;tbody&gt;</code> separam o cabeçalho do corpo.</p>`,
+  analogy: 'Um formulário HTML é um impresso em papel: cada caixa para escrever é um input, e o texto ao lado ("Nome:") é a label. Sem label, ninguém sabe o que escrever em cada caixa.',
+  examples: [{
+    title: 'Um formulário de inscrição',
+    build: [2, 7],
+    code: C`
+<form>
+  <label for="nome">Nome</label>
+  <input id="nome" type="text" placeholder="O teu nome">
+  <label for="email">Email</label>
+  <input id="email" type="email">
+  <label><input type="checkbox"> Aceito as regras</label>
+  <button type="submit">Enviar</button>
+</form>`,
+    steps: [
+      { l: 1, n: H`O <code>&lt;form&gt;</code> agrupa os campos. Ainda está vazio.` },
+      { l: 2, sel: 'label', n: H`Uma label, ligada ao campo com <code>id="nome"</code> pelo atributo <code>for</code>.` },
+      { l: 3, sel: '#nome', n: H`Um campo de texto. O <code>placeholder</code> é a dica que aparece lá dentro enquanto está vazio.` },
+      { l: 5, sel: '#email', n: H`<code>type="email"</code>: o browser já sabe que é um email e, ao enviar, avisa se faltar o @.` },
+      { l: 6, sel: 'input[type="checkbox"]', chk: [['input', 'count', 3]], n: H`Uma caixa para marcar. Aqui a label está à volta do input, o que também os liga, sem precisar de <code>for</code>.` },
+      { l: 7, sel: 'button', chk: [['button', 'text', 'Enviar']], n: 'O botão que envia o formulário.' },
+    ],
+  }, {
+    title: 'Uma pauta em tabela',
+    code: C`
+<table>
+  <thead>
+    <tr><th>Aluno</th><th>Nota</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Ana</td><td>17</td></tr>
+    <tr><td>Rui</td><td>9</td></tr>
+  </tbody>
+</table>`,
+    steps: [
+      { l: 3, sel: 'th', chk: [['th', 'count', 2], ['th', 'font-weight', '700']], n: H`A linha de cabeçalho: dois <code>&lt;th&gt;</code>, que o browser mostra em negrito e centrados.` },
+      { l: 6, sel: 'tbody tr:first-child td', n: H`Uma linha (<code>&lt;tr&gt;</code>) com duas células (<code>&lt;td&gt;</code>). A tabela não tem colunas escritas: são as células de cada linha que formam as colunas.` },
+      { l: 7, sel: 'tbody tr:last-child td', chk: [['td', 'count', 4], ['tbody tr:last-child td', 'text', 'Rui']], n: 'Outra linha. Há 4 células normais ao todo: 2 linhas × 2 colunas.' },
+    ],
+  }],
+  mistakes: [
+    H`Campos sem <code>&lt;label&gt;</code>: quem usa um leitor de ecrã não sabe o que o campo pede.`,
+    H`O <code>for</code> da label não bater certo com o <code>id</code> do input (por exemplo, uma maiúscula diferente).`,
+    H`Usar tabelas para arrumar a página em colunas: as tabelas são para dados; o arranjo da página faz-se com CSS.`,
+    H`Linhas com números de células diferentes: a tabela fica desalinhada.`,
+    H`Pôr o <code>&lt;td&gt;</code> diretamente dentro do <code>&lt;table&gt;</code>, sem <code>&lt;tr&gt;</code>.`,
+  ],
+  quiz: [
+    { q: 'Quantas células <td> tem esta tabela?', code: C`
+<table>
+  <tr><th>Dia</th><th>UC</th><th>Sala</th></tr>
+  <tr><td>2.ª</td><td>BD</td><td>A1</td></tr>
+  <tr><td>4.ª</td><td>SO</td><td>B2</td></tr>
+</table>`, ask: ['td', 'count'], opts: ['3', '6', '9', '2'], ok: 1, check: true,
+      exp: H`A primeira linha tem <code>&lt;th&gt;</code> (cabeçalho), não <code>&lt;td&gt;</code>. As outras duas têm 3 cada: 6.` },
+    { q: 'Que texto tem a segunda célula da última linha?', code: C`
+<table>
+  <tr><td>Ana</td><td>17</td></tr>
+  <tr><td>Rui</td><td>9</td></tr>
+</table>`, ask: ['tr:last-child td:nth-child(2)', 'text'], opts: ['Rui', '9', '17', 'Ana'], ok: 1, check: true,
+      exp: 'A última linha é a do Rui, e a segunda célula dessa linha é a nota: 9.' },
+    { q: 'Quantos campos de texto (input) tem este formulário?', code: C`
+<form>
+  <label for="a">A</label> <input id="a">
+  <label for="b">B</label> <input id="b" type="password">
+  <button>Entrar</button>
+</form>`, ask: ['input', 'count'], opts: ['1', '2', '3', '4'], ok: 1, check: true,
+      exp: H`Dois <code>&lt;input&gt;</code> (o segundo esconde o que se escreve). As labels e o botão não são campos.` },
+    { q: 'Como ligas uma label ao campo <input id="idade">?', opts: ['<label for="idade">Idade</label>', '<label id="idade">Idade</label>', '<label name="idade">Idade</label>', '<label href="#idade">Idade</label>'], ok: 0, mono: true,
+      exp: H`O <code>for</code> da label tem o mesmo valor que o <code>id</code> do campo.` },
+  ],
+  exercises: [{
+    title: 'Formulário de entrada',
+    text: 'Faz um formulário com um campo "Utilizador" (texto), um campo "Palavra-passe" (que esconde o que se escreve), cada um com a sua label, e um botão "Entrar".',
+    hint: H`<code>type="password"</code> esconde o texto. Liga cada label ao seu campo com <code>for</code> e <code>id</code>.`,
+    tests: [['input', 'count', 2], ['input[type="password"]', 'count', 1], ['label', 'count', 2], ['button', 'text', 'Entrar']],
+    solution: C`
+<form>
+  <label for="utilizador">Utilizador</label>
+  <input id="utilizador" type="text">
+  <label for="passe">Palavra-passe</label>
+  <input id="passe" type="password">
+  <button type="submit">Entrar</button>
+</form>`,
+  }, {
+    title: 'Horário',
+    text: 'Faz uma tabela com uma linha de cabeçalho (Dia e UC) e três linhas: segunda com Programação, terça com Matemática e quarta com Física.',
+    hint: H`Uma <code>&lt;tr&gt;</code> com dois <code>&lt;th&gt;</code>, e três <code>&lt;tr&gt;</code> com dois <code>&lt;td&gt;</code> cada.`,
+    tests: [['th', 'count', 2], ['tr', 'count', 4], ['td', 'count', 6], ['tr:nth-child(3) td:nth-child(2)', 'text', 'Matemática']],
+    solution: C`
+<table>
+  <tr><th>Dia</th><th>UC</th></tr>
+  <tr><td>Segunda</td><td>Programação</td></tr>
+  <tr><td>Terça</td><td>Matemática</td></tr>
+  <tr><td>Quarta</td><td>Física</td></tr>
+</table>`,
+  }],
+});
+
+// ---------------------------------------------------------------- 5
+LESSONS.push({
+  id: 5,
+  title: 'CSS: o primeiro estilo',
+  short: 'regras, seletores, propriedades e valores',
+  body: H`
+<p>O HTML diz o que cada coisa <em>é</em>; o <strong>CSS</strong> diz que <em>aspeto</em> tem. Uma regra de CSS tem um <strong>seletor</strong> (a que elementos se aplica) e, entre chavetas, declarações <code>propriedade: valor;</code>:</p>
+<pre class="snip"><code>p {
+  color: gray;
+  font-size: 20px;
+}</code></pre>
+<ul>
+<li>O CSS pode ir num <code>&lt;style&gt;</code> no head, num ficheiro à parte (<code>&lt;link rel="stylesheet" href="estilo.css"&gt;</code>, o melhor para um site inteiro) ou num atributo <code>style="..."</code> de um elemento (evita).</li>
+<li>Algumas propriedades: <code>color</code> (cor do texto), <code>background-color</code>, <code>font-size</code>, <code>font-family</code>, <code>text-align</code>.</li>
+<li>Cada declaração acaba em <code>;</code>. Se uma estiver mal escrita, o browser ignora-a em silêncio e continua: não há mensagens de erro como no C.</li>
+</ul>`,
+  analogy: 'O HTML é a casa já construída; o CSS é a decoração. Cada regra é uma instrução para o decorador: "todos os quartos (seletor) pintados de azul (propriedade: valor)".',
+  examples: [{
+    title: 'As regras a aplicarem-se, uma a uma',
+    build: [2, 11],
+    code: C`
+<style>
+  h1 {
+    color: blue;
+  }
+  p {
+    color: gray;
+    font-size: 20px;
+  }
+  body {
+    background-color: orange;
+  }
+</style>
+<h1>Título</h1>
+<p>Um parágrafo.</p>`,
+    steps: [
+      { l: 1, sel: 'h1', chk: [['h1', 'color', 'preto'], ['p', 'font-size', '16px']], n: H`Ainda sem regras: o browser usa o seu estilo por omissão (texto preto, 16px).` },
+      { l: 2, sel: 'h1', n: H`O seletor <code>h1</code> escolhe todos os elementos h1 da página.` },
+      { l: 3, sel: 'h1', chk: [['h1', 'color', 'azul']], n: H`<code>color: blue;</code> muda a cor do texto. A página muda logo.` },
+      { l: 6, sel: 'p', chk: [['p', 'color', 'cinzento']], n: H`Uma regra para os <code>p</code>: texto cinzento...` },
+      { l: 7, sel: 'p', box: 'p', chk: [['p', 'font-size', '20px']], n: '...e com 20 píxeis de altura de letra. Uma regra pode ter várias declarações.' },
+      { l: 10, sel: 'body', chk: [['body', 'background-color', 'laranja']], n: H`<code>background-color</code> pinta o fundo. Aplicado ao body, pinta a página toda.` },
+    ],
+  }, {
+    title: 'Um ponto e vírgula esquecido',
+    code: C`
+<style>
+  p {
+    color: red
+    font-size: 30px;
+  }
+  h2 {
+    color: green;
+  }
+</style>
+<h2>Subtítulo</h2>
+<p>Este texto devia estar vermelho e grande.</p>`,
+    steps: [
+      { l: 3, sel: 'p', chk: [['p', 'color', 'preto'], ['p', 'font-size', '16px']], n: H`Falta o <code>;</code> depois de <code>red</code>. O browser lê "color: red font-size: 30px" como uma só declaração, que não faz sentido, e deita-a fora. O parágrafo fica preto e com o tamanho normal.` },
+      { l: 7, sel: 'h2', chk: [['h2', 'color', 'verde']], n: 'O resto do CSS continua a funcionar. Não aparece nenhum erro: tens de reparar que o estilo não se aplicou.' },
+    ],
+  }],
+  mistakes: [
+    H`Esquecer o <code>;</code> entre declarações: a declaração estraga-se e é ignorada sem aviso.`,
+    H`Esquecer uma chaveta <code>}</code>: as regras seguintes deixam de funcionar.`,
+    H`Escrever o seletor com um ponto a mais (<code>.p</code> em vez de <code>p</code>): o ponto quer dizer uma classe (próxima lição).`,
+    H`Escrever <code>colour</code> ou <code>font size</code>: as propriedades têm nomes exatos, em inglês, com hífen.`,
+    H`Esquecer a unidade: <code>font-size: 20;</code> é ignorado. Escreve <code>20px</code>.`,
+  ],
+  quiz: [
+    { q: 'De que cor fica o parágrafo?', code: C`
+<style>
+  p {
+    color: red
+    font-size: 30px;
+  }
+</style>
+<p>Olá</p>`, ask: ['p', 'color'], opts: ['vermelho', 'preto', 'azul', 'cinzento'], ok: 1, check: true,
+      exp: H`Falta o <code>;</code> depois de <code>red</code>, por isso a declaração fica inválida e é ignorada. O texto fica com a cor por omissão: preto.` },
+    { q: 'Que tamanho de letra tem o h1?', code: C`
+<style>
+  h1 { font-size: 40px; }
+  p { font-size: 12px; }
+</style>
+<h1>Título</h1>`, ask: ['h1', 'font-size'], opts: ['12px', '16px', '32px', '40px'], ok: 3, check: true,
+      exp: H`A regra do <code>h1</code> dá-lhe 40px. A do p não se aplica ao h1.` },
+    { q: 'De que cor fica o parágrafo?', code: C`
+<style>
+  .p { color: red; }
+</style>
+<p>Olá</p>`, ask: ['p', 'color'], opts: ['vermelho', 'preto', 'verde', 'branco'], ok: 1, check: true,
+      exp: H`<code>.p</code> escolhe elementos com <code>class="p"</code>, e este parágrafo não tem nenhuma classe. Para todos os parágrafos, o seletor é <code>p</code>, sem ponto.` },
+    { q: 'Qual destas regras está bem escrita?', opts: ['h1 { color: blue; }', 'h1 ( color = blue )', 'h1 { color blue }', '{ h1: color: blue; }'], ok: 0, mono: true,
+      exp: H`Seletor, chaveta, <code>propriedade: valor;</code>, chaveta. Os dois pontos separam a propriedade do valor.` },
+  ],
+  exercises: [{
+    title: 'Título e texto',
+    text: 'Dá estilo a esta página: o h1 em azul e centrado, os parágrafos em cinzento com 18px de letra.',
+    hint: H`Duas regras: <code>h1 { color: blue; text-align: center; }</code> e outra para o <code>p</code>.`,
+    tests: [['h1', 'color', 'azul'], ['h1', 'text-align', 'center'], ['p', 'color', 'cinzento'], ['p', 'font-size', '18px']],
+    solution: C`
+<style>
+  h1 {
+    color: blue;
+    text-align: center;
+  }
+  p {
+    color: gray;
+    font-size: 18px;
+  }
+</style>
+<h1>A minha página</h1>
+<p>Primeiro parágrafo.</p>
+<p>Segundo parágrafo.</p>`,
+  }, {
+    title: 'Modo escuro',
+    text: 'Faz uma página com fundo preto e texto branco, e com as ligações em laranja.',
+    hint: H`O fundo e a cor do texto vão no <code>body</code>. As ligações têm cor própria por omissão, por isso precisam de uma regra para o <code>a</code>.`,
+    tests: [['body', 'background-color', 'preto'], ['p', 'color', 'branco'], ['a', 'color', 'laranja']],
+    solution: C`
+<style>
+  body {
+    background-color: black;
+    color: white;
+  }
+  a {
+    color: orange;
+  }
+</style>
+<p>Texto claro em fundo escuro.</p>
+<p><a href="#">Uma ligação</a></p>`,
+  }],
+});
+
+// ---------------------------------------------------------------- 6
+LESSONS.push({
+  id: 6,
+  title: 'Seletores, cascata e herança',
+  short: 'classes, id, descendentes, quem ganha quando duas regras discordam',
+  body: H`
+<table class="t">
+<thead><tr><th>Seletor</th><th>Escolhe</th></tr></thead>
+<tbody>
+<tr><td><code>p</code></td><td>todos os parágrafos</td></tr>
+<tr><td><code>.aviso</code></td><td>os elementos com <code>class="aviso"</code> (vários podem ter a mesma classe)</td></tr>
+<tr><td><code>#topo</code></td><td>o elemento com <code>id="topo"</code> (só um)</td></tr>
+<tr><td><code>nav a</code></td><td>as ligações que estão dentro de um nav</td></tr>
+<tr><td><code>h1, h2</code></td><td>os h1 e os h2</td></tr>
+</tbody>
+</table>
+<p>Quando duas regras dão valores diferentes à mesma propriedade, há uma <strong>cascata</strong> de critérios:</p>
+<ol>
+<li>Ganha o seletor mais <strong>específico</strong>: um id vale mais do que uma classe, e uma classe mais do que um nome de elemento.</li>
+<li>Com a mesma especificidade, ganha a regra que vem <strong>depois</strong>.</li>
+</ol>
+<p>Algumas propriedades são <strong>herdadas</strong> pelos filhos (a cor e a letra do texto); outras não (bordas, fundos, margens).</p>`,
+  analogy: 'A cascata é como as regras de uma escola: a regra para "todos os alunos" (p) perde para a regra da turma (.classe), que perde para uma regra só para ti (#id). Entre duas regras do mesmo nível, vale a mais recente.',
+  examples: [{
+    title: 'Quem ganha',
+    build: [2, 5],
+    code: C`
+<style>
+  p { color: gray; }
+  .aviso { color: red; }
+  #especial { color: green; }
+  p { color: blue; }
+</style>
+<p>Normal</p>
+<p class="aviso">Aviso</p>
+<p class="aviso" id="especial">Especial</p>`,
+    steps: [
+      { l: 1, sel: 'p', chk: [['p', 'color', 'preto']], n: 'Ainda sem regras: os três parágrafos estão pretos.' },
+      { l: 2, sel: 'p', chk: [['p', 'color', 'cinzento'], ['#especial', 'color', 'cinzento']], n: H`A regra para <code>p</code> aplica-se aos três.` },
+      { l: 3, sel: '.aviso', chk: [['.aviso', 'color', 'vermelho'], ['#especial', 'color', 'vermelho']], n: H`<code>.aviso</code> é mais específico do que <code>p</code>: os dois parágrafos com essa classe ficam vermelhos.` },
+      { l: 4, sel: '#especial', chk: [['#especial', 'color', 'verde']], n: 'Um id é ainda mais específico: o terceiro fica verde, apesar de também ter a classe aviso.' },
+      { l: 5, sel: 'p', chk: [['p', 'color', 'azul'], ['.aviso', 'color', 'vermelho'], ['#especial', 'color', 'verde']], n: H`Outra regra para <code>p</code>, mais abaixo. Ganha à primeira regra de <code>p</code> (mesma especificidade, vem depois), mas <strong>não</strong> ganha à classe nem ao id: só o primeiro parágrafo fica azul.` },
+    ],
+  }, {
+    title: 'O que os filhos herdam',
+    code: C`
+<style>
+  article {
+    color: purple;
+    border: 2px solid black;
+  }
+</style>
+<article>
+  <h2>Título</h2>
+  <p>Texto com <strong>destaque</strong>.</p>
+</article>`,
+    steps: [
+      { l: 2, sel: 'article', box: 'article', chk: [['article', 'border-top-width', '2px']], n: 'A regra é só para o article: texto roxo e uma borda.' },
+      { l: 3, sel: 'strong', chk: [['strong', 'color', 'roxo'], ['h2', 'color', 'roxo']], n: H`A cor do texto é <strong>herdada</strong>: o h2, o p e até o strong, lá dentro, ficam roxos sem nenhuma regra para eles.` },
+      { l: 4, sel: 'p', box: 'p', chk: [['p', 'border-top-width', '0px']], n: 'A borda não se herda: só o article a tem. Se se herdasse, cada parágrafo e cada palavra em negrito teriam uma borda.' },
+    ],
+  }],
+  mistakes: [
+    H`Esquecer o ponto da classe ou o cardinal do id no seletor (<code>aviso { }</code> procura elementos &lt;aviso&gt;, que não existem).`,
+    H`Pôr um ponto no HTML: é <code>class="aviso"</code>, sem ponto; o ponto só se usa no CSS.`,
+    H`Escrever uma regra mais abaixo e estranhar que não ganhe: um seletor mais específico ganha, venha antes ou depois.`,
+    H`Usar o mesmo id em vários elementos. Para vários, usa uma classe.`,
+    H`Resolver tudo com <code>!important</code>: torna o CSS impossível de manter.`,
+  ],
+  quiz: [
+    { q: 'De que cor fica o texto?', code: C`
+<style>
+  p { color: blue; }
+  p { color: red; }
+</style>
+<p>Olá</p>`, ask: ['p', 'color'], opts: ['azul', 'vermelho', 'preto', 'roxo'], ok: 1, check: true,
+      exp: 'As duas regras têm o mesmo seletor (a mesma especificidade), por isso ganha a que vem depois.' },
+    { q: 'De que cor fica o texto?', code: C`
+<style>
+  .nota { color: green; }
+  p { color: red; }
+</style>
+<p class="nota">Olá</p>`, ask: ['p', 'color'], opts: ['verde', 'vermelho', 'preto', 'azul'], ok: 0, check: true,
+      exp: H`A regra do <code>p</code> vem depois, mas uma classe é mais específica do que um nome de elemento. Ganha a classe.` },
+    { q: 'De que cor fica o texto da ligação?', code: C`
+<style>
+  nav a { color: orange; }
+  a { color: purple; }
+</style>
+<nav><a href="#">Início</a></nav>`, ask: ['a', 'color'], opts: ['laranja', 'roxo', 'azul', 'preto'], ok: 0, check: true,
+      exp: H`<code>nav a</code> tem dois nomes de elemento, por isso é mais específico do que <code>a</code> sozinho. Ganha, mesmo vindo antes.` },
+    { q: 'De que cor fica a palavra em negrito?', code: C`
+<style>
+  p { color: green; }
+</style>
+<p>Uma <strong>palavra</strong>.</p>`, ask: ['strong', 'color'], opts: ['verde', 'preto', 'vermelho', 'azul'], ok: 0, check: true,
+      exp: H`Não há nenhuma regra para o strong, mas a cor do texto herda-se do pai, o <code>p</code>.` },
+  ],
+  exercises: [{
+    title: 'Mensagens',
+    text: 'Faz três parágrafos: um normal, um com a classe sucesso (texto verde) e um com a classe erro (texto vermelho e negrito).',
+    hint: H`Duas regras de classe: <code>.sucesso { ... }</code> e <code>.erro { ... }</code>. No HTML, <code>class="erro"</code>, sem ponto.`,
+    tests: [['p', 'count', 3], ['.sucesso', 'color', 'verde'], ['.erro', 'color', 'vermelho'], ['.erro', 'font-weight', '700']],
+    solution: C`
+<style>
+  .sucesso { color: green; }
+  .erro {
+    color: red;
+    font-weight: bold;
+  }
+</style>
+<p>Uma mensagem normal.</p>
+<p class="sucesso">Guardado com sucesso.</p>
+<p class="erro">Não foi possível guardar.</p>`,
+  }, {
+    title: 'O menu',
+    text: 'Faz um nav com três ligações e um parágrafo com outra ligação. Só as ligações do menu devem ficar laranja; a do parágrafo fica com a cor normal.',
+    hint: H`O seletor <code>nav a</code> escolhe só as ligações dentro do nav.`,
+    tests: [['nav a', 'count', 3], ['nav a', 'color', 'laranja'], ['p a', 'color', 'rgb(0, 0, 238)']],
+    solution: C`
+<style>
+  nav a { color: orange; }
+</style>
+<nav>
+  <a href="#">Início</a>
+  <a href="#">Aulas</a>
+  <a href="#">Contactos</a>
+</nav>
+<p>Ver também a <a href="#">página da UTAD</a>.</p>`,
+  }],
+});
+
+// ---------------------------------------------------------------- 7
+LESSONS.push({
+  id: 7,
+  title: 'O modelo de caixa',
+  short: 'conteúdo, padding, border, margin e box-sizing',
+  body: H`
+<p>Para o browser, <strong>cada elemento é uma caixa</strong>, feita de quatro camadas, de dentro para fora:</p>
+<ol>
+<li><strong>conteúdo</strong>: o texto ou a imagem (é aqui que se aplicam <code>width</code> e <code>height</code>);</li>
+<li><strong>padding</strong> (enchimento): espaço entre o conteúdo e a borda, com a cor de fundo;</li>
+<li><strong>border</strong>: a borda, por exemplo <code>border: 5px solid black;</code>;</li>
+<li><strong>margin</strong>: espaço por fora da borda, que afasta a caixa das outras (transparente).</li>
+</ol>
+<p>A armadilha: por omissão, <code>width: 200px</code> é só a largura do <strong>conteúdo</strong>. A caixa ocupa 200 + padding + borda dos dois lados. Com <code>box-sizing: border-box;</code> o <code>width</code> passa a incluir o padding e a borda, o que torna as contas muito mais fáceis.</p>
+<p>No visualizador, o painel "Inspetor" desenha as quatro camadas do elemento em destaque, com os valores calculados pelo browser.</p>`,
+  analogy: 'Uma caixa é um quadro na parede: o conteúdo é a pintura, o padding é o passe-partout à volta, a borda é a moldura, e a margem é o espaço que deixas até ao quadro seguinte.',
+  examples: [{
+    title: 'Camada a camada',
+    build: [3, 7],
+    code: C`
+<style>
+  .caixa {
+    width: 200px;
+    padding: 20px;
+    border: 5px solid black;
+    margin: 30px;
+    background-color: orange;
+  }
+</style>
+<div class="caixa">Uma caixa</div>`,
+    steps: [
+      { l: 2, sel: '.caixa', box: '.caixa', chk: [['.caixa', 'width', '784px']], n: 'Sem regras, um div ocupa a largura toda que tem disponível (aqui 784px).' },
+      { l: 3, sel: '.caixa', box: '.caixa', chk: [['.caixa', 'width', '200px']], n: H`<code>width: 200px</code>: o conteúdo passa a ter 200px de largura.` },
+      { l: 4, sel: '.caixa', box: '.caixa', chk: [['.caixa', 'width', '240px']], n: H`Com 20px de padding de cada lado, a caixa ocupa 20 + 200 + 20 = 240px. O conteúdo continua com 200.` },
+      { l: 5, sel: '.caixa', box: '.caixa', chk: [['.caixa', 'width', '250px']], n: 'Mais 5px de borda de cada lado: 250px no total.' },
+      { l: 6, sel: '.caixa', box: '.caixa', chk: [['.caixa', 'width', '250px']], n: 'A margem afasta a caixa das outras coisas (vê como desceu), mas não conta para a largura da caixa.' },
+      { l: 7, sel: '.caixa', box: '.caixa', chk: [['.caixa', 'background-color', 'laranja']], n: 'O fundo pinta o conteúdo e o padding, mas não a margem.' },
+    ],
+  }, {
+    title: 'box-sizing: border-box',
+    code: C`
+<style>
+  .a, .b {
+    width: 200px;
+    padding: 20px;
+    border: 5px solid black;
+    margin-bottom: 10px;
+  }
+  .b {
+    box-sizing: border-box;
+  }
+</style>
+<div class="a">content-box</div>
+<div class="b">border-box</div>`,
+    steps: [
+      { l: 12, sel: '.a', box: '.a', chk: [['.a', 'width', '250px']], n: H`A primeira caixa usa o modo normal: 200 de conteúdo + 40 de padding + 10 de borda = 250px.` },
+      { l: 13, sel: '.b', box: '.b', chk: [['.b', 'width', '200px']], n: H`Com <code>border-box</code>, os 200px são a caixa toda: o browser encolhe o conteúdo para 150px para caberem o padding e a borda. Muita gente põe <code>* { box-sizing: border-box; }</code> no início de todo o CSS.` },
+    ],
+  }],
+  mistakes: [
+    H`Contar só o <code>width</code> e estranhar que as caixas não caibam lado a lado: soma o padding e a borda (ou usa <code>border-box</code>).`,
+    H`Confundir padding com margin: o padding fica dentro da borda (com fundo), a margin fica fora (transparente).`,
+    H`Escrever <code>border: 5px</code> e não ver nada: falta o estilo da linha, por exemplo <code>border: 5px solid black;</code>.`,
+    H`Esquecer que as margens verticais de dois blocos seguidos se juntam: 20px + 30px dá 30px de distância, não 50.`,
+  ],
+  quiz: [
+    { q: 'Que largura total tem a caixa?', code: C`
+<style>
+  div {
+    width: 200px;
+    padding: 10px;
+    border: 2px solid black;
+  }
+</style>
+<div>Caixa</div>`, ask: ['div', 'width'], opts: ['200px', '210px', '224px', '220px'], ok: 2, check: true,
+      exp: '200 de conteúdo + 10 + 10 de padding + 2 + 2 de borda = 224px.' },
+    { q: 'Que largura total tem a caixa?', code: C`
+<style>
+  div {
+    box-sizing: border-box;
+    width: 200px;
+    padding: 10px;
+    border: 2px solid black;
+  }
+</style>
+<div>Caixa</div>`, ask: ['div', 'width'], opts: ['200px', '224px', '176px', '212px'], ok: 0, check: true,
+      exp: H`Com <code>border-box</code>, o <code>width</code> é a caixa toda, borda incluída: 200px.` },
+    { q: 'Que largura total tem a caixa?', code: C`
+<style>
+  div {
+    width: 100px;
+    padding: 0 20px;
+    margin: 50px;
+  }
+</style>
+<div>Caixa</div>`, ask: ['div', 'width'], opts: ['100px', '140px', '240px', '200px'], ok: 1, check: true,
+      exp: H`<code>padding: 0 20px</code> quer dizer 0 em cima e em baixo, 20 à esquerda e à direita: 100 + 40 = 140px. A margem não conta para a largura da caixa.` },
+    { q: 'Que camada da caixa fica pintada pelo background-color, além do conteúdo?', opts: ['A margin', 'O padding', 'Nenhuma', 'Só a borda'], ok: 1,
+      exp: 'O fundo pinta o conteúdo e o padding (e fica por baixo da borda). A margem é sempre transparente.' },
+  ],
+  exercises: [{
+    title: 'Um cartão de 300px',
+    text: 'Faz um div com a classe cartao, com 20px de padding, uma borda de 1px cinzenta, e exatamente 300px de largura total.',
+    hint: H`Ou fazes as contas (300 - 40 - 2 = 258px de width), ou usas <code>box-sizing: border-box;</code> com <code>width: 300px</code>.`,
+    tests: [['.cartao', 'width', '300px'], ['.cartao', 'padding-left', '20px'], ['.cartao', 'border-top-color', 'cinzento']],
+    solution: C`
+<style>
+  .cartao {
+    box-sizing: border-box;
+    width: 300px;
+    padding: 20px;
+    border: 1px solid gray;
+  }
+</style>
+<div class="cartao">
+  <h2>Ana Silva</h2>
+  <p>Engenharia Informática</p>
+</div>`,
+  }, {
+    title: 'Dois blocos afastados',
+    text: 'Faz dois div com a classe bloco, cada um com fundo laranja, 10px de padding e uma margem de 20px por baixo.',
+    hint: H`<code>margin-bottom: 20px;</code> afasta só por baixo.`,
+    tests: [['.bloco', 'count', 2], ['.bloco', 'margin-bottom', '20px'], ['.bloco', 'padding-top', '10px'], ['.bloco', 'background-color', 'laranja']],
+    solution: C`
+<style>
+  .bloco {
+    background-color: orange;
+    padding: 10px;
+    margin-bottom: 20px;
+  }
+</style>
+<div class="bloco">Primeiro</div>
+<div class="bloco">Segundo</div>`,
+  }],
+});
+
+// ===== HTML e CSS do Zero — conteúdo das lições (parte 3) =====
+
+// ---------------------------------------------------------------- 8
+LESSONS.push({
+  id: 8,
+  title: 'Display: bloco, em linha e escondido',
+  short: 'block, inline, inline-block e display: none',
+  body: H`
+<p>Cada elemento tem um modo de se arrumar na página, a propriedade <code>display</code>:</p>
+<table class="t">
+<thead><tr><th>display</th><th>Comportamento</th><th>Exemplos</th></tr></thead>
+<tbody>
+<tr><td><code>block</code></td><td>começa numa linha nova e ocupa a largura toda; aceita width e height</td><td><code>div</code>, <code>p</code>, <code>h1</code>, <code>ul</code></td></tr>
+<tr><td><code>inline</code></td><td>fica dentro da linha de texto; ignora width e height</td><td><code>span</code>, <code>a</code>, <code>strong</code></td></tr>
+<tr><td><code>inline-block</code></td><td>fica na linha, como o inline, mas aceita width e height</td><td>botões, itens de menu</td></tr>
+<tr><td><code>none</code></td><td>desaparece: não se vê nem ocupa espaço</td><td>menus escondidos</td></tr>
+</tbody>
+</table>
+<p>Qualquer elemento pode mudar de modo: <code>a { display: block; }</code> faz uma ligação ocupar a linha toda. O <code>display: flex</code>, para arrumar caixas lado a lado, fica para a próxima lição.</p>`,
+  analogy: 'Os elementos block são parágrafos de um livro: cada um começa numa linha nova. Os inline são palavras: seguem-se umas às outras na mesma linha. Os inline-block são emojis: ficam na linha, mas têm um tamanho fixo.',
+  examples: [{
+    title: 'Os quatro modos',
+    code: C`
+<style>
+  .bloco { background-color: orange; }
+  .linha { background-color: orange; width: 300px; }
+  .ib { display: inline-block; width: 100px; background-color: green; }
+  .escondido { display: none; }
+</style>
+<div class="bloco">Um div ocupa a linha toda</div>
+<p>Texto com um <span class="linha">span</span> no meio.</p>
+<span class="ib">A</span> <span class="ib">B</span>
+<p class="escondido">Não me vês</p>`,
+    steps: [
+      { l: 7, sel: '.bloco', box: '.bloco', chk: [['.bloco', 'display', 'block'], ['.bloco', 'width', '784px']], n: 'Um div é um bloco: ocupa a largura toda (784px) e o elemento seguinte começa por baixo.' },
+      { l: 8, sel: '.linha', box: '.linha', chk: [['.linha', 'display', 'inline']], n: H`Um span é inline: fica no meio do texto. O <code>width: 300px</code> da regra é ignorado; o span só tem a largura da palavra.` },
+      { l: 9, sel: '.ib', box: '.ib', chk: [['.ib', 'width', '100px']], n: H`Com <code>inline-block</code>, os spans ficam lado a lado na mesma linha, mas agora o <code>width</code> já conta: 100px cada.` },
+      { l: 10, sel: '.escondido', chk: [['.escondido', 'display', 'none'], ['.escondido', 'height', '0px']], n: H`<code>display: none</code>: o parágrafo existe no HTML (e na árvore DOM), mas não aparece nem ocupa espaço.` },
+    ],
+  }],
+  mistakes: [
+    H`Pôr <code>width</code> ou <code>height</code> num elemento inline (um span, uma ligação) e não ver diferença: muda-o para <code>inline-block</code> ou <code>block</code>.`,
+    H`Confundir <code>display: none</code> com <code>visibility: hidden</code>: o segundo esconde, mas deixa o espaço vazio.`,
+    H`Pôr um bloco (um div, um p) dentro de um parágrafo: o browser fecha o parágrafo antes.`,
+    H`Esperar que dois divs fiquem lado a lado sem mais nada: são blocos, cada um na sua linha.`,
+  ],
+  quiz: [
+    { q: 'Que largura tem o div? (a página tem 800px e o body tem 8px de margem de cada lado)', code: C`<div>Olá</div>`, ask: ['div', 'width'], opts: ['800px', '784px', '24px', '0px'], ok: 1, check: true,
+      exp: 'Um bloco ocupa toda a largura disponível: 800 menos os 8px de margem do body de cada lado, ou seja 784px. Não depende do tamanho do texto.' },
+    { q: 'Que display tem um <strong> por omissão?', code: C`<p>Uma <strong>palavra</strong>.</p>`, ask: ['strong', 'display'], opts: ['block', 'inline', 'inline-block', 'none'], ok: 1, check: true,
+      exp: 'Um strong é parte de uma frase: é inline, por isso não parte a linha.' },
+    { q: 'Que altura tem o parágrafo?', code: C`
+<style>
+  .fora { display: none; }
+</style>
+<p class="fora">Escondido</p>`, ask: ['p', 'height'], opts: ['0px', '16px', '18px', '(nenhum elemento)'], ok: 0, check: true,
+      exp: H`O elemento existe (o seletor encontra-o), mas com <code>display: none</code> não é desenhado: não ocupa espaço nenhum.` },
+    { q: 'Que largura tem a ligação?', code: C`
+<style>
+  a { display: inline-block; width: 150px; }
+</style>
+<a href="#">Início</a>`, ask: ['a', 'width'], opts: ['150px', '784px', '0px', 'A largura da palavra'], ok: 0, check: true,
+      exp: H`Uma ligação é inline e ignoraria o <code>width</code>, mas com <code>inline-block</code> passa a aceitá-lo.` },
+  ],
+  exercises: [{
+    title: 'Botões de menu',
+    text: 'Faz três ligações lado a lado, cada uma com 120px de largura, fundo laranja e o texto centrado.',
+    hint: H`<code>display: inline-block</code> para o <code>width</code> funcionar, mais <code>text-align: center</code>.`,
+    tests: [['a', 'count', 3], ['a', 'width', '120px'], ['a', 'display', 'inline-block'], ['a', 'text-align', 'center']],
+    solution: C`
+<style>
+  a {
+    display: inline-block;
+    width: 120px;
+    background-color: orange;
+    text-align: center;
+  }
+</style>
+<a href="#">Início</a>
+<a href="#">Aulas</a>
+<a href="#">Contactos</a>`,
+  }, {
+    title: 'Esconder uma mensagem',
+    text: 'Faz dois parágrafos: um normal e outro com a classe secreto, que não deve aparecer nem ocupar espaço.',
+    hint: H`<code>.secreto { display: none; }</code>`,
+    tests: [['p', 'count', 2], ['.secreto', 'display', 'none'], ['.secreto', 'height', '0px']],
+    solution: C`
+<style>
+  .secreto { display: none; }
+</style>
+<p>Isto vê-se.</p>
+<p class="secreto">Isto não.</p>`,
+  }],
+});
+
+// ---------------------------------------------------------------- 9
+LESSONS.push({
+  id: 9,
+  title: 'Flexbox: caixas lado a lado',
+  short: 'display: flex, gap, justify-content, align-items e flex: 1',
+  body: H`
+<p>Arrumar caixas lado a lado era difícil em CSS, até aparecer o <strong>flexbox</strong>. Pões <code>display: flex</code> no <strong>pai</strong>, e os filhos passam a arrumar-se numa linha:</p>
+<table class="t">
+<thead><tr><th>No pai</th><th>Faz</th></tr></thead>
+<tbody>
+<tr><td><code>display: flex</code></td><td>os filhos ficam lado a lado</td></tr>
+<tr><td><code>gap: 20px</code></td><td>espaço entre os filhos</td></tr>
+<tr><td><code>flex-direction: column</code></td><td>em coluna, em vez de em linha</td></tr>
+<tr><td><code>justify-content</code></td><td>como se distribuem na direção principal: <code>flex-start</code>, <code>center</code>, <code>space-between</code>...</td></tr>
+<tr><td><code>align-items</code></td><td>como se alinham na outra direção: <code>center</code>, <code>stretch</code>...</td></tr>
+</tbody>
+</table>
+<p>Num <strong>filho</strong>, <code>flex: 1</code> diz "cresce e ocupa o espaço que sobrar". Dois filhos com <code>flex: 1</code> dividem o espaço ao meio.</p>`,
+  analogy: 'O pai com display: flex é uma prateleira: os livros (os filhos) ficam lado a lado. O gap é o espaço entre livros, o justify-content decide se ficam encostados a um lado ou espalhados, e o flex: 1 é um livro elástico que estica até encher a prateleira.',
+  examples: [{
+    title: 'Três caixas numa linha',
+    build: [3, 8],
+    code: C`
+<style>
+  .linha {
+    display: flex;
+    gap: 20px;
+    justify-content: space-between;
+  }
+  .item { width: 100px; padding: 10px; background-color: orange; }
+  .meio { flex: 1; }
+</style>
+<div class="linha">
+  <div class="item">A</div>
+  <div class="item meio">B</div>
+  <div class="item">C</div>
+</div>`,
+    steps: [
+      { l: 2, sel: '.item', chk: [['.linha', 'display', 'block']], n: 'Sem regras ainda: os três divs são blocos, um por baixo do outro.' },
+      { l: 3, sel: '.linha', box: '.linha', chk: [['.linha', 'display', 'flex']], n: H`<code>display: flex</code> no pai: os filhos ficam lado a lado, encostados à esquerda.` },
+      { l: 4, sel: '.item', n: 'O gap mete 20px de espaço entre eles.' },
+      { l: 5, sel: '.item', n: H`<code>space-between</code> espalha-os: o primeiro encosta à esquerda, o último à direita, e o espaço que sobra fica no meio.` },
+      { l: 7, sel: '.item', box: '.item', chk: [['.item', 'width', '120px']], n: 'Cada item tem 100px de conteúdo e 10px de padding de cada lado: 120px.' },
+      { l: 8, sel: '.meio', box: '.meio', chk: [['.meio', 'width', '504px']], n: H`<code>flex: 1</code> faz o B crescer e ocupar todo o espaço livre: 784 - 120 - 120 - 40 (os dois gaps) = 504px. Como já não sobra espaço, o <code>space-between</code> deixa de se notar.` },
+    ],
+  }],
+  mistakes: [
+    H`Pôr <code>display: flex</code> nos filhos em vez de no pai.`,
+    H`Confundir <code>justify-content</code> com <code>align-items</code>: o primeiro é na direção da linha (horizontal, normalmente), o segundo na outra.`,
+    H`Usar margens nos filhos para os afastar, quando <code>gap</code> faz isso num só sítio.`,
+    H`Esquecer que, com <code>flex-direction: column</code>, as duas direções trocam.`,
+  ],
+  quiz: [
+    { q: 'Que largura tem cada caixa?', code: C`
+<style>
+  body { margin: 0; }
+  .pai { display: flex; width: 600px; }
+  .filho { flex: 1; }
+</style>
+<div class="pai">
+  <div class="filho">A</div>
+  <div class="filho">B</div>
+</div>`, ask: ['.filho', 'width'], opts: ['600px', '300px', '290px', 'A largura da letra'], ok: 1, check: true,
+      exp: H`Os dois têm <code>flex: 1</code>, por isso dividem os 600px em partes iguais: 300px cada.` },
+    { q: 'Que largura tem cada caixa?', code: C`
+<style>
+  body { margin: 0; }
+  .pai { display: flex; width: 600px; gap: 20px; }
+  .filho { flex: 1; }
+</style>
+<div class="pai">
+  <div class="filho">A</div>
+  <div class="filho">B</div>
+</div>`, ask: ['.filho', 'width'], opts: ['300px', '290px', '280px', '310px'], ok: 1, check: true,
+      exp: 'O gap de 20px fica entre as duas caixas, e o que sobra (580px) divide-se ao meio: 290px cada.' },
+    { q: 'Que largura tem a caixa?', code: C`
+<style>
+  body { margin: 0; }
+  .pai { display: flex; flex-direction: column; width: 400px; }
+</style>
+<div class="pai">
+  <div class="filho">A</div>
+</div>`, ask: ['.filho', 'width'], opts: ['400px', 'A largura da letra', '0px', '200px'], ok: 0, check: true,
+      exp: H`Em coluna, o <code>align-items</code> por omissão (<code>stretch</code>) estica cada filho na outra direção: fica com a largura toda do pai.` },
+    { q: 'Que propriedade, no pai, centra os filhos na horizontal (com flex-direction normal)?', opts: ['justify-content: center', 'align-items: center', 'text-align: center', 'margin: center'], ok: 0, mono: true,
+      exp: H`A direção principal de uma linha é a horizontal, e é essa que o <code>justify-content</code> controla. O <code>align-items</code> centrava na vertical.` },
+  ],
+  exercises: [{
+    title: 'Três colunas iguais',
+    text: 'Faz um div com a classe colunas, com 600px de largura e 30px de espaço entre filhos, com três filhos de largura igual. (Põe body { margin: 0; } para as contas serem certas.)',
+    hint: H`<code>display: flex; gap: 30px;</code> no pai e <code>flex: 1</code> nos filhos. Cada um fica com (600 - 60) / 3 = 180px.`,
+    tests: [['.colunas', 'display', 'flex'], ['.colunas > div', 'count', 3], ['.colunas > div', 'width', '180px']],
+    solution: C`
+<style>
+  body { margin: 0; }
+  .colunas {
+    display: flex;
+    width: 600px;
+    gap: 30px;
+  }
+  .colunas > div {
+    flex: 1;
+    background-color: orange;
+  }
+</style>
+<div class="colunas">
+  <div>Um</div>
+  <div>Dois</div>
+  <div>Três</div>
+</div>`,
+  }, {
+    title: 'Cabeçalho com menu',
+    text: 'Faz um header com flexbox: o título (h1) encostado à esquerda e um nav com duas ligações encostado à direita.',
+    hint: H`<code>header { display: flex; justify-content: space-between; align-items: center; }</code>`,
+    tests: [['header', 'display', 'flex'], ['header', 'justify-content', 'space-between'], ['header nav a', 'count', 2]],
+    solution: C`
+<style>
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+</style>
+<header>
+  <h1>O meu site</h1>
+  <nav>
+    <a href="#">Início</a>
+    <a href="#">Contactos</a>
+  </nav>
+</header>`,
+  }],
+});
+
+// ---------------------------------------------------------------- 10
+LESSONS.push({
+  id: 10,
+  title: 'Unidades e páginas que se adaptam',
+  short: 'px, %, rem, max-width e media queries',
+  body: H`
+<p>Uma página vai ser vista num ecrã grande e num telemóvel. Em vez de medidas fixas, usam-se medidas que se adaptam:</p>
+<table class="t">
+<thead><tr><th>Unidade</th><th>Quer dizer</th></tr></thead>
+<tbody>
+<tr><td><code>px</code></td><td>píxeis, um tamanho fixo</td></tr>
+<tr><td><code>%</code></td><td>percentagem do pai (<code>width: 50%</code> é metade da largura do pai)</td></tr>
+<tr><td><code>rem</code></td><td>múltiplos da letra da página (normalmente 16px): <code>2rem</code> = 32px</td></tr>
+<tr><td><code>em</code></td><td>múltiplos da letra do próprio elemento (ou do pai, no font-size)</td></tr>
+<tr><td><code>vw</code></td><td>percentagem da largura do ecrã: <code>100vw</code> é o ecrã todo</td></tr>
+</tbody>
+</table>
+<ul>
+<li><code>max-width: 600px</code> deixa uma caixa encolher em ecrãs pequenos, mas nunca passar de 600px nos grandes. Com <code>margin: 0 auto</code>, fica centrada.</li>
+<li>Uma <strong>media query</strong> aplica regras só em certas condições: <code>@media (max-width: 500px) { ... }</code> só vale em ecrãs com 500px ou menos.</li>
+<li>Para os telemóveis respeitarem isto, a página precisa de <code>&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;</code> no head.</li>
+</ul>
+<p>No visualizador, alguns passos mudam a largura da página para veres a media query a funcionar.</p>`,
+  analogy: 'Uma página com medidas fixas é um fato feito à medida de uma pessoa; uma página que se adapta é uma camisola de malha: estica e encolhe, e a media query é a etiqueta que diz "em tamanho S, dobra as mangas".',
+  examples: [{
+    title: 'Metade num ecrã grande, tudo num pequeno',
+    code: C`
+<style>
+  .coluna {
+    width: 50%;
+    background-color: orange;
+  }
+  @media (max-width: 500px) {
+    .coluna { width: 100%; }
+  }
+</style>
+<div class="coluna">Metade (ou tudo, num ecrã estreito)</div>`,
+    steps: [
+      { l: 3, sel: '.coluna', box: '.coluna', chk: [['.coluna', 'width', '392px']], n: H`Com a página a 800px, o pai (o body) tem 784px, e <code>50%</code> dá 392px.` },
+      { l: 6, width: 400, sel: '.coluna', box: '.coluna', chk: [['.coluna', 'width', '384px']], n: H`A página passou a ter 400px de largura. Como 400 é menos do que 500, a media query aplica-se e a coluna ocupa 100% do body: 384px.` },
+      { l: 7, width: 600, sel: '.coluna', box: '.coluna', chk: [['.coluna', 'width', '292px']], n: 'Com 600px já não se aplica: volta a ser metade (50% de 584 = 292px).' },
+    ],
+  }, {
+    title: 'Letra em rem e uma página com largura máxima',
+    code: C`
+<style>
+  .pagina { max-width: 600px; margin: 0 auto; }
+  h1 { font-size: 2rem; }
+  p { font-size: 1.25rem; }
+</style>
+<div class="pagina">
+  <h1>Título</h1>
+  <p>Um texto que nunca fica demasiado largo.</p>
+</div>`,
+    steps: [
+      { l: 2, sel: '.pagina', box: '.pagina', chk: [['.pagina', 'width', '600px']], n: H`A página tem 784px disponíveis, mas o <code>max-width</code> não deixa a caixa passar de 600px. O <code>margin: 0 auto</code> centra-a.` },
+      { l: 2, width: 400, sel: '.pagina', box: '.pagina', chk: [['.pagina', 'width', '384px']], n: 'Num ecrã de 400px, a caixa encolhe para caber (384px). Com um width fixo de 600px, aparecia uma barra de scroll.' },
+      { l: 3, sel: 'h1', chk: [['h1', 'font-size', '32px']], n: H`<code>2rem</code> = 2 × 16px = 32px.` },
+      { l: 4, sel: 'p', chk: [['p', 'font-size', '20px']], n: H`<code>1.25rem</code> = 1,25 × 16px = 20px. Se quem lê aumentar a letra do browser, tudo cresce em proporção.` },
+    ],
+  }],
+  mistakes: [
+    H`Usar larguras fixas grandes (<code>width: 900px</code>): num telemóvel a página fica cortada ou com scroll para o lado. Usa <code>max-width</code>.`,
+    H`Esquecer o <code>&lt;meta name="viewport"&gt;</code>: o telemóvel finge ter um ecrã largo e encolhe a página toda.`,
+    H`Escrever a media query antes da regra normal: a regra normal vem depois e ganha. Põe as media queries no fim.`,
+    H`Confundir <code>em</code> com <code>rem</code>: os em multiplicam-se quando os elementos estão uns dentro dos outros.`,
+  ],
+  quiz: [
+    { q: 'Que tamanho de letra tem o h2?', code: C`
+<style>
+  html { font-size: 16px; }
+  h2 { font-size: 1.5rem; }
+</style>
+<h2>Secção</h2>`, ask: ['h2', 'font-size'], opts: ['1.5px', '16px', '24px', '15px'], ok: 2, check: true,
+      exp: H`1,5 × 16px = 24px. O <code>rem</code> conta sempre a partir da letra do html.` },
+    { q: 'Que largura tem o filho?', code: C`
+<style>
+  .pai { width: 400px; }
+  .filho { width: 50%; }
+</style>
+<div class="pai"><div class="filho">Olá</div></div>`, ask: ['.filho', 'width'], opts: ['200px', '392px', '400px', '50px'], ok: 0, check: true,
+      exp: H`A percentagem é do <strong>pai</strong>, não da página: 50% de 400px.` },
+    { q: 'Com a página a 400px de largura, que display tem o menu?', code: C`
+<style>
+  .menu { display: block; }
+  @media (max-width: 600px) {
+    .menu { display: none; }
+  }
+</style>
+<nav class="menu">Menu</nav>`, width: 400, ask: ['.menu', 'display'], opts: ['block', 'none', 'flex', 'inline'], ok: 1, check: true,
+      exp: '400px é menos do que 600px, por isso a regra dentro da media query aplica-se e o menu esconde-se. Num ecrã largo continuava visível.' },
+    { q: 'Que tamanho de letra tem o span?', code: C`
+<style>
+  p { font-size: 20px; }
+  span { font-size: 1.5em; }
+</style>
+<p>Texto <span>maior</span></p>`, ask: ['span', 'font-size'], opts: ['24px', '30px', '20px', '1.5px'], ok: 1, check: true,
+      exp: H`No font-size, o <code>em</code> conta a partir da letra do pai (o p, com 20px): 1,5 × 20 = 30px. Com <code>rem</code> seriam 24px.` },
+  ],
+  exercises: [{
+    title: 'Conteúdo centrado',
+    text: 'Faz um div com a classe conteudo que nunca passe de 500px de largura e fique centrado na página.',
+    hint: H`<code>max-width: 500px; margin: 0 auto;</code>`,
+    tests: [['.conteudo', 'width', '500px'], ['.conteudo', 'max-width', '500px']],
+    solution: C`
+<style>
+  .conteudo {
+    max-width: 500px;
+    margin: 0 auto;
+  }
+</style>
+<div class="conteudo">
+  <h1>Artigo</h1>
+  <p>Um texto confortável de ler, mesmo num ecrã grande.</p>
+</div>`,
+  }, {
+    title: 'Letra maior no telemóvel',
+    text: 'O texto dos parágrafos tem 16px, mas em ecrãs com 600px ou menos deve passar a 20px. (O teste é feito com a página a 400px de largura.)',
+    hint: H`A regra normal primeiro e, no fim, <code>@media (max-width: 600px) { p { font-size: 20px; } }</code>.`,
+    width: 400,
+    tests: [['p', 'font-size', '20px']],
+    solution: C`
+<style>
+  p { font-size: 16px; }
+  @media (max-width: 600px) {
+    p { font-size: 20px; }
+  }
+</style>
+<p>Num telemóvel, este texto fica maior.</p>`,
+  }],
+});
+
+</script>
+<script>
+(function () {
+  'use strict';
+  const $ = (s, el) => (el || document).querySelector(s);
+  const $$ = (s, el) => Array.from((el || document).querySelectorAll(s));
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+  // ---------- progresso (só neste browser) ----------
+  const STORE = COURSE.storageKey;
+  let progress = {};
+  try { progress = JSON.parse(localStorage.getItem(STORE) || '{}') || {}; } catch (e) { progress = {}; }
+  const saveProgress = () => { try { localStorage.setItem(STORE, JSON.stringify(progress)); } catch (e) { /* sem armazenamento */ } };
+  const isDone = id => !!progress[id];
+
+  // ---------- realce de sintaxe ----------
+  // Cada curso define SYNTAX: uma regex com um grupo por tipo de token e a classe CSS de cada grupo.
+  const TOK = SYNTAX.re;
+  function hlLine(line) {
+    let out = '';
+    let last = 0;
+    let m;
+    TOK.lastIndex = 0;
+    while ((m = TOK.exec(line))) {
+      if (!m[0].length) { TOK.lastIndex++; continue; }
+      out += esc(line.slice(last, m.index));
+      const group = m.findIndex((g, i) => i > 0 && g !== undefined);
+      const cls = SYNTAX.classes[group - 1];
+      out += '<span class="t-' + cls + '">' + esc(m[0]) + '</span>';
+      last = m.index + m[0].length;
+    }
+    return out + esc(line.slice(last));
+  }
+  const hlBlock = code => code.split('\n').map(hlLine).join('\n');
+  function highlightStatic(root) {
+    $$('pre.snip code', root).forEach(el => {
+      if (el.dataset.hl) return;
+      el.innerHTML = hlBlock(el.textContent);
+      el.dataset.hl = '1';
+    });
+  }
+
+  // ---------- ecrã (terminal) ----------
+  function renderTerm(s, withCaret) {
+    if (!s) return '<span class="ph">(ainda nada no ecrã)</span>';
+    const html = s.split(/(⟦[^⟧]*⟧)/).map(part => {
+      if (part.charAt(0) === '⟦') return '<span class="in">' + esc(part.slice(1, -1)) + '</span><span class="enter" aria-hidden="true">↵</span>\n';
+      return esc(part);
+    }).join('');
+    return html + (withCaret ? '<span class="caret" aria-hidden="true"></span>' : '');
+  }
+
+  // ---------- memória ----------
+  function prevValue(prevFrames, fi, frameName, varName) {
+    if (!prevFrames) return undefined;
+    const f = prevFrames[fi];
+    if (!f || f.name !== frameName) return null;
+    const v = f.vars.find(x => x.name === varName);
+    return v ? v.value : null;
+  }
+  const changed = (pv, v) => pv !== undefined && pv !== null && JSON.stringify(pv) !== JSON.stringify(v);
+
+  function scalarHtml(v) {
+    if (v === '?') return '<span class="garbage" title="lixo: valor desconhecido">?</span>';
+    const s = String(v);
+    const k = s.indexOf('→');
+    if (k > -1) return '<span class="ptr-addr">' + esc(s.slice(0, k).trim()) + '</span> <span class="ptr-arrow">' + esc(s.slice(k)) + '</span>';
+    return esc(s);
+  }
+
+  function varHtml(v, pv) {
+    const isNew = pv === null;
+    const val = v.value;
+    let cls = 'var';
+    let body = '';
+    if (Array.isArray(val) && val.length && typeof val[0] === 'object') {
+      cls += ' wide';
+      const fields = Object.keys(val[0]);
+      body = '<div class="t-wrap"><table class="mini"><thead><tr><th>índice</th>' + fields.map(f => '<th>' + esc(f) + '</th>').join('') + '</tr></thead><tbody>' +
+        val.map((row, i) => '<tr><td>[' + i + ']</td>' + fields.map(f => {
+          const c = Array.isArray(pv) && pv[i] && changed(pv[i][f], row[f]);
+          return '<td><span class="' + (c ? 'chg' : '') + '">' + scalarHtml(row[f]) + '</span></td>';
+        }).join('') + '</tr>').join('') + '</tbody></table></div>';
+    } else if (Array.isArray(val)) {
+      cls += val.length > 5 ? ' wide' : '';
+      body = '<div class="cells">' + val.map((c, i) => {
+        const ch = Array.isArray(pv) && changed(pv[i], c);
+        return '<div class="cell"><span class="cell-v' + (ch ? ' chg' : '') + '">' + scalarHtml(c) + '</span><span class="cell-i">[' + i + ']</span></div>';
+      }).join('') + '</div>';
+    } else if (val && typeof val === 'object') {
+      cls += ' wide';
+      body = '<div class="fields">' + Object.keys(val).map(f => {
+        const ch = pv && typeof pv === 'object' && changed(pv[f], val[f]);
+        return '<span class="f-name">.' + esc(f) + '</span><span><span class="' + (ch ? 'chg' : '') + '">' + scalarHtml(val[f]) + '</span></span>';
+      }).join('') + '</div>';
+    } else {
+      body = '<div class="var-val' + (changed(pv, val) ? ' chg' : '') + '">' + scalarHtml(val) + '</div>';
+    }
+    if (isNew) cls += ' is-new';
+    const addr = v.addr ? '<span title="endereço (exemplo)">@' + esc(v.addr) + '</span>' : '';
+    return '<div class="' + cls + '"><div class="var-top"><span class="var-type">' + esc(v.type) + '</span>' + addr + '</div>' +
+      '<div class="var-name">' + esc(v.name) + '</div>' + body + '</div>';
+  }
+
+  function memHtml(frames, prevFrames) {
+    if (!frames.length) return '<p class="mem-empty">O programa ainda não começou a correr.</p>';
+    return frames.map((f, fi) => {
+      const active = fi === frames.length - 1;
+      const vars = f.vars.length
+        ? '<div class="vars">' + f.vars.map(v => varHtml(v, prevValue(prevFrames, fi, f.name, v.name))).join('') + '</div>'
+        : '<p class="mem-empty">sem variáveis</p>';
+      return '<div class="frame' + (active ? ' active' : '') + '"><div class="frame-name"><span>' + esc(f.name) + '()</span>' +
+        (active && frames.length > 1 ? '<span>a correr</span>' : (!active ? '<span>em pausa</span>' : '')) + '</div>' + vars + '</div>';
+    }).join('');
+  }
+
+  // ---------- visualizador ----------
+  // Alguns cursos trocam o painel da direita (Memória + Ecrã) por outro, definido em VIZ_SIDE
+  // (por exemplo, no SQL: Base de dados + Resultado). Sem VIZ_SIDE fica o painel do C.
+  const SIDE = typeof VIZ_SIDE !== 'undefined' ? VIZ_SIDE : null;
+
+  function mountViz(host, ex, num) {
+    const steps = buildSteps(ex.steps, ex.db);
+    const lines = ex.code.split('\n');
+    const hasAddr = ex.steps.some(s => s.d && Object.values(s.d).some(vs => Object.values(vs).some(spec => spec[2])));
+    let cur = 0;
+    host.className = 'viz';
+    host.tabIndex = 0;
+    host.setAttribute('aria-label', 'Exemplo ' + num + ': ' + ex.title + '. Usa as setas esquerda e direita para avançar.');
+    host.innerHTML =
+      '<div class="viz-head">' +
+        '<div class="viz-title"><small>Exemplo ' + num + '</small><h3>' + esc(ex.title) + '</h3></div>' +
+        '<div class="viz-controls">' +
+          '<button class="btn" type="button" data-a="prev">← Anterior</button>' +
+          '<span class="viz-count" aria-live="polite"></span>' +
+          '<button class="btn btn-primary" type="button" data-a="next">Seguinte →</button>' +
+          '<button class="btn btn-ghost" type="button" data-a="reset">Recomeçar</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="viz-bar"><span></span></div>' +
+      '<div class="viz-note"><span class="viz-note-line"></span><div class="viz-note-text"></div></div>' +
+      '<div class="viz-grid">' +
+        '<div class="panel"><div class="panel-label"><span>Código</span><span>▶ = linha a correr</span></div><div class="code">' +
+          lines.map((l, i) => '<div class="ln" data-n="' + (i + 1) + '"><span class="no">' + (i + 1) + '</span><span class="arrow"></span><span class="src">' + (hlLine(l) || ' ') + '</span></div>').join('') +
+        '</div></div>' +
+        '<div class="viz-side">' + (SIDE ? SIDE.panelsHtml() :
+          '<div class="panel"><div class="panel-label"><span>Memória</span>' + (hasAddr ? '<span class="addr-note">endereços de exemplo</span>' : '<span>amarelo = mudou agora</span>') + '</div><div class="mem"></div></div>' +
+          '<div class="panel out"><div class="panel-label"><span>Ecrã</span></div><pre class="term"></pre></div>') +
+        '</div>' +
+      '</div>';
+
+    const btnPrev = $('[data-a="prev"]', host);
+    const btnNext = $('[data-a="next"]', host);
+    const count = $('.viz-count', host);
+    const bar = $('.viz-bar span', host);
+    const noteLine = $('.viz-note-line', host);
+    const noteText = $('.viz-note-text', host);
+    const mem = $('.mem', host);
+    const term = $('.term', host);
+    const codeBox = $('.code', host);
+    const lnEls = $$('.ln', host);
+
+    function render() {
+      const s = steps[cur];
+      const prev = cur > 0 ? steps[cur - 1] : null;
+      lnEls.forEach(el => {
+        const on = Number(el.dataset.n) === s.l;
+        el.classList.toggle('cur', on);
+        $('.arrow', el).textContent = on ? '▶' : '';
+      });
+      noteLine.textContent = 'linha ' + s.l;
+      noteText.innerHTML = s.n;
+      if (SIDE) {
+        SIDE.render(host, s, prev, { renderTerm, isLast: cur === steps.length - 1, ex });
+      } else {
+        mem.innerHTML = memHtml(s.frames, prev ? prev.frames : null);
+        term.innerHTML = renderTerm(s.out, cur < steps.length - 1);
+        term.scrollTop = term.scrollHeight;
+      }
+      count.textContent = 'Passo ' + (cur + 1) + ' de ' + steps.length;
+      bar.style.width = ((cur + 1) / steps.length * 100) + '%';
+      btnPrev.disabled = cur === 0;
+      btnNext.disabled = cur === steps.length - 1;
+      btnNext.textContent = cur === steps.length - 1 ? 'Fim' : 'Seguinte →';
+    }
+    function go(i) { cur = Math.max(0, Math.min(steps.length - 1, i)); render(); }
+    host.addEventListener('click', e => {
+      const a = e.target.closest('[data-a]');
+      if (!a) return;
+      if (a.dataset.a === 'prev') go(cur - 1);
+      if (a.dataset.a === 'next') go(cur + 1);
+      if (a.dataset.a === 'reset') go(0);
+    });
+    host.addEventListener('keydown', e => {
+      if (e.target.closest('button') && (e.key === ' ' || e.key === 'Enter')) return;
+      if (e.key === 'ArrowRight') { e.preventDefault(); go(cur + 1); }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); go(cur - 1); }
+      if (e.key === 'Home') { e.preventDefault(); go(0); }
+    });
+    render();
+    void codeBox;
+  }
+
+  // ---------- quiz ----------
+  // Uma opção de resposta. No SQL, as respostas "mono" são resultados e aparecem como tabelinhas.
+  function optionHtml(q, text) {
+    if (q.mono && SIDE && SIDE.outputHtml) return '<span class="opt-txt">' + SIDE.outputHtml(text) + '</span>';
+    return '<span class="opt-txt' + (q.mono ? ' mono' : '') + '">' + esc(text) + '</span>';
+  }
+
+  function mountQuiz(host, lesson) {
+    const qs = lesson.quiz;
+    let answers = qs.map(() => null);
+    function draw() {
+      host.innerHTML = qs.map((q, qi) =>
+        '<div class="q" data-q="' + qi + '">' +
+          '<p class="q-text"><span class="q-num">' + (qi + 1) + '/' + qs.length + '</span><span>' + esc(q.q) + '</span></p>' +
+          (q.code ? '<pre class="snip"><code>' + hlBlock(q.code) + '</code></pre>' : '') +
+          '<div class="opts" role="group" aria-label="Opções">' + q.opts.map((o, oi) =>
+            '<button class="opt" type="button" data-o="' + oi + '"><span class="opt-key">' + 'ABCD'[oi] + '</span>' + optionHtml(q, o) + '</button>'
+          ).join('') + '</div>' +
+          '<div class="q-exp" hidden></div>' +
+        '</div>'
+      ).join('') + '<div class="score" hidden></div>';
+    }
+    function answer(qi, oi) {
+      if (answers[qi] !== null) return;
+      answers[qi] = oi;
+      const q = qs[qi];
+      const box = $('[data-q="' + qi + '"]', host);
+      $$('.opt', box).forEach((b, i) => {
+        b.disabled = true;
+        if (i === q.ok) b.classList.add('right');
+        else if (i === oi) b.classList.add('wrong');
+        else b.classList.add('dim');
+      });
+      const exp = $('.q-exp', box);
+      exp.innerHTML = (oi === q.ok ? '<strong class="ok">Certo.</strong> ' : '<strong class="bad">Não é bem.</strong> A resposta é a ' + 'ABCD'[q.ok] + '. ') + q.exp;
+      exp.hidden = false;
+      if (answers.every(a => a !== null)) finish();
+    }
+    function finish() {
+      const right = answers.filter((a, i) => a === qs[i].ok).length;
+      const prevBest = progress[lesson.id] ? progress[lesson.id].best : 0;
+      progress[lesson.id] = { best: Math.max(prevBest, right), total: qs.length };
+      saveProgress();
+      renderSidebar();
+      const msg = right === qs.length ? 'Acertaste todas. Podes passar à lição seguinte.'
+        : right * 2 >= qs.length ? 'Quase. Relê as explicações das que falhaste e corre outra vez o exemplo.'
+        : 'Volta a correr o exemplo passo a passo, com calma, e tenta outra vez.';
+      const sc = $('.score', host);
+      sc.innerHTML = '<div><span class="score-num">' + right + '/' + qs.length + '</span><p>' + msg + '</p></div><button class="btn" type="button" data-retry>Repetir perguntas</button>';
+      sc.hidden = false;
+    }
+    host.addEventListener('click', e => {
+      if (e.target.closest('[data-retry]')) { answers = qs.map(() => null); draw(); return; }
+      const b = e.target.closest('.opt');
+      if (!b) return;
+      answer(Number(b.closest('[data-q]').dataset.q), Number(b.dataset.o));
+    });
+    draw();
+  }
+
+  // ---------- exercícios ----------
+  // O que o programa da solução mostra. No SQL é o resultado da consulta, como tabela.
+  function runHtml(run) {
+    if (SIDE && SIDE.outputHtml) return '<div><div class="ex-label">Resultado esperado</div>' + SIDE.outputHtml(run) + '</div>';
+    return '<div><div class="ex-label">Exemplo de execução (a amarelo, o que escreves)</div><pre class="term">' + renderTerm(run, false) + '</pre></div>';
+  }
+
+  function exHtml(ex, i) {
+    return '<article class="ex">' +
+      '<h3>Exercício ' + (i + 1) + ': ' + esc(ex.title) + '</h3>' +
+      '<p>' + esc(ex.text) + '</p>' +
+      (SIDE && SIDE.exerciseHtml ? SIDE.exerciseHtml(ex) : runHtml(ex.run)) +
+      '<details><summary>Ver dica</summary><div class="det-body"><p>' + ex.hint + '</p></div></details>' +
+      '<details><summary>Ver solução</summary><div class="det-body"><pre class="snip"><code>' + hlBlock(ex.solution) + '</code></pre>' +
+        '<div class="sol-tools"><button class="btn" type="button" data-copy="' + i + '">Copiar código</button></div></div></details>' +
+    '</article>';
+  }
+
+  // ---------- vistas ----------
+  const view = $('#view');
+
+  function renderHome() {
+    view.innerHTML = '';
+    view.appendChild($('#tpl-home').content.cloneNode(true));
+    const next = LESSONS.find(l => !isDone(l.id));
+    const actions = $('#hero-actions');
+    if (!Object.keys(progress).length) {
+      actions.innerHTML = '<a class="btn btn-primary" href="#licao-0">Começar pela lição 0</a><a class="btn" href="#cabula">Ver a cábula</a>';
+    } else if (next) {
+      actions.innerHTML = '<a class="btn btn-primary" href="#licao-' + next.id + '">Continuar: lição ' + next.id + '</a><a class="btn" href="#cabula">Ver a cábula</a>';
+    } else {
+      actions.innerHTML = '<a class="btn btn-primary" href="#cabula">Rever a cábula</a><a class="btn" href="#licao-0">Recomeçar as lições</a>';
+    }
+    $('#home-lessons').innerHTML = LESSONS.map(l =>
+      '<a class="card-lesson" href="#licao-' + l.id + '"><span class="nav-num">' + l.id + '</span><strong>' + esc(l.title) + '</strong><span class="s">' + esc(l.short) + '</span>' +
+      (isDone(l.id) ? '<span class="done-tag">Feita · ' + progress[l.id].best + '/' + progress[l.id].total + '</span>' : '') + '</a>'
+    ).join('');
+  }
+
+  function renderCheat() {
+    view.innerHTML = '';
+    view.appendChild($('#tpl-cheat').content.cloneNode(true));
+    highlightStatic(view);
+  }
+
+  function renderLesson(id) {
+    const L = LESSONS[id];
+    const prev = LESSONS[id - 1];
+    const next = LESSONS[id + 1];
+    view.innerHTML =
+      '<section class="lesson-head"><span class="eyebrow">Lição ' + L.id + ' de ' + (LESSONS.length - 1) + '</span><h1>' + esc(L.title) + '</h1><p class="lead">' + esc(L.short.charAt(0).toUpperCase() + L.short.slice(1)) + '.</p></section>' +
+      '<section class="prose">' + L.body + '</section>' +
+      '<aside class="analogy"><span class="analogy-label">Pensa assim</span><p>' + L.analogy + '</p></aside>' +
+      (L.db && SIDE && SIDE.dbHtml ? '<section class="section"><div class="section-head"><h2>A base de dados desta lição</h2><p>Os exemplos, as perguntas e os exercícios usam estas tabelas.</p></div>' + SIDE.dbHtml(L.db) + '</section>' : '') +
+      '<section class="section"><div class="section-head"><h2>Vê a correr</h2><p>Carrega em "Seguinte" (ou usa as setas do teclado) e acompanha a linha amarela, a memória e o ecrã.</p></div>' +
+        L.examples.map((_, i) => '<div data-viz="' + i + '"></div>').join('') + '</section>' +
+      '<section class="section"><div class="section-head"><h2>Erros comuns</h2></div><ul class="mistakes">' + L.mistakes.map(m => '<li>' + m + '</li>').join('') + '</ul></section>' +
+      '<section class="section"><div class="section-head"><h2>Testa-te</h2><p>Responde sem correr o código. Se precisares, faz a tabela de execução no papel.</p></div><div class="quiz" id="quiz"></div></section>' +
+      '<section class="section"><div class="section-head"><h2>Pratica</h2><p>Escreve o programa no computador antes de abrires a solução.</p></div><div class="exs">' + L.exercises.map(exHtml).join('') + '</div></section>' +
+      '<nav class="pager" aria-label="Navegação entre lições">' +
+        (prev ? '<a href="#licao-' + prev.id + '"><small>← Anterior</small><span>' + prev.id + '. ' + esc(prev.title) + '</span></a>' : '<a href="#inicio"><small>← Início</small><span>Como usar</span></a>') +
+        (next ? '<a class="next" href="#licao-' + next.id + '"><small>Seguinte →</small><span>' + next.id + '. ' + esc(next.title) + '</span></a>' : '<a class="next" href="#cabula"><small>Seguinte →</small><span>' + esc(COURSE.cheatTitle) + '</span></a>') +
+      '</nav>';
+    L.examples.forEach((ex, i) => mountViz($('[data-viz="' + i + '"]', view), ex, i + 1));
+    mountQuiz($('#quiz', view), L);
+    highlightStatic(view);
+    view.querySelectorAll('[data-copy]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const code = L.exercises[Number(btn.dataset.copy)].solution;
+        try {
+          await navigator.clipboard.writeText(code);
+          btn.textContent = 'Copiado';
+        } catch (e) {
+          const pre = btn.closest('.det-body').querySelector('pre');
+          const r = document.createRange();
+          r.selectNodeContents(pre);
+          const sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(r);
+          btn.textContent = 'Selecionado: usa Ctrl+C';
+        }
+        setTimeout(() => { btn.textContent = 'Copiar código'; }, 2200);
+      });
+    });
+  }
+
+  // ---------- barra lateral ----------
+  function currentKey() {
+    const h = location.hash.replace('#', '');
+    if (h === 'cabula') return 'cabula';
+    const m = h.match(/^licao-(\d+)$/);
+    if (m && LESSONS[Number(m[1])]) return 'licao-' + m[1];
+    return 'inicio';
+  }
+  function renderSidebar() {
+    const key = currentKey();
+    const done = LESSONS.filter(l => isDone(l.id)).length;
+    $('#progress').innerHTML = '<span>' + done + ' de ' + LESSONS.length + ' lições feitas</span><div class="progress-track"><div class="progress-fill" style="width:' + (done / LESSONS.length * 100) + '%"></div></div>';
+    const cur = k => (key === k ? ' aria-current="page"' : '');
+    $('#nav').innerHTML =
+      '<a href="#inicio"' + cur('inicio') + '><span class="nav-icon">~</span><span>Início</span><span></span></a>' +
+      '<div class="nav-label">Lições</div>' +
+      LESSONS.map(l => '<a href="#licao-' + l.id + '"' + cur('licao-' + l.id) + '><span class="nav-num">' + l.id + '</span><span>' + esc(l.title) + '</span><span class="nav-done">' + (isDone(l.id) ? '✓' : '') + '</span></a>').join('') +
+      '<div class="nav-label">Consulta</div>' +
+      '<a href="#cabula"' + cur('cabula') + '><span class="nav-icon">{ }</span><span>' + esc(COURSE.cheatTitle) + '</span><span></span></a>';
+  }
+
+  // ---------- menu no telemóvel ----------
+  const sidebar = $('#sidebar');
+  const menuBtn = $('#menu-btn');
+  let scrim = null;
+  function setMenu(open) {
+    sidebar.classList.toggle('open', open);
+    menuBtn.setAttribute('aria-expanded', String(open));
+    if (open && !scrim) {
+      scrim = document.createElement('div');
+      scrim.className = 'scrim';
+      scrim.addEventListener('click', () => setMenu(false));
+      document.body.appendChild(scrim);
+    } else if (!open && scrim) {
+      scrim.remove();
+      scrim = null;
+    }
+  }
+  menuBtn.addEventListener('click', () => setMenu(!sidebar.classList.contains('open')));
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') setMenu(false); });
+
+  // ---------- rotas ----------
+  function route() {
+    const key = currentKey();
+    if (key === 'cabula') renderCheat();
+    else if (key.indexOf('licao-') === 0) renderLesson(Number(key.slice(6)));
+    else renderHome();
+    renderSidebar();
+    setMenu(false);
+    window.scrollTo(0, 0);
+  }
+  window.addEventListener('hashchange', route);
+  route();
+})();
+</script>
+</body>
+</html>

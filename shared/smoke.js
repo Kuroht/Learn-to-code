@@ -47,7 +47,9 @@ async function runSmoke(slug) {
       // As fontes do Google podem falhar sem internet; isso não é um erro da página.
       page.on('console', m => { if (m.type() === 'error' && !/fonts\.g|ERR_/.test(m.text())) fail('consola: ' + m.text()); });
       const checkOverflow = async where => {
-        const wide = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1);
+        // Compara com a largura do ecrã do modo, não com innerWidth: num telemóvel, o browser alarga a página
+        // para caber o que for largo demais, e innerWidth cresce com ela (o scroll horizontal ficava escondido).
+        const wide = await page.evaluate(w => document.documentElement.scrollWidth > w + 1, mode.viewport.width);
         if (wide) fail(where + ': a página tem scroll horizontal');
       };
       const goTo = async (hash, readyText) => {
@@ -130,7 +132,7 @@ async function runSmoke(slug) {
   return errors;
 }
 
-module.exports = { runSmoke };
+module.exports = { runSmoke, findBrowser };
 
 if (require.main === module) {
   (async () => {

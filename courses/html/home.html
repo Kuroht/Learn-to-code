@@ -1,0 +1,67 @@
+  <section class="hero">
+    <span class="eyebrow">Desenvolvimento web · antes do JavaScript</span>
+    <h1>Aprender HTML e CSS a ver a página a nascer</h1>
+    <p>Onze lições curtas, da primeira etiqueta ao flexbox e às páginas que se adaptam ao telemóvel. Em cada exemplo carregas em "Seguinte" e vês a página a mudar, a árvore DOM e o tamanho de cada caixa.</p>
+    <div class="hero-actions" id="hero-actions"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>Como usar</h2></div>
+    <ol class="steps">
+      <li><h3>Lê a explicação</h3><p>É curta de propósito. Fica com a ideia principal e passa ao exemplo.</p></li>
+      <li><h3>Corre o exemplo</h3><p>Antes de cada "Seguinte", tenta adivinhar como a página vai ficar. O contorno amarelo mostra de que elemento se fala.</p></li>
+      <li><h3>Responde às perguntas</h3><p>"De que cor fica?", "que largura tem?", "quantos elementos há?". As respostas foram medidas num browser a sério.</p></li>
+      <li><h3>Faz os exercícios no computador</h3><p>Escreve o ficheiro, abre-o no browser e compara com o resultado esperado antes de veres a solução.</p></li>
+    </ol>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>Lições</h2><p>Segue a ordem: as lições 0 a 4 são de HTML, as seguintes de CSS.</p></div>
+    <div class="grid-lessons" id="home-lessons"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>HTML e CSS: quem faz o quê</h2>
+      <p>A separação que torna tudo mais fácil.</p>
+    </div>
+    <div class="two">
+      <div class="prose">
+        <p>O <strong>HTML</strong> diz o que cada coisa é: um título, um parágrafo, um menu, um formulário. O <strong>CSS</strong> diz que aspeto tem: cor, tamanho, espaços, posição.</p>
+        <p>Por isso escolhes o elemento HTML pelo significado (um <code>&lt;h2&gt;</code> porque é um subtítulo) e mudas o aspeto no CSS (mesmo que o queiras pequeno e azul).</p>
+        <p>Quando uma regra de CSS "não funciona", faz três perguntas: o seletor encontra o elemento? Há outra regra mais específica a ganhar? A declaração está bem escrita (com <code>;</code> e unidade)?</p>
+      </div>
+      <div class="t-wrap">
+        <table class="t trace">
+          <thead><tr><th>Queres</th><th>Usa</th></tr></thead>
+          <tbody>
+            <tr><td>um título</td><td>HTML: &lt;h1&gt;</td></tr>
+            <tr><td>texto vermelho</td><td>CSS: color: red</td></tr>
+            <tr><td>uma lista</td><td>HTML: &lt;ul&gt; e &lt;li&gt;</td></tr>
+            <tr class="hl"><td>caixas lado a lado</td><td>CSS: display: flex</td></tr>
+            <tr><td>espaço à volta</td><td>CSS: padding / margin</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="two">
+    <div class="box">
+      <h2>Onde praticar</h2>
+      <ul>
+        <li><strong>No teu computador:</strong> escreve um ficheiro <code>index.html</code> num editor (o VS Code, por exemplo) e abre-o no browser. Depois de cada mudança, guarda e atualiza a página (F5).</li>
+        <li><strong>No browser, sem instalar nada:</strong> <a href="https://codepen.io/pen/">CodePen</a>, com o HTML e o CSS em caixas separadas e a página a atualizar sozinha.</li>
+        <li>Carrega em F12 em qualquer página para abrir as ferramentas do browser: mostram a árvore DOM, as regras de cada elemento e o modelo de caixa, como o visualizador.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h2>Para quem está a explicar</h2>
+      <ul>
+        <li>Pede-lhe que diga como a página vai ficar <em>antes</em> de carregar em "Seguinte", sobretudo nas lições da cascata e do modelo de caixa.</li>
+        <li>Usem as ferramentas do browser (F12) juntos: ver qual regra ganhou e porquê ensina mais do que qualquer explicação.</li>
+        <li>No modelo de caixa, façam as contas no papel antes de ver o inspetor.</li>
+        <li>Lembra que o CSS não dá erros: se nada muda, há um engano silencioso para encontrar.</li>
+      </ul>
+    </div>
+  </section>

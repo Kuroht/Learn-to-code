@@ -11,7 +11,8 @@ Each course is a single, self-contained HTML page: short lessons, a step-by-step
 | Python do Zero | `courses/python` | done, in review |
 | C# do Zero | `courses/csharp` | done, in review |
 | Rust do Zero | `courses/rust` | done, in review |
-| TypeScript | | planned |
+| HTML e CSS do Zero | `courses/html` | done, in review |
+| JavaScript, TypeScript | | planned, in that order |
 
 ## Commands
 
@@ -42,7 +43,9 @@ it highlights, for manual review) and `shots/` (screenshots in light, dark and m
 | Python | `python3` (or `python`) |
 | C# | `dotnet` |
 | Rust | `rustc` + `rustup target add wasm32-wasip1` (programs run as WebAssembly inside Node) |
-| TypeScript | `node` + `tsc` |
+| HTML e CSS | Chrome or Edge (checked headless with playwright-core) |
+| JavaScript | `node` |
+| TypeScript | `node` + `typescript@6` (pure JS compiler, runs inside Node) |
 
 ## Layout
 

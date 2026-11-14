@@ -1,0 +1,137 @@
+  <section class="lesson-head">
+    <span class="eyebrow">Resumo</span>
+    <h1>Cábula de HTML e CSS</h1>
+    <p class="lead">Tudo o que as lições ensinam, numa página. Boa para ter aberta enquanto fazes exercícios.</p>
+  </section>
+  <div class="cheat">
+    <div class="box">
+      <h3>Esqueleto de uma página</h3>
+<pre class="snip"><code class="html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Título do separador&lt;/title&gt;
+  &lt;link rel="stylesheet" href="estilo.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  ...
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Elementos de HTML</h3>
+      <div class="t-wrap"><table class="t">
+        <tbody>
+          <tr><td><code>h1</code> ... <code>h6</code>, <code>p</code></td><td>títulos e parágrafos</td></tr>
+          <tr><td><code>strong</code>, <code>em</code>, <code>br</code></td><td>importante, ênfase, mudar de linha</td></tr>
+          <tr><td><code>ul</code>, <code>ol</code>, <code>li</code></td><td>listas (com marcas, numerada) e os itens</td></tr>
+          <tr><td><code>a href="..."</code></td><td>ligação</td></tr>
+          <tr><td><code>img src="..." alt="..."</code></td><td>imagem (o alt é obrigatório)</td></tr>
+          <tr><td><code>header</code>, <code>nav</code>, <code>main</code>, <code>footer</code></td><td>zonas da página</td></tr>
+          <tr><td><code>section</code>, <code>article</code></td><td>secção, artigo</td></tr>
+          <tr><td><code>div</code>, <code>span</code></td><td>caixas sem significado (bloco, em linha)</td></tr>
+          <tr><td><code>form</code>, <code>label</code>, <code>input</code>, <code>button</code></td><td>formulários</td></tr>
+          <tr><td><code>table</code>, <code>tr</code>, <code>th</code>, <code>td</code></td><td>tabelas</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="box">
+      <h3>Seletores de CSS</h3>
+      <div class="t-wrap"><table class="t">
+        <tbody>
+          <tr><td><code>p</code></td><td>todos os p</td></tr>
+          <tr><td><code>.aviso</code></td><td>class="aviso"</td></tr>
+          <tr><td><code>#topo</code></td><td>id="topo"</td></tr>
+          <tr><td><code>nav a</code></td><td>a dentro de um nav</td></tr>
+          <tr><td><code>ul &gt; li</code></td><td>li filhos diretos de um ul</td></tr>
+          <tr><td><code>h1, h2</code></td><td>h1 e h2</td></tr>
+          <tr><td><code>a:hover</code></td><td>uma ligação com o rato por cima</td></tr>
+        </tbody>
+      </table></div>
+      <p>Ganha o mais específico (id &gt; classe &gt; elemento); com empate, o que vem depois.</p>
+    </div>
+
+    <div class="box">
+      <h3>Propriedades mais usadas</h3>
+<pre class="snip"><code class="css">color: blue;
+background-color: #f2f4f8;
+font-size: 1.25rem;
+font-family: Arial, sans-serif;
+font-weight: bold;
+text-align: center;
+width: 300px;   max-width: 600px;
+padding: 10px 20px;     /* cima/baixo esquerda/direita */
+border: 1px solid gray;
+margin: 0 auto;         /* centra um bloco com largura */
+display: block | inline | inline-block | none | flex;</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Modelo de caixa</h3>
+      <div class="t-wrap"><table class="t">
+        <tbody>
+          <tr><td>conteúdo</td><td>o <code>width</code> e o <code>height</code> (por omissão)</td></tr>
+          <tr><td><code>padding</code></td><td>dentro da borda, com o fundo</td></tr>
+          <tr><td><code>border</code></td><td>a borda</td></tr>
+          <tr><td><code>margin</code></td><td>fora da borda, transparente</td></tr>
+        </tbody>
+      </table></div>
+      <p>Largura total = width + padding + borda (dos dois lados). Com <code>box-sizing: border-box</code>, é só o width.</p>
+    </div>
+
+    <div class="box">
+      <h3>Flexbox</h3>
+<pre class="snip"><code class="css">.pai {
+  display: flex;
+  gap: 20px;
+  flex-direction: row;            /* ou column */
+  justify-content: space-between; /* center, flex-start... */
+  align-items: center;
+}
+.filho { flex: 1; }               /* ocupa o que sobra */</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Unidades e media queries</h3>
+<pre class="snip"><code class="css">width: 50%;        /* do pai */
+font-size: 2rem;   /* 2 × a letra da página (32px) */
+font-size: 1.5em;  /* 1,5 × a letra do pai */
+
+@media (max-width: 600px) {
+  nav { display: none; }   /* só em ecrãs estreitos */
+}</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Quando algo não aparece como esperavas</h3>
+      <div class="t-wrap"><table class="t">
+        <thead><tr><th>Sintoma</th><th>Costuma ser</th></tr></thead>
+        <tbody>
+          <tr><td>a regra não faz nada</td><td>falta um <code>;</code> ou uma <code>}</code>; propriedade mal escrita; valor sem unidade (<code>20</code> em vez de <code>20px</code>)</td></tr>
+          <tr><td>a regra só funciona em parte dos elementos</td><td>outra regra mais específica ganha (vê-a com F12)</td></tr>
+          <tr><td>o seletor não encontra nada</td><td>faltou o <code>.</code> da classe ou o <code>#</code> do id; ou puseste o ponto no HTML</td></tr>
+          <tr><td>o width não muda nada</td><td>o elemento é inline: usa <code>inline-block</code> ou <code>block</code></td></tr>
+          <tr><td>as caixas não cabem lado a lado</td><td>o padding e a borda somam-se ao width: usa <code>border-box</code></td></tr>
+          <tr><td>os acentos aparecem trocados</td><td>falta o <code>&lt;meta charset="utf-8"&gt;</code></td></tr>
+          <tr><td>a imagem não aparece</td><td>caminho errado no <code>src</code> (maiúsculas contam, e a pasta tem de ser a certa)</td></tr>
+          <tr><td>no telemóvel fica tudo minúsculo</td><td>falta o <code>&lt;meta name="viewport"&gt;</code></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="box">
+      <h3>Antes de entregar</h3>
+      <ul class="checklist">
+        <li>Todas as etiquetas que abriste estão fechadas, pela ordem certa.</li>
+        <li>Há um só <code>h1</code> e os títulos seguem a ordem (h2 dentro de h1, h3 dentro de h2).</li>
+        <li>Todas as imagens têm <code>alt</code> e todos os campos têm <code>label</code>.</li>
+        <li>As ligações para outros sites começam por <code>https://</code>.</li>
+        <li>O CSS está num ficheiro à parte (ou num <code>&lt;style&gt;</code>), não em atributos <code>style</code>.</li>
+        <li>As cores, tamanhos e espaços repetidos estão numa classe, não copiados.</li>
+        <li>Abriste a página num ecrã estreito (F12, modo telemóvel) para ver se se adapta.</li>
+      </ul>
+    </div>
+  </div>
