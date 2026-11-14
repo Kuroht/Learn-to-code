@@ -16,8 +16,8 @@ Each course is a single, self-contained HTML page: short lessons, a step-by-step
 npm install              # once: installs playwright-core (drives your installed Chrome/Edge)
 npm run build            # builds every course into docs/<slug>/index.html, plus docs/index.html
 npm run build -- c       # builds one course
-npm run check -- c       # full check of one course (content, real toolchain, build, browser smoke test)
-npm run check -- c --skip-smoke   # same, without the browser
+npm run check -- c       # check one course: content + every program run with the real toolchain
+npm run check -- c --smoke        # same, plus build + browser smoke test (opt-in: opens Edge/Chrome)
 npm run smoke -- c       # only the browser smoke test
 ```
 

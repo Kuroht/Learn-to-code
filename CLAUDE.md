@@ -15,8 +15,11 @@ C do Zero (`courses/c`) is the reference for structure, style and quality. Read 
 ## Commands
 
 - `npm run build [-- slug]` builds `docs/<slug>/index.html` and `docs/index.html`.
-- `npm run check -- <slug>` = content review + every program run with the real toolchain + build + browser smoke test.
+- `npm run check -- <slug>` = content review + every program run with the real toolchain. `--smoke` adds the build and browser smoke test.
   It must pass with zero failures before a course is called done. Warnings must be read and either fixed or explained.
+- **On the owner's machine, don't run anything that starts new executables or a browser** (compiled programs, gcc, Playwright/Edge):
+  it trips their firewall. Running code inside the Node process (e.g. `node:sqlite` for SQL) is fine. Ask before anything else.
+- Write everything (content, comments, commits) in **European Portuguese or English, never Brazilian Portuguese**.
 - Never edit files in `docs/` by hand: they are build output.
 
 ## Content rules

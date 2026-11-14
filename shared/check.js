@@ -2,8 +2,9 @@
 //   1. revê o conteúdo (campos em falta, português do Brasil, linhas dos passos);
 //   2. corre todos os exemplos, perguntas com check: true e soluções com a ferramenta real
 //      (gcc, sqlite3, python...) e compara a saída com o que a página mostra;
-//   3. faz o build e corre o smoke test no browser (shared/smoke.js).
-// Uso: node shared/check.js [slug...] [--skip-smoke]
+//   3. só com --smoke: faz o build e corre o smoke test no browser (shared/smoke.js).
+//      Está desligado por omissão porque abrir o Edge e correr .exe novos dispara a firewall desta máquina.
+// Uso: node shared/check.js [slug...] [--smoke]
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
@@ -20,7 +21,7 @@ const plain = html => String(html).replace(/<[^>]+>/g, ' ');
 
 // Palavras do português do Brasil que não queremos no texto que o aluno lê.
 // A última alternativa apanha o gerúndio brasileiro ("está fazendo" em vez de "está a fazer").
-const BRAZILIAN = /(?<!\p{L})(tela|telas|arquivos?|usu[aá]ri[oa]s?|voc[eê]s?|celular(es)?|deletar|registros?|equipe|contato|salv(ar|a|e)|baixar|digit(e|ar)|clique|clicar|planilha|senha|mouse|aplicativos?|gerenciar|acessar|cadastr\p{L}*|(estou|está|estava|estamos|estão)\s+(?!quando|segundo|mundo|fundo)\p{L}+(ando|endo|indo))(?!\p{L})/giu;
+const BRAZILIAN = /(?<!\p{L})(tela|telas|arquivos?|usu[aá]ri[oa]s?|voc[eê]s?|celular(es)?|deletar|registros?|equipe|contato|salv(ar|a|e)|baixar|digit(e|ar)|clique|clicar|planilha|senha|mouse|aplicativos?|gerenciar|acessar|rodar|rodando|pegar|cadastr\p{L}*|(estou|está|estava|estamos|estão)\s+(?!quando|segundo|mundo|fundo)\p{L}+(ando|endo|indo))(?!\p{L})/giu;
 
 function makeReport() {
   let checks = 0;
@@ -149,7 +150,7 @@ async function checkCourse(slug, options) {
   // Lista "passo → linha → explicação", para rever à mão se cada explicação bate com a linha.
   fs.writeFileSync(path.join(outDir, 'line-report.txt'), lineReport.join('\n') + '\n');
 
-  if (!options.skipSmoke) {
+  if (options.smoke) {
     const build = spawnSync(process.execPath, [path.join(__dirname, 'build.js'), slug], { encoding: 'utf8' });
     report.check('build', build.status === 0, build.stderr);
     if (build.status === 0) {
@@ -169,7 +170,7 @@ async function checkCourse(slug, options) {
   let allOk = true;
   try {
     for (const slug of slugsFromArgs(args)) {
-      const ok = await checkCourse(slug, { skipSmoke: args.includes('--skip-smoke') });
+      const ok = await checkCourse(slug, { smoke: args.includes('--smoke') });
       allOk = allOk && ok;
     }
   } catch (e) {
