@@ -80,6 +80,19 @@ Exercise `run` uses the same `⟦...⟧` convention. All of `o` joined together 
 - Visualizer: `viz: 'refs'` with `vizLabels` Pilha (stack) / Heap. Value types sit in the stack (`['int', '19']`), structs as
   inline objects (`['Ponto', { X: '1' }]`), strings inline (simplification, said in lesson 8), classes/arrays/lists in the heap.
 
+## Rust course specifics (`courses/rust`)
+
+- **Windows on the owner's machine blocks the .exe files rustc produces.** The runner compiles for `wasm32-wasip1`
+  and runs the program inside Node with `node:wasi` (no executable is ever started). Needs `rustup target add wasm32-wasip1`.
+- Like C#, all programs go into one crate (one module `p<n>` per program, a generated `main` picks one). The crate is rebuilt
+  without the programs that fail, because rustc stops before borrow checking when any module has type errors.
+- Compile errors become the output (`error[E0382]: borrow of moved value: ...`), with the `p<n>::` module prefix stripped.
+  A panic becomes `thread 'main' panicked: <message>` (the real one also shows the thread id and line).
+- Don't use a constant out-of-range index (`v[5]` with a literal): rustc rejects it at compile time. Use a variable index.
+- Visualizer: `vizLabels` with `moved: '(movido)'` (a moved-from variable is shown struck out) and an orphan note saying the
+  memory was freed (drop). References to other variables are plain text values like `'→ s (main)'`.
+- Inside `` H`...` `` strings, write backticks as `&#96;` (a `` \` `` would keep the backslash in String.raw).
+
 ## Python course specifics (`courses/python`)
 
 - Runs `python -I` (or `python3`). If the program ends with an exception, the last stderr line (e.g. `TypeError: ...`)

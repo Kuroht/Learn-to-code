@@ -6,6 +6,10 @@
 const VIZ_SIDE = (function () {
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const isRef = v => typeof v === 'string' && v.charAt(0) === '@';
+  // Os textos dos painéis: por omissão os do Python; um curso pode trocá-los em course.js (vizLabels).
+  // moved: o valor que marca uma variável que já não se pode usar (Rust); orphan: a nota de um objeto sem dono.
+  const LABELS = Object.assign({ names: 'Nomes', objects: 'Objetos', moved: null, orphan: 'sem nomes: vai ser apagado' },
+    typeof COURSE !== 'undefined' && COURSE.vizLabels ? COURSE.vizLabels : {});
 
   // A etiqueta de um objeto: o id sem o "o" ('o3' → '#3'), com uma de seis cores.
   function chip(id, changed, arrow) {
@@ -21,10 +25,11 @@ const VIZ_SIDE = (function () {
       return '<span class="inline-struct' + (changed ? ' chg' : '') + '">' +
         Object.keys(v).map(k => '<span class="f-name">' + esc(k) + '</span> ' + valueHtml(v[k], false)).join('<span class="sep">, </span>') + '</span>';
     }
+    // Um array guardado na própria variável (por exemplo um array do Rust na pilha): [a, b, c].
+    if (Array.isArray(v)) return '<span class="' + (changed ? 'chg' : '') + '">[' + v.map(x => valueHtml(x, false)).join(', ') + ']</span>';
+    if (LABELS.moved && v === LABELS.moved) return '<span class="moved' + (changed ? ' chg' : '') + '">' + esc(v) + '</span>';
     return '<span class="' + (changed ? 'chg' : '') + '">' + esc(v) + '</span>';
   }
-  // Os nomes dos painéis: por omissão os do Python; um curso pode trocá-los em course.js (vizLabels).
-  const LABELS = Object.assign({ names: 'Nomes', objects: 'Objetos' }, typeof COURSE !== 'undefined' && COURSE.vizLabels ? COURSE.vizLabels : {});
   const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 
   // ---------- Nomes ----------
@@ -93,7 +98,7 @@ const VIZ_SIDE = (function () {
       return '<div class="obj' + (isNew ? ' is-new' : '') + (orphan ? ' orphan' : '') + '">' +
         '<div class="obj-top">' + chip(id, false, false) + '<span class="var-type">' + esc(obj.type) + '</span></div>' +
         objectBody(obj, old) +
-        (orphan ? '<span class="orphan-note">sem nomes: vai ser apagado</span>' : '') + '</div>';
+        (orphan ? '<span class="orphan-note">' + esc(LABELS.orphan) + '</span>' : '') + '</div>';
     }).join('') + '</div>';
   }
 

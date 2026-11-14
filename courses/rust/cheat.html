@@ -1,0 +1,164 @@
+  <section class="lesson-head">
+    <span class="eyebrow">Resumo</span>
+    <h1>Cábula de Rust</h1>
+    <p class="lead">Tudo o que as lições ensinam, numa página. Boa para ter aberta enquanto fazes exercícios.</p>
+  </section>
+  <div class="cheat">
+    <div class="box">
+      <h3>Básico</h3>
+<pre class="snip"><code class="rust">fn main() {
+    let x = 5;              // imutável
+    let mut y = 10;         // pode mudar
+    y += x;
+    let x = x * 2;          // sombrear: outra variável
+    println!("{x} {}", y);
+    let d = 7 as f64 / 2.0; // conversões com as
+}</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Tipos</h3>
+      <div class="t-wrap"><table class="t">
+        <tbody>
+          <tr><td><code>i32</code>, <code>i64</code>, <code>u32</code>, <code>usize</code></td><td>inteiros (<code>usize</code> para tamanhos e índices)</td></tr>
+          <tr><td><code>f64</code></td><td>real</td></tr>
+          <tr><td><code>bool</code>, <code>char</code></td><td><code>true</code>, <code>'A'</code></td></tr>
+          <tr><td><code>&amp;str</code></td><td>texto fixo emprestado: <code>"ola"</code></td></tr>
+          <tr><td><code>String</code></td><td>texto no heap, que pode crescer</td></tr>
+          <tr><td><code>Vec&lt;T&gt;</code></td><td>lista que cresce: <code>vec![1, 2]</code></td></tr>
+          <tr><td><code>Option&lt;T&gt;</code></td><td><code>Some(x)</code> ou <code>None</code></td></tr>
+          <tr><td><code>Result&lt;T, E&gt;</code></td><td><code>Ok(x)</code> ou <code>Err(e)</code></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="box">
+      <h3>Decisões e ciclos</h3>
+<pre class="snip"><code class="rust">let r = if nota &gt;= 10 { "aprovado" } else { "reprovado" };
+for i in 0..5 { }       // 0 a 4
+for i in 1..=5 { }      // 1 a 5
+while n &gt; 0 { n -= 1; }
+let v = loop { break 42; };
+match n {
+    1 =&gt; println!("um"),
+    2 | 3 =&gt; println!("dois ou tres"),
+    _ =&gt; println!("outro"),
+}</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Funções</h3>
+<pre class="snip"><code class="rust">fn quadrado(x: i32) -&gt; i32 {
+    x * x                 // sem ; : é o valor devolvido
+}
+fn mostra(s: &amp;String) { }        // empresta para ler
+fn muda(s: &amp;mut String) { }      // empresta para mudar
+fn consome(s: String) { }        // fica dono (move)</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Ownership e empréstimos</h3>
+      <div class="t-wrap"><table class="t">
+        <tbody>
+          <tr><td><code>let t = s;</code></td><td>String: move (s deixa de valer) · i32: cópia</td></tr>
+          <tr><td><code>let t = s.clone();</code></td><td>cópia a sério</td></tr>
+          <tr><td><code>&amp;s</code></td><td>empréstimo para ler (vários ao mesmo tempo)</td></tr>
+          <tr><td><code>&amp;mut s</code></td><td>empréstimo para mudar (um só, e s tem de ser <code>mut</code>)</td></tr>
+          <tr><td><code>*r</code></td><td>o valor para onde a referência aponta</td></tr>
+          <tr><td><code>}</code></td><td>fim do âmbito: drop, a memória do dono é libertada</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="box">
+      <h3>Structs e enums</h3>
+<pre class="snip"><code class="rust">#[derive(Debug)]
+struct Conta { titular: String, saldo: i32 }
+
+impl Conta {
+    fn new(t: &amp;str) -&gt; Conta { Conta { titular: String::from(t), saldo: 0 } }
+    fn saldo(&amp;self) -&gt; i32 { self.saldo }
+    fn depositar(&amp;mut self, v: i32) { self.saldo += v; }
+}
+let mut c = Conta::new("Ana");
+println!("{:?}", c);
+
+enum Forma { Quadrado(i32), Retangulo(i32, i32) }</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Option e Result</h3>
+<pre class="snip"><code class="rust">match v.get(3) {
+    Some(x) =&gt; println!("{x}"),
+    None =&gt; println!("nao existe"),
+}
+if let Some(x) = opcao { }
+let n = opcao.unwrap_or(0);
+
+match "42".parse::&lt;i32&gt;() {
+    Ok(n) =&gt; println!("{n}"),
+    Err(e) =&gt; println!("erro: {e}"),
+}
+let n: i32 = texto.trim().parse()?;  // numa fn que devolve Result</code></pre>
+      <p><code>unwrap()</code> e <code>expect()</code> entram em pânico se for <code>None</code> ou <code>Err</code>.</p>
+    </div>
+
+    <div class="box">
+      <h3>Vec e String</h3>
+<pre class="snip"><code class="rust">let mut v = vec![12, 17];
+v.push(9);  v.pop();  v.len();  v[0];  v.get(5)
+for x in &amp;v { }          // empresta
+for x in &amp;mut v { *x += 1; }
+let soma: i32 = v.iter().sum();
+
+let mut s = String::new();
+s.push_str("ola");  s.push('!');
+s.len();  s.trim();  s.to_uppercase();
+for p in s.split_whitespace() { }</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Erros do compilador</h3>
+      <div class="t-wrap"><table class="t">
+        <thead><tr><th>Código</th><th>Costuma ser</th></tr></thead>
+        <tbody>
+          <tr><td><code>E0382: borrow of moved value</code></td><td>usaste uma variável depois de a mover: usa <code>&amp;</code> ou <code>.clone()</code></td></tr>
+          <tr><td><code>E0384: cannot assign twice to immutable variable</code></td><td>falta o <code>mut</code></td></tr>
+          <tr><td><code>E0596: cannot borrow as mutable, as it is not declared as mutable</code></td><td><code>&amp;mut</code> ou método <code>&amp;mut self</code> numa variável sem <code>mut</code></td></tr>
+          <tr><td><code>E0502: cannot borrow as mutable because it is also borrowed as immutable</code></td><td>mudaste um valor enquanto havia um <code>&amp;</code> ainda em uso</td></tr>
+          <tr><td><code>E0499: cannot borrow as mutable more than once at a time</code></td><td>dois <code>&amp;mut</code> ao mesmo tempo</td></tr>
+          <tr><td><code>E0597: does not live long enough</code></td><td>uma referência dura mais do que o valor para onde aponta</td></tr>
+          <tr><td><code>E0308: mismatched types</code></td><td>tipos diferentes; ou <code>;</code> na última linha de uma função que devolve um valor</td></tr>
+          <tr><td><code>E0277: ... doesn't implement std::fmt::Display</code></td><td><code>{}</code> num struct: usa <code>#[derive(Debug)]</code> e <code>{:?}</code></td></tr>
+          <tr><td><code>E0004: non-exhaustive patterns</code></td><td>falta um braço no <code>match</code> (ou <code>_</code>)</td></tr>
+          <tr><td><code>E0425: cannot find value in this scope</code></td><td>nome mal escrito, ou variável que já saiu de âmbito</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="box">
+      <h3>Pânicos (ao correr)</h3>
+      <div class="t-wrap"><table class="t">
+        <thead><tr><th>Mensagem</th><th>Costuma ser</th></tr></thead>
+        <tbody>
+          <tr><td><code>index out of bounds: the len is 3 but the index is 10</code></td><td><code>v[i]</code> fora dos limites: usa <code>v.get(i)</code></td></tr>
+          <tr><td><code>called `Option::unwrap()` on a `None` value</code></td><td><code>unwrap()</code> de um None</td></tr>
+          <tr><td><code>called `Result::unwrap()` on an `Err` value</code></td><td><code>unwrap()</code> de um Err (por exemplo, um parse falhado)</td></tr>
+          <tr><td><code>attempt to divide by zero</code></td><td>divisão inteira por zero</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="box">
+      <h3>Antes de entregar</h3>
+      <ul class="checklist">
+        <li>As variáveis que mudam têm <code>mut</code> (e as outras não).</li>
+        <li>Nenhuma variável é usada depois de ser movida.</li>
+        <li>As funções que só leem recebem <code>&amp;</code>, não a posse.</li>
+        <li>A última linha das funções que devolvem um valor não tem <code>;</code>.</li>
+        <li>Os <code>match</code> tratam todos os casos.</li>
+        <li>Os <code>unwrap()</code> que sobraram estão em sítios onde o valor existe mesmo.</li>
+        <li>Os textos lidos do teclado levam <code>trim()</code> antes do <code>parse</code>.</li>
+      </ul>
+    </div>
+  </div>

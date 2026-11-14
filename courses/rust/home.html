@@ -1,0 +1,66 @@
+  <section class="hero">
+    <span class="eyebrow">Programação de sistemas · para quem já fez o C</span>
+    <h1>Aprender Rust a ver quem é o dono da memória</h1>
+    <p>Onze lições curtas, do primeiro <code>println!</code> ao <code>Result</code> e ao <code>?</code>. Em cada exemplo carregas em "Seguinte" e vês quem é o dono de cada valor, quando é movido, quando é emprestado e quando a memória é libertada.</p>
+    <div class="hero-actions" id="hero-actions"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>Como usar</h2></div>
+    <ol class="steps">
+      <li><h3>Lê a explicação</h3><p>É curta e compara com o C sempre que ajuda. As lições 4, 5 e 6 são as mais importantes: vai devagar.</p></li>
+      <li><h3>Corre o exemplo</h3><p>Antes de cada "Seguinte", pergunta-te: este valor é movido, copiado ou emprestado? Quem o liberta?</p></li>
+      <li><h3>Responde às perguntas</h3><p>"O que aparece no ecrã?" e também "isto compila?". Cada resposta traz a explicação.</p></li>
+      <li><h3>Faz os exercícios no computador</h3><p>Escreve o programa e lê com calma as mensagens do compilador: em Rust elas ensinam muito.</p></li>
+    </ol>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>Lições</h2><p>Segue a ordem: cada lição usa o que veio antes.</p></div>
+    <div class="grid-lessons" id="home-lessons"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>As três regras que o compilador verifica</h2>
+      <p>Quase todos os erros de quem começa vêm de uma destas.</p>
+    </div>
+    <div class="two">
+      <div class="prose">
+        <p><strong>1. Cada valor tem um só dono.</strong> <code>let t = s;</code> com uma String passa a posse para <code>t</code>, e <code>s</code> deixa de valer. Os números (<code>i32</code>, <code>f64</code>...) copiam-se.</p>
+        <p><strong>2. Quando o dono sai de âmbito, o valor é libertado.</strong> Não há <code>free</code> nem garbage collector: a memória é libertada na chaveta que fecha o bloco.</p>
+        <p><strong>3. Ou vários <code>&amp;</code>, ou um só <code>&amp;mut</code>.</strong> Emprestar não passa a posse, mas ninguém pode ler um valor enquanto outro o muda, e um empréstimo não pode durar mais do que o dono.</p>
+      </div>
+      <div class="t-wrap">
+        <table class="t trace">
+          <thead><tr><th>Código</th><th>s</th><th>t</th></tr></thead>
+          <tbody>
+            <tr><td>let s = String::from("ola");</td><td>dono</td><td>–</td></tr>
+            <tr class="hl"><td>let t = s;</td><td>movido</td><td>dono</td></tr>
+            <tr><td>let r = &amp;t;</td><td>movido</td><td>dono, emprestado</td></tr>
+            <tr><td>}</td><td>–</td><td>drop: memória libertada</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="two">
+    <div class="box">
+      <h2>Onde praticar</h2>
+      <ul>
+        <li><strong>No browser, sem instalar nada:</strong> o <a href="https://play.rust-lang.org">Rust Playground</a>, o site oficial. Cola o código e carrega em Run.</li>
+        <li><strong>No teu computador:</strong> instala o Rust com o <a href="https://rustup.rs">rustup</a>. Cria um projeto com <code>cargo new ola</code> e corre-o com <code>cargo run</code>, dentro da pasta.</li>
+        <li>Quando um programa entra em pânico, a mensagem diz também a linha e o número da thread; nos exemplos do curso aparece só a primeira parte.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h2>Para quem está a explicar</h2>
+      <ul>
+        <li>Nas lições 4 a 6, pede-lhe que diga quem é o dono de cada valor <em>antes</em> de carregar em "Seguinte".</li>
+        <li>Leiam juntos as mensagens do compilador: o código (E0382, E0502...) e as setas no código dizem onde e porquê.</li>
+        <li>Desenhem no papel a pilha e o heap, com setas de cada dono para o seu valor, e risquem as variáveis movidas.</li>
+        <li>Comparem com o C: o que em C era um erro a correr (usar memória libertada) aqui é um erro de compilação.</li>
+      </ul>
+    </div>
+  </section>

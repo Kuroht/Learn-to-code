@@ -28,3 +28,5 @@
 .inline-struct { font-size: .88rem; }
 .inline-struct .f-name { color: var(--muted); }
 .inline-struct .sep { color: var(--muted); }
+.name .moved { color: var(--muted); font-style: italic; text-decoration: line-through; text-decoration-color: var(--bad); }
+.name:has(.moved) { border-style: dashed; opacity: .75; }

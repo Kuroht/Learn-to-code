@@ -10,7 +10,8 @@ Each course is a single, self-contained HTML page: short lessons, a step-by-step
 | SQL do Zero | `courses/sql` | done, in review |
 | Python do Zero | `courses/python` | done, in review |
 | C# do Zero | `courses/csharp` | done, in review |
-| Rust, TypeScript | | planned, in that order |
+| Rust do Zero | `courses/rust` | done, in review |
+| TypeScript | | planned |
 
 ## Commands
 
@@ -40,7 +41,7 @@ it highlights, for manual review) and `shots/` (screenshots in light, dark and m
 | SQL | nothing extra: uses `node:sqlite` (Node 22.13+) |
 | Python | `python3` (or `python`) |
 | C# | `dotnet` |
-| Rust | `rustc` / `cargo` |
+| Rust | `rustc` + `rustup target add wasm32-wasip1` (programs run as WebAssembly inside Node) |
 | TypeScript | `node` + `tsc` |
 
 ## Layout
