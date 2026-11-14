@@ -1,0 +1,16 @@
+/* ---------- visualizador de apps React ---------- */
+.page-box { background: #ffffff; overflow-x: auto; border-radius: 0 0 10px 10px; }
+iframe.preview { display: block; width: 100%; min-height: 240px; border: 0; background: #ffffff; color-scheme: light; }
+.ex iframe.preview { min-height: 200px; border: 1px solid var(--line); border-radius: 9px; }
+.ln.novo { box-shadow: inset 3px 0 0 var(--ok); background: var(--ok-soft); }
+.ln.novo.cur { background: var(--mark); box-shadow: inset 3px 0 0 var(--mark-edge); }
+.rtree { gap: 6px; }
+.rnode { border: 1px solid var(--line); border-radius: 8px; padding: 5px 9px; background: var(--panel); display: grid; gap: 3px; font-family: var(--font-mono); font-size: .8rem; }
+.rnode.rendered { border-color: var(--mark-edge); background: var(--mark); }
+.rhead { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+.rname { color: var(--accent); font-weight: 600; }
+.rtag { font-family: var(--font-body); font-size: .7rem; font-weight: 700; color: var(--ink); }
+.rprops, .rstate { display: flex; flex-wrap: wrap; gap: 4px 10px; }
+.rk { color: var(--muted); }
+.rs .rk { color: var(--t-num); }
+.rp, .rs { overflow-wrap: anywhere; }

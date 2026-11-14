@@ -709,7 +709,7 @@ WHERE i.aluno IS NULL;           -- "quem não tem nenhuma"</code></pre>
 </template>
 
 <script>
-const COURSE = {"slug":"sql","title":"SQL do Zero","storageKey":"sqldozero-progresso-v1","cheatTitle":"Cábula de SQL","vizLabels":null,"viz":"tables","courses":[{"slug":"c","title":"C do Zero","mark":".c"},{"slug":"sql","title":"SQL do Zero","mark":".sql"},{"slug":"python","title":"Python do Zero","mark":".py"},{"slug":"csharp","title":"C# do Zero","mark":".cs"},{"slug":"rust","title":"Rust do Zero","mark":".rs"},{"slug":"html","title":"HTML e CSS do Zero","mark":".html"},{"slug":"javascript","title":"JavaScript do Zero","mark":".js"},{"slug":"typescript","title":"TypeScript do Zero","mark":".ts"}]};
+const COURSE = {"slug":"sql","title":"SQL do Zero","storageKey":"sqldozero-progresso-v1","cheatTitle":"Cábula de SQL","vizLabels":null,"viz":"tables","courses":[{"slug":"c","title":"C do Zero","mark":".c"},{"slug":"sql","title":"SQL do Zero","mark":".sql"},{"slug":"python","title":"Python do Zero","mark":".py"},{"slug":"csharp","title":"C# do Zero","mark":".cs"},{"slug":"rust","title":"Rust do Zero","mark":".rs"},{"slug":"html","title":"HTML e CSS do Zero","mark":".html"},{"slug":"javascript","title":"JavaScript do Zero","mark":".js"},{"slug":"typescript","title":"TypeScript do Zero","mark":".ts"},{"slug":"react","title":"React do Zero","mark":".tsx"}]};
 // Realce de sintaxe para SQL. Cada grupo da regex corresponde, pela ordem, a uma classe em "classes".
 // A regex não distingue maiúsculas de minúsculas (flag i), tal como o SQL.
 const SYNTAX = {
@@ -1070,7 +1070,7 @@ function buildSteps(raw, initialTables) {
     allValues.flatMap(refsIn).forEach(id => { if (!heap[id]) throw new Error('referência para um objeto inexistente: @' + id + where); });
     orphans = unreachable(frames, heap);
     // sel, box, chk e width são do curso de HTML: o visualizador da página lê-os de cada passo.
-    res.push({ l: s.l, frames, out, n: s.n || '', tables, tmarks: s.tm || {}, grid, err: s.err || '', heap, orphans, sel: s.sel || null, box: s.box || null, width: s.width || null, acts });
+    res.push({ l: s.l, frames, out, n: s.n || '', tables, tmarks: s.tm || {}, grid, err: s.err || '', heap, orphans, sel: s.sel || null, box: s.box || null, width: s.width || null, wait: s.wait || 0, acts });
   });
   return res;
 }

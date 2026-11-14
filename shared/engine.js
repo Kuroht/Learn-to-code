@@ -211,7 +211,7 @@ function buildSteps(raw, initialTables) {
     allValues.flatMap(refsIn).forEach(id => { if (!heap[id]) throw new Error('referência para um objeto inexistente: @' + id + where); });
     orphans = unreachable(frames, heap);
     // sel, box, chk e width são do curso de HTML: o visualizador da página lê-os de cada passo.
-    res.push({ l: s.l, frames, out, n: s.n || '', tables, tmarks: s.tm || {}, grid, err: s.err || '', heap, orphans, sel: s.sel || null, box: s.box || null, width: s.width || null, acts });
+    res.push({ l: s.l, frames, out, n: s.n || '', tables, tmarks: s.tm || {}, grid, err: s.err || '', heap, orphans, sel: s.sel || null, box: s.box || null, width: s.width || null, wait: s.wait || 0, acts });
   });
   return res;
 }

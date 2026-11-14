@@ -10,7 +10,7 @@ C do Zero (`courses/c`) is the reference for structure, style and quality. Read 
 - Before starting a course, check its toolchain (`sqlite3`, `python3`, `dotnet`, `rustc`/`cargo`, `node` + `tsc`).
   If it's missing, say exactly what to install and wait.
 - When a course is done, report: the `npm run check -- <slug>` result, what you weren't sure about, and the path of `docs/<slug>/index.html`.
-- Later (not yet): React, Tauri, Expo and Electron, probably as step-by-step projects rather than variable traces.
+- After TypeScript came HTML e CSS, JavaScript and React (all done). Next: Expo, Electron, Tauri, in the step-by-step app format of React.
 
 ## Commands
 
@@ -90,6 +90,22 @@ Exercise `run` uses the same `⟦...⟧` convention. All of `o` joined together 
   Quizzes use `ask: [selector, what]` (and optional `width`); exercises use `tests: [[selector, what, expected]]` instead of `run`.
 - Examples after lesson 0 omit the skeleton (the browser adds it). Page text may use accents (the pages are UTF-8).
 - The default page is 800px wide with the body's 8px margin, so a block is 784px wide; keep that in mind for width claims.
+
+## React course specifics (`courses/react`)
+
+- One app (a to-do list, "Tarefas") grows lesson by lesson. Each version is a full `App.tsx` (`APP_0`... in the lesson files);
+  an example sets `prev` to the previous version, and the new lines show green. `linhaDe(app, text)` finds step line numbers.
+- `viz: 'react'` (`shared/viz-react.js/.css`): the right side runs the real app (React 18 UMD, inlined in the page) and shows the
+  component tree (props, `useState` values, and which components rendered in the last step), read through the React DevTools hook.
+- `shared/react-build.js` turns lesson TSX into page JS without a bundler: `react` imports become `React.*`, other imports/exports go,
+  TypeScript transpiles JSX, each capitalised function gets a render mark, and `App` is mounted on `#root`. The build stores it by code hash.
+- Steps: `act` (as in the page visualizer), `chk`, `sel`, `rr` (exact set of components that rendered because of that step: the mount,
+  or the step's action; `[]` = nothing rendered) and `wait` (ms, for timers/fake loading). Quizzes and exercises use `ask`/`tests` + `acts` (+ `wait`).
+- The runner type-checks with `@types/react` (strict, jsx react-jsx); a type error is the output (`error TS2741: ...`). Then it renders
+  in headless Edge (allowed by the owner for this course). React needs the prototype `value` setter for inputs (done in `applyActs`).
+- Only React 18 ships UMD files; don't upgrade `react`/`react-dom` to 19 without replacing the UMD approach.
+- Literal `const` values make comparisons fail type-checking (`1 === 3` → TS2367): type them (`const total: number = 3`).
+- `course.js → previewCss` is the CSS of every app; the cheat sheet shows a copy of it, keep the two in sync.
 
 ## TypeScript course specifics (`courses/typescript`)
 

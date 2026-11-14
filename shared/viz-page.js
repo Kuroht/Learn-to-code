@@ -67,7 +67,8 @@ VIZ_MODES.page = (function () {
       if (!el) return;
       if (type === 'click') el.click();
       if (type === 'input') {
-        el.value = value;
+        // Pelo setter do protótipo: o React vigia o setter do próprio elemento e ignorava um "el.value = ...".
+        Object.getOwnPropertyDescriptor(Object.getPrototypeOf(el), 'value').set.call(el, value);
         el.dispatchEvent(new doc.defaultView.Event('input', { bubbles: true }));
       }
     });

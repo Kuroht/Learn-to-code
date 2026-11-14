@@ -43,20 +43,37 @@ async function close() {
 }
 
 // Desenha uma página, faz as ações e devolve os erros de JavaScript que houve (só recarrega se algo mudou).
-async function render(html, width, acts) {
+// opts.settle: ms à espera depois de carregar e depois de cada ação (o React desenha um pouco depois);
+// com settle, as ações são feitas uma a uma e as marcas de renderização são limpas antes de cada uma.
+// opts.wait: ms extra no fim (para timers da própria app).
+async function render(html, width, acts, opts = {}) {
   const w = width || 800;
-  const key = JSON.stringify([html, w, acts || []]);
+  const key = JSON.stringify([html, w, acts || [], opts]);
   if (state.key === key) return [];
   state.errors = [];
   await freshPage();
   await state.page.setViewportSize({ width: w, height: 600 });
   await state.page.setContent(html, { waitUntil: 'load' });
-  if (acts && acts.length) {
-    await state.page.evaluate(([src, list]) => { new Function('return ' + src)()(document, list); }, [applyActsSource, acts]);
+  const apply = list => state.page.evaluate(([src, l]) => {
+    if (window.__dozero) window.__dozero.reset();
+    new Function('return ' + src)()(document, l);
+  }, [applyActsSource, list]);
+  if (opts.settle) {
+    await state.page.waitForTimeout(opts.settle);
+    for (const act of acts || []) {
+      await apply([act]);
+      await state.page.waitForTimeout(opts.settle);
+    }
+  } else if (acts && acts.length) {
+    await apply(acts);
   }
+  if (opts.wait) await state.page.waitForTimeout(opts.wait);
   state.key = key;
   return state.errors.slice();
 }
+
+// Corre uma função dentro da página desenhada (o runner de React usa-a para ler quem renderizou).
+const evaluate = (fn, arg) => state.page.evaluate(fn, arg);
 
 // Mede uma coisa na página desenhada e devolve-a como texto.
 async function measure(sel, what) {
@@ -112,4 +129,4 @@ async function checkExercise(ex, { label, report }) {
   }
 }
 
-module.exports = { isAvailable, open, close, ask, checkExample, checkExercise };
+module.exports = { isAvailable, open, close, ask, checkExample, checkExercise, render, measure, evaluate };

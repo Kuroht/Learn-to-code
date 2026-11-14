@@ -14,7 +14,8 @@ Each course is a single, self-contained HTML page: short lessons, a step-by-step
 | HTML e CSS do Zero | `courses/html` | done, in review |
 | JavaScript do Zero | `courses/javascript` | done, in review |
 | TypeScript do Zero | `courses/typescript` | done, in review |
-| React, Tauri, Expo, Electron | | later, different format (see CLAUDE.md) |
+| React do Zero | `courses/react` | done, in review (one app built step by step) |
+| Expo, Electron, Tauri | | later, same step-by-step app format |
 
 ## Commands
 
@@ -48,6 +49,7 @@ it highlights, for manual review) and `shots/` (screenshots in light, dark and m
 | HTML e CSS | Chrome or Edge (checked headless with playwright-core) |
 | JavaScript | `node` |
 | TypeScript | `node` + `typescript@6` (pure JS compiler, runs inside Node) |
+| React | `typescript@6`, `react`/`react-dom` 18 and their `@types` (dev dependencies), plus Chrome or Edge |
 
 ## Layout
 

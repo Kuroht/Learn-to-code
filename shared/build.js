@@ -4,7 +4,7 @@
 //      node shared/build.js c sql      (só estes)
 const fs = require('fs');
 const path = require('path');
-const { ROOT, listSlugs, loadCourse, slugsFromArgs } = require('./courses.js');
+const { ROOT, listSlugs, loadCourse, evalLessons, slugsFromArgs } = require('./courses.js');
 
 const DOCS = path.join(ROOT, 'docs');
 const read = file => fs.readFileSync(path.join(__dirname, file), 'utf8');
@@ -39,7 +39,15 @@ function buildCourse(slug) {
   const vizCss = vizList.map(v => '<style>\n' + read('viz-' + v + '.css') + '</style>\n').join('');
   // courses: todos os cursos do site, para a barra lateral poder saltar de um para outro.
   const courses = listSlugs().map(s => { const c = loadCourse(s).config; return { slug: s, title: c.title, mark: c.mark }; });
-  const courseJs = 'const COURSE = ' + JSON.stringify({ slug, title: config.title, storageKey: config.storageKey, cheatTitle: config.cheatTitle, vizLabels: config.vizLabels || null, viz: vizList[0] || null, courses }) + ';\n' + course.syntaxSource + vizJs;
+  let courseJs = 'const COURSE = ' + JSON.stringify({ slug, title: config.title, storageKey: config.storageKey, cheatTitle: config.cheatTitle, vizLabels: config.vizLabels || null, viz: vizList[0] || null, courses }) + ';\n' + course.syntaxSource + vizJs;
+  // Um curso de React leva o próprio React (UMD), o CSS das apps e o JavaScript já compilado de cada exemplo.
+  // O "</" é escrito "<\/" dentro dos textos, para nenhum "</script" fechar o script da página.
+  if (vizList.includes('react')) {
+    const { compileAll, reactUmd } = require('./react-build.js');
+    const safe = value => JSON.stringify(value).replace(/<\//g, '<\\/');
+    courseJs += '\nconst REACT_UMD = ' + safe(reactUmd()) + ';\nconst REACT_CSS = ' + safe(config.previewCss || '') +
+      ';\nconst REACT_COMPILED = ' + safe(compileAll(evalLessons(course), vizList[0])) + ';\n';
+  }
   const inlined = engine + courseJs + course.lessonsSource;
   if (inlined.includes('</script')) throw new Error(slug + ': o texto "</script" partia a página');
 

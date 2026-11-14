@@ -1,0 +1,67 @@
+  <section class="hero">
+    <span class="eyebrow">Desenvolvimento web · depois do TypeScript</span>
+    <h1>Aprender React a construir uma app de tarefas</h1>
+    <p>Onze lições curtas. Cada uma acrescenta uma peça à mesma app: componentes, props, listas, estado, formulários, filtros e efeitos. Em cada exemplo a app corre a sério ao lado do código, e vês que componentes renderizam cada vez que carregas num botão.</p>
+    <div class="hero-actions" id="hero-actions"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>Como usar</h2></div>
+    <ol class="steps">
+      <li><h3>Lê a explicação</h3><p>É curta e assume que já fizeste o JavaScript e o TypeScript do Zero. As linhas a verde no código são as novas desde a lição anterior.</p></li>
+      <li><h3>Corre o exemplo</h3><p>Em cada "Seguinte", o curso carrega nos botões e escreve nos campos por ti. Antes, pergunta-te: o que muda na app? Quem renderiza?</p></li>
+      <li><h3>Mexe na app</h3><p>A app do exemplo é verdadeira: podes carregar nos botões e escrever nos campos. O painel "Componentes" atualiza-se no passo seguinte.</p></li>
+      <li><h3>Faz os exercícios no computador</h3><p>Cria um projeto com <code>npm create vite@latest</code> (React + TypeScript), escreve o <code>src/App.tsx</code> e corre <code>npm run dev</code>.</p></li>
+    </ol>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>Lições</h2><p>Segue a ordem: a app cresce de lição para lição.</p></div>
+    <div class="grid-lessons" id="home-lessons"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>A ideia em que tudo assenta</h2>
+      <p>No curso de JavaScript mudavas a página à mão. Em React descreves a página para os dados de agora.</p>
+    </div>
+    <div class="two">
+      <div class="prose">
+        <p>Um componente é uma função: recebe dados (props e estado) e devolve o que deve aparecer. Quando o estado muda, o React volta a chamar a função e atualiza só o que ficou diferente.</p>
+        <p>Por isso quase tudo o que corre mal num principiante vem de uma de três coisas: mudar dados sem o setter, mudar um array ou objeto por dentro (o React acha que é o mesmo), ou guardar em estado o que se podia calcular.</p>
+        <p>O painel "Componentes" mostra isto a acontecer: a amarelo, quem renderizou no último passo.</p>
+      </div>
+      <div class="t-wrap">
+        <table class="t trace">
+          <thead><tr><th>Fazes</th><th>O React</th></tr></thead>
+          <tbody>
+            <tr><td>setN(n + 1)</td><td>renderiza com o valor novo</td></tr>
+            <tr><td>n = n + 1</td><td>não sabe de nada</td></tr>
+            <tr class="hl"><td>lista.push(x); setLista(lista)</td><td>mesmo array: não renderiza</td></tr>
+            <tr><td>setLista([...lista, x])</td><td>array novo: renderiza</td></tr>
+            <tr><td>escreves num campo do filho</td><td>só o filho renderiza</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="two">
+    <div class="box">
+      <h2>Onde praticar</h2>
+      <ul>
+        <li><strong>No teu computador:</strong> com o Node instalado, <code>npm create vite@latest tarefas -- --template react-ts</code>, depois <code>cd tarefas</code>, <code>npm install</code> e <code>npm run dev</code>. Abre o endereço que aparece no browser.</li>
+        <li>O CSS das apps do curso está na cábula: copia-o para o <code>src/App.css</code>.</li>
+        <li>Instala as <strong>React DevTools</strong> no browser: o separador "Components" é o painel deste curso, mas para a tua app.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h2>Para quem está a explicar</h2>
+      <ul>
+        <li>Antes de cada passo com uma ação, pede-lhe que diga que componentes vão ficar a amarelo.</li>
+        <li>O exemplo do <code>push</code> (lição 6) vale a pena fazer devagar: é o bug mais comum, e liga-se às referências do JavaScript.</li>
+        <li>Perante cada estado novo, perguntem: "isto podia ser calculado a partir de outra coisa?"</li>
+        <li>A consola do browser (F12) mostra os avisos do React, como as keys em falta: habituem-se a tê-la aberta.</li>
+      </ul>
+    </div>
+  </section>

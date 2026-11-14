@@ -1,0 +1,154 @@
+  <section class="lesson-head">
+    <span class="eyebrow">Resumo</span>
+    <h1>Cábula de React</h1>
+    <p class="lead">Tudo o que as lições ensinam, numa página. Boa para ter aberta enquanto fazes exercícios.</p>
+  </section>
+  <div class="cheat">
+    <div class="box">
+      <h3>Componente e JSX</h3>
+<pre class="snip"><code class="tsx">export default function App() {
+  const nome = "Ana";
+  return (
+    &lt;main&gt;                       // um só elemento à volta
+      &lt;h1&gt;Olá, {nome}&lt;/h1&gt;       // {expressão}
+      &lt;p className="resumo"&gt;...&lt;/p&gt;
+      {logado &amp;&amp; &lt;p&gt;Bem-vindo&lt;/p&gt;}
+      {feita ? "Sim" : "Não"}
+      &lt;input /&gt;                 // etiquetas sempre fechadas
+    &lt;/main&gt;
+  );
+}</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Props</h3>
+<pre class="snip"><code class="tsx">interface TarefaProps {
+  texto: string;
+  feita: boolean;
+  onAlternar: (id: number) =&gt; void;
+}
+function Tarefa({ texto, feita, onAlternar }: TarefaProps) { ... }
+
+&lt;Tarefa texto="Estudar" feita={false} onAlternar={alternar} /&gt;</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Listas</h3>
+<pre class="snip"><code class="tsx">&lt;ul&gt;
+  {tarefas.map((t) =&gt; (
+    &lt;ItemTarefa key={t.id} tarefa={t} /&gt;
+  ))}
+&lt;/ul&gt;
+// key única e estável (o id), não o índice</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Estado</h3>
+<pre class="snip"><code class="tsx">import { useState } from "react";
+
+const [n, setN] = useState(0);
+const [tarefas, setTarefas] = useState&lt;Tarefa[]&gt;([]);
+type Filtro = "todas" | "feitas";
+const [filtro, setFiltro] = useState&lt;Filtro&gt;("todas");
+
+&lt;button onClick={() =&gt; setN(n + 1)}&gt;+1&lt;/button&gt;</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Arrays no estado (sempre um novo)</h3>
+<pre class="snip"><code class="tsx">setTarefas([...tarefas, nova]);                    // juntar
+setTarefas(tarefas.filter((t) =&gt; t.id !== id));     // apagar
+setTarefas(tarefas.map((t) =&gt;                      // mudar um
+  t.id === id ? { ...t, feita: !t.feita } : t));
+// nunca: push, pop, splice, sort, t.feita = true</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Formulários</h3>
+<pre class="snip"><code class="tsx">import type { FormEvent } from "react";
+
+function enviar(e: FormEvent) {
+  e.preventDefault();          // não recarregar a página
+  ...
+}
+&lt;form onSubmit={enviar}&gt;
+  &lt;input value={texto}
+    onChange={(e) =&gt; setTexto(e.target.value)} /&gt;
+  &lt;button type="submit"&gt;Adicionar&lt;/button&gt;
+&lt;/form&gt;
+// e.target.value é sempre texto: Number(...) para números</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Efeitos</h3>
+<pre class="snip"><code class="tsx">import { useEffect } from "react";
+
+useEffect(() =&gt; {
+  carregar()
+    .then((lista) =&gt; setTarefas(lista))
+    .catch(() =&gt; setErro("Falhou."))
+    .finally(() =&gt; setACarregar(false));
+}, []);            // [] = só uma vez; [n] = sempre que n mudar
+
+useEffect(() =&gt; {
+  const id = setInterval(..., 1000);
+  return () =&gt; clearInterval(id);   // limpeza
+}, []);</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Hooks próprios</h3>
+<pre class="snip"><code class="tsx">function useTarefas(iniciais: Tarefa[]) {
+  const [tarefas, setTarefas] = useState(iniciais);
+  function remover(id: number) { ... }
+  return { tarefas, remover };
+}
+const { tarefas, remover } = useTarefas(TAREFAS);
+// hooks só no topo de componentes ou de outros hooks</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Mensagens de erro e avisos</h3>
+      <div class="t-wrap"><table class="t">
+        <thead><tr><th>Mensagem</th><th>Costuma ser</th></tr></thead>
+        <tbody>
+          <tr><td><code>TS2741: Property 'x' is missing in type ...</code></td><td>faltou passar uma prop obrigatória</td></tr>
+          <tr><td><code>TS2322: Type 'X' is not assignable to type 'Y'</code></td><td>uma prop com o tipo errado (por exemplo <code>feita="false"</code>)</td></tr>
+          <tr><td><code>TS2345: Argument of type 'string' is not assignable to parameter of type 'SetStateAction&lt;number&gt;'</code></td><td>passar texto a um setter de número (o <code>e.target.value</code>)</td></tr>
+          <tr><td><code>TS2367: This comparison appears to be unintentional ...</code></td><td>comparar dois valores fixos que nunca podem ser iguais</td></tr>
+          <tr><td><code>JSX expressions must have one parent element</code></td><td>dois elementos lado a lado no return: põe-nos num <code>&lt;div&gt;</code> ou <code>&lt;&gt;...&lt;/&gt;</code></td></tr>
+          <tr><td><code>Each child in a list should have a unique "key" prop</code></td><td>(consola do browser) falta a key no map</td></tr>
+          <tr><td><code>Too many re-renders</code></td><td>um setter chamado no corpo do componente, ou <code>onClick={setX(1)}</code> em vez de <code>onClick={() =&gt; setX(1)}</code></td></tr>
+          <tr><td><code>Rendered more hooks than during the previous render</code></td><td>um hook dentro de um <code>if</code> ou depois de um <code>return</code></td></tr>
+          <tr><td><code>A component is changing an uncontrolled input to be controlled</code></td><td>o <code>value</code> começou <code>undefined</code>: começa o estado com <code>""</code></td></tr>
+          <tr><td>O ecrã não muda depois do setter</td><td>mudaste o array ou o objeto por dentro (<code>push</code>, <code>t.feita = true</code>) e passaste o mesmo</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="box">
+      <h3>O CSS das apps do curso (App.css)</h3>
+<pre class="snip"><code class="css">ul { padding-left: 0; list-style: none; }
+li { display: flex; gap: 8px; align-items: center; }
+li span { flex: 1; }
+li.feita, li.feita span { text-decoration: line-through; color: gray; }
+button[aria-pressed="true"] { font-weight: bold; }
+form { display: flex; gap: 6px; }
+.parabens { color: green; font-weight: bold; }
+.erro { color: red; }
+.resumo { color: gray; }</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Antes de entregar</h3>
+      <ul class="checklist">
+        <li>O <code>npm run build</code> não dá erros de tipos, e a consola do browser não tem avisos.</li>
+        <li>Cada item de uma lista tem uma <code>key</code> estável (o id).</li>
+        <li>O estado só muda pelo setter, e sempre com um array ou objeto novo.</li>
+        <li>Nada em estado que se possa calcular a partir de outro estado ou das props.</li>
+        <li>O estado vive no componente mais abaixo que o use (ou no pai comum, se forem vários).</li>
+        <li>Os dados carregados têm os estados a carregar, erro e vazio.</li>
+        <li>Cada componente faz uma coisa e cabe no ecrã.</li>
+      </ul>
+    </div>
+  </div>
