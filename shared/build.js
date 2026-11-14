@@ -35,7 +35,7 @@ function buildCourse(slug) {
   // Um curso com viz: 'tables' (SQL) leva também o visualizador de tabelas e o seu CSS.
   const vizJs = config.viz ? '\n' + read('viz-' + config.viz + '.js') : '';
   const vizCss = config.viz ? '<style>\n' + read('viz-' + config.viz + '.css') + '</style>\n' : '';
-  const courseJs = 'const COURSE = ' + JSON.stringify({ slug, title: config.title, storageKey: config.storageKey, cheatTitle: config.cheatTitle }) + ';\n' + course.syntaxSource + vizJs;
+  const courseJs = 'const COURSE = ' + JSON.stringify({ slug, title: config.title, storageKey: config.storageKey, cheatTitle: config.cheatTitle, vizLabels: config.vizLabels || null }) + ';\n' + course.syntaxSource + vizJs;
   const inlined = engine + courseJs + course.lessonsSource;
   if (inlined.includes('</script')) throw new Error(slug + ': o texto "</script" partia a página');
 

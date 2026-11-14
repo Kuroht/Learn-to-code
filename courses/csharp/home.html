@@ -1,0 +1,65 @@
+  <section class="hero">
+    <span class="eyebrow">Programação orientada a objetos · para quem já fez o C</span>
+    <h1>Aprender C# a ver a pilha e o heap</h1>
+    <p>Onze lições curtas, do primeiro <code>Console.WriteLine</code> às classes, herança e interfaces. Em cada exemplo carregas em "Seguinte" e vês o que fica na pilha, que objetos estão no heap e que variáveis apontam para eles.</p>
+    <div class="hero-actions" id="hero-actions"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>Como usar</h2></div>
+    <ol class="steps">
+      <li><h3>Lê a explicação</h3><p>É curta e compara com o C sempre que ajuda. As primeiras lições vão depressa, porque muita coisa é igual.</p></li>
+      <li><h3>Corre o exemplo</h3><p>Antes de cada "Seguinte", pergunta-te: isto copia o valor, ou copia uma referência para o mesmo objeto?</p></li>
+      <li><h3>Responde às perguntas</h3><p>"O que aparece no ecrã?" e também "isto compila?". Cada resposta traz a explicação.</p></li>
+      <li><h3>Faz os exercícios no computador</h3><p>Escreve e corre o programa antes de abrires a solução. A dica ajuda a começar.</p></li>
+    </ol>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>Lições</h2><p>Segue a ordem: cada lição usa o que veio antes.</p></div>
+    <div class="grid-lessons" id="home-lessons"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>Para o teste: valor ou referência?</h2>
+      <p>A pergunta que resolve quase todos os exercícios de "o que aparece no ecrã?" com objetos.</p>
+    </div>
+    <div class="two">
+      <div class="prose">
+        <p>Antes de seguires o código, vê o <strong>tipo</strong> de cada variável. Se é um tipo de valor (<code>int</code>, <code>double</code>, <code>bool</code>, <code>struct</code>), <code>b = a</code> faz uma cópia independente.</p>
+        <p>Se é um tipo de referência (uma <code>class</code>, um array, uma <code>List</code>), <code>b = a</code> faz as duas variáveis apontarem para o <strong>mesmo</strong> objeto. Mudar um campo através de uma vê-se pela outra.</p>
+        <p>No papel, desenha a pilha à esquerda e o heap à direita, com uma seta de cada referência para o seu objeto. Cada <code>new</code> é uma caixa nova no heap.</p>
+      </div>
+      <div class="t-wrap">
+        <table class="t trace">
+          <thead><tr><th>Código</th><th>struct Ponto</th><th>class Ponto</th></tr></thead>
+          <tbody>
+            <tr><td>a.X = 1</td><td>a.X = 1</td><td>a → #1, X = 1</td></tr>
+            <tr><td>b = a</td><td>b é uma cópia</td><td>b → #1</td></tr>
+            <tr class="hl"><td>b.X = 9</td><td>a.X = 1, b.X = 9</td><td>a.X = 9, b.X = 9</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="two">
+    <div class="box">
+      <h2>Onde praticar</h2>
+      <ul>
+        <li><strong>No browser, sem instalar nada:</strong> <a href="https://dotnetfiddle.net">.NET Fiddle</a>. Escolhe o compilador mais recente e cola o código.</li>
+        <li><strong>No teu computador:</strong> instala o .NET SDK, cria um projeto com <code>dotnet new console</code> e corre-o com <code>dotnet run</code>. O código vai no ficheiro <code>Program.cs</code>.</li>
+        <li>Com o Windows em português, os reais aparecem com vírgula (<code>3,5</code>). Nos exemplos do curso aparecem com ponto.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h2>Para quem está a explicar</h2>
+      <ul>
+        <li>Pede-lhe que diga, em cada atribuição, se é uma cópia ou uma referência, <em>antes</em> de carregar em "Seguinte".</li>
+        <li>Leiam juntos os erros de compilação: o código (CS0029, CS0165...) e a mensagem dizem quase sempre o que falta.</li>
+        <li>Nas lições 9 e 10, desenhem as classes como caixas ligadas por setas "é um".</li>
+        <li>Se o C estiver fresco, comparem: o <code>ref</code> é o apontador do C, e um objeto é um struct que vive no heap.</li>
+      </ul>
+    </div>
+  </section>

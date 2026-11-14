@@ -1,0 +1,3274 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>C# do Zero</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Caderno de laboratório: papel azulado, tinta azul-escura, marcador amarelo na linha que está a correr.
+     Layout: barra lateral com as lições + coluna de leitura; o visualizador alarga para código | memória + ecrã. */
+  --paper: #f2f4f8;
+  --panel: #ffffff;
+  --ink: #161d2e;
+  --muted: #586276;
+  --line: #d9dfea;
+  --accent: #2547d0;
+  --accent-ink: #ffffff;
+  --accent-soft: #e6ebfc;
+  --mark: #ffe58a;
+  --mark-edge: #d9a514;
+  --ok: #17804a;
+  --ok-soft: #e1f3e8;
+  --bad: #bf3329;
+  --bad-soft: #fbe6e3;
+  --code-bg: #f8f9fc;
+  --term-bg: #121826;
+  --term-ink: #dfe6f3;
+  --term-in: #ffd866;
+  --t-kw: #7a2bc2;
+  --t-ty: #0b7584;
+  --t-str: #a0450a;
+  --t-num: #ad1767;
+  --t-com: #737d90;
+  --t-pp: #39691a;
+  --t-fn: #2547d0;
+  --shadow: 0 1px 2px rgba(22, 29, 46, .06), 0 6px 20px rgba(22, 29, 46, .05);
+  --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0f121a;
+    --panel: #161b25;
+    --ink: #e6e9f1;
+    --muted: #98a1b4;
+    --line: #283041;
+    --accent: #8ea5ff;
+    --accent-ink: #0f121a;
+    --accent-soft: #1d2645;
+    --mark: rgba(255, 210, 60, .2);
+    --mark-edge: #e9bd3a;
+    --ok: #4cc47f;
+    --ok-soft: rgba(76, 196, 127, .14);
+    --bad: #ff7d70;
+    --bad-soft: rgba(255, 125, 112, .14);
+    --code-bg: #121620;
+    --term-bg: #0a0d14;
+    --t-kw: #c79bf2;
+    --t-ty: #63d3e2;
+    --t-str: #f4a46d;
+    --t-num: #ff8cc4;
+    --t-com: #7e899f;
+    --t-pp: #a8d873;
+    --t-fn: #8ea5ff;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 6px 20px rgba(0, 0, 0, .25);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0f121a;
+  --panel: #161b25;
+  --ink: #e6e9f1;
+  --muted: #98a1b4;
+  --line: #283041;
+  --accent: #8ea5ff;
+  --accent-ink: #0f121a;
+  --accent-soft: #1d2645;
+  --mark: rgba(255, 210, 60, .2);
+  --mark-edge: #e9bd3a;
+  --ok: #4cc47f;
+  --ok-soft: rgba(76, 196, 127, .14);
+  --bad: #ff7d70;
+  --bad-soft: rgba(255, 125, 112, .14);
+  --code-bg: #121620;
+  --term-bg: #0a0d14;
+  --t-kw: #c79bf2;
+  --t-ty: #63d3e2;
+  --t-str: #f4a46d;
+  --t-num: #ff8cc4;
+  --t-com: #7e899f;
+  --t-pp: #a8d873;
+  --t-fn: #8ea5ff;
+  --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 6px 20px rgba(0, 0, 0, .25);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 17px/1.6 var(--font-body);
+}
+a { color: var(--accent); text-underline-offset: 3px; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+h1, h2, h3, h4 { font-family: var(--font-display); line-height: 1.15; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(2rem, 1.5rem + 2vw, 2.9rem); font-weight: 800; letter-spacing: -.02em; }
+h2 { font-size: 1.55rem; font-weight: 800; letter-spacing: -.01em; }
+h3 { font-size: 1.15rem; font-weight: 600; }
+h4 { font-size: 1.05rem; font-weight: 600; }
+p { margin: 0; }
+code, pre, kbd { font-family: var(--font-mono); font-size: .88em; }
+:not(pre) > code {
+  background: var(--accent-soft);
+  padding: .08em .35em;
+  border-radius: 5px;
+  white-space: nowrap;
+}
+
+/* ---------- estrutura ---------- */
+.app { display: grid; grid-template-columns: 276px minmax(0, 1fr); min-height: 100vh; }
+.sidebar {
+  position: sticky; top: 0; height: 100vh; overflow-y: auto;
+  background: var(--panel); border-right: 1px solid var(--line);
+  padding: 22px 14px 28px; display: flex; flex-direction: column; gap: 18px;
+}
+.brand { display: flex; align-items: baseline; gap: 8px; padding: 0 10px; text-decoration: none; color: var(--ink); }
+.brand-mark {
+  font-family: var(--font-mono); font-weight: 600; font-size: .95rem;
+  background: var(--ink); color: var(--panel); padding: 2px 7px; border-radius: 6px;
+}
+.brand-name { font-family: var(--font-display); font-weight: 800; font-size: 1.35rem; letter-spacing: -.01em; }
+.progress { padding: 0 10px; display: grid; gap: 6px; font-size: .85rem; color: var(--muted); }
+.progress-track { height: 6px; background: var(--line); border-radius: 99px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--ok); border-radius: 99px; transition: width .3s; }
+.nav { display: grid; gap: 2px; }
+.nav-label { font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); padding: 10px 10px 4px; }
+.nav a {
+  display: grid; grid-template-columns: 26px minmax(0, 1fr) auto; align-items: center; gap: 8px;
+  padding: 7px 10px; border-radius: 8px; color: var(--ink); text-decoration: none; font-size: .95rem; line-height: 1.3;
+}
+.nav a:hover { background: var(--paper); }
+.nav a[aria-current="page"] { background: var(--accent-soft); color: var(--accent); font-weight: 700; }
+.nav-num {
+  font-family: var(--font-mono); font-size: .78rem; color: var(--muted); text-align: center;
+  border: 1px solid var(--line); border-radius: 6px; padding: 1px 0;
+}
+.nav a[aria-current="page"] .nav-num { border-color: var(--accent); color: var(--accent); }
+.nav-done { color: var(--ok); font-size: .85rem; font-weight: 700; }
+.nav-icon { width: 26px; text-align: center; color: var(--muted); font-family: var(--font-mono); font-size: .8rem; }
+
+main { padding: 36px clamp(16px, 4vw, 52px) 96px; min-width: 0; }
+.content { max-width: 1060px; margin: 0 auto; display: grid; gap: 40px; }
+.prose { max-width: 68ch; display: grid; gap: 14px; }
+.prose ul { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
+
+.topbar { display: none; }
+
+/* ---------- tabelas ---------- */
+.t-wrap { overflow-x: auto; }
+table.t { border-collapse: collapse; width: 100%; font-size: .93rem; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.t th, .t td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.t th { font-size: .78rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); background: var(--code-bg); }
+.t tr:last-child td { border-bottom: 0; }
+.t td code { white-space: nowrap; }
+
+/* ---------- código ---------- */
+pre { margin: 0; }
+pre.snip {
+  background: var(--code-bg); border: 1px solid var(--line); border-radius: 10px;
+  padding: 12px 14px; overflow-x: auto; line-height: 1.55;
+}
+.t-kw { color: var(--t-kw); font-weight: 600; }
+.t-ty { color: var(--t-ty); font-weight: 600; }
+.t-str { color: var(--t-str); }
+.t-num { color: var(--t-num); }
+.t-com { color: var(--t-com); font-style: italic; }
+.t-pp { color: var(--t-pp); }
+.t-fn { color: var(--t-fn); }
+
+/* ---------- cabeçalho da lição ---------- */
+.lesson-head { display: grid; gap: 10px; }
+.eyebrow { font-family: var(--font-mono); font-size: .82rem; color: var(--accent); font-weight: 600; letter-spacing: .02em; }
+.lead { font-size: 1.15rem; color: var(--muted); max-width: 60ch; }
+.analogy {
+  max-width: 68ch; background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--mark-edge);
+  border-radius: 10px; padding: 14px 18px; display: grid; gap: 4px;
+}
+.analogy-label { font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+.section { display: grid; gap: 16px; }
+.section-head { display: grid; gap: 4px; }
+.section-head p { color: var(--muted); }
+
+/* ---------- visualizador ---------- */
+.viz {
+  background: var(--panel); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow);
+  padding: 16px; display: grid; gap: 12px;
+}
+.viz:focus-visible { outline-offset: 4px; border-radius: 14px; }
+.viz-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; }
+.viz-title { display: grid; gap: 2px; }
+.viz-title small { font-family: var(--font-mono); color: var(--muted); font-size: .78rem; }
+.viz-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.viz-count { font-family: var(--font-mono); font-size: .82rem; color: var(--muted); min-width: 9.5em; text-align: center; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.btn {
+  font: inherit; font-size: .92rem; font-weight: 700; cursor: pointer;
+  border: 1px solid var(--line); background: var(--panel); color: var(--ink);
+  padding: 7px 14px; border-radius: 9px; line-height: 1.2;
+}
+.btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+.btn:disabled { opacity: .45; cursor: default; }
+.btn-primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn-primary:hover:not(:disabled) { color: var(--accent-ink); filter: brightness(1.08); }
+.btn-ghost { border-color: transparent; color: var(--muted); }
+.viz-bar { height: 4px; background: var(--line); border-radius: 99px; overflow: hidden; }
+.viz-bar span { display: block; height: 100%; background: var(--accent); transition: width .2s; }
+.viz-note {
+  background: var(--accent-soft); border-radius: 10px; padding: 12px 14px; min-height: 3.4em;
+  display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; align-items: start;
+}
+.viz-note code { background: var(--panel); }
+.viz-note-line { font-family: var(--font-mono); font-size: .78rem; font-weight: 600; color: var(--accent); background: var(--panel); border-radius: 6px; padding: 2px 7px; margin-top: 2px; white-space: nowrap; }
+.viz-grid { display: grid; grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr); gap: 12px; align-items: start; }
+.viz-side { display: grid; gap: 12px; }
+.panel { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--code-bg); }
+.panel-label {
+  font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .09em; color: var(--muted);
+  padding: 7px 12px; border-bottom: 1px solid var(--line); background: var(--panel);
+  display: flex; justify-content: space-between; gap: 8px;
+}
+.code { overflow-x: auto; padding: 8px 0; font-family: var(--font-mono); font-size: .86rem; line-height: 1.65; }
+.ln { display: grid; grid-template-columns: 2.6em 1.3em minmax(0, 1fr); white-space: pre; min-width: max-content; padding-right: 14px; }
+.ln .no { text-align: right; color: var(--t-com); opacity: .8; user-select: none; }
+.ln .arrow { text-align: center; color: var(--mark-edge); user-select: none; }
+.ln.cur { background: var(--mark); box-shadow: inset 3px 0 0 var(--mark-edge); }
+.ln.cur .no { color: var(--ink); opacity: 1; font-weight: 600; }
+
+.mem { padding: 10px; display: grid; gap: 10px; min-height: 92px; }
+.mem-empty { color: var(--muted); font-size: .9rem; padding: 6px 4px; }
+.frame { border: 1px dashed var(--line); border-radius: 9px; padding: 8px; display: grid; gap: 8px; background: var(--panel); }
+.frame.active { border: 1px solid var(--accent); }
+.frame-name { font-family: var(--font-mono); font-size: .78rem; font-weight: 600; color: var(--muted); display: flex; justify-content: space-between; }
+.frame.active .frame-name { color: var(--accent); }
+.vars { display: flex; flex-wrap: wrap; gap: 8px; }
+.var {
+  border: 1px solid var(--line); border-radius: 8px; padding: 6px 9px 7px; background: var(--code-bg);
+  display: grid; gap: 2px; min-width: 76px; max-width: 100%;
+}
+.var.wide { flex-basis: 100%; }
+.var-top { display: flex; justify-content: space-between; gap: 10px; font-family: var(--font-mono); font-size: .7rem; color: var(--muted); }
+.var-type { color: var(--t-ty); }
+.var-name { font-family: var(--font-mono); font-weight: 600; font-size: .9rem; }
+.var-val { font-family: var(--font-mono); font-size: 1.05rem; font-variant-numeric: tabular-nums; border-radius: 5px; padding: 0 3px; margin: 0 -3px; overflow-wrap: anywhere; }
+.chg { background: var(--mark); box-shadow: 0 0 0 2px var(--mark-edge); }
+.var.is-new { border-color: var(--accent); }
+.garbage { color: var(--muted); font-style: italic; }
+.ptr-addr { color: var(--t-num); }
+.ptr-arrow { color: var(--accent); font-size: .9rem; font-weight: 600; }
+.cells { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 2px; }
+.cell { display: grid; text-align: center; min-width: 2.7em; }
+.cell-v { font-family: var(--font-mono); font-size: .92rem; border: 1px solid var(--line); background: var(--panel); border-radius: 5px; padding: 2px 4px; }
+.cell-i { font-family: var(--font-mono); font-size: .66rem; color: var(--muted); }
+.fields { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 10px; font-family: var(--font-mono); font-size: .88rem; margin-top: 2px; }
+.fields .f-name { color: var(--muted); }
+.mini { border-collapse: collapse; font-family: var(--font-mono); font-size: .84rem; margin-top: 4px; }
+.mini th, .mini td { border: 1px solid var(--line); padding: 2px 8px; text-align: left; }
+.mini th { font-weight: 600; color: var(--muted); font-size: .72rem; background: var(--panel); }
+.addr-note { font-size: .74rem; color: var(--muted); }
+
+.term {
+  background: var(--term-bg); color: var(--term-ink); font-family: var(--font-mono); font-size: .86rem;
+  line-height: 1.6; padding: 10px 14px; white-space: pre-wrap; overflow-wrap: anywhere; min-height: 4.8em; max-height: 15em; overflow-y: auto;
+}
+.term .in { color: var(--term-in); font-weight: 600; }
+.term .enter { color: var(--term-in); opacity: .55; font-size: .8em; margin-left: 2px; }
+.term .caret { display: inline-block; width: .55em; height: 1.05em; background: var(--term-ink); opacity: .55; vertical-align: text-bottom; }
+.term .ph { color: #7e899f; font-style: italic; }
+.panel.out { background: var(--term-bg); border-color: var(--term-bg); }
+.panel.out .panel-label { background: var(--term-bg); color: #9aa6bd; border-color: #263046; }
+
+/* ---------- erros comuns ---------- */
+.mistakes { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; max-width: 76ch; }
+.mistakes li { background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--bad); border-radius: 9px; padding: 10px 14px; }
+
+/* ---------- quiz ---------- */
+.quiz { display: grid; gap: 14px; }
+.q { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: grid; gap: 12px; }
+.q-text { font-weight: 700; display: flex; gap: 10px; align-items: baseline; }
+.q-num { font-family: var(--font-mono); font-size: .78rem; color: var(--muted); font-weight: 400; white-space: nowrap; }
+.opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 8px; }
+.opt {
+  font: inherit; text-align: left; cursor: pointer; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; align-items: start;
+  border: 1px solid var(--line); background: var(--code-bg); color: var(--ink); border-radius: 9px; padding: 9px 12px;
+}
+.opt:hover:not(:disabled) { border-color: var(--accent); }
+.opt:disabled { cursor: default; }
+.opt-key { font-family: var(--font-mono); font-size: .78rem; font-weight: 600; color: var(--muted); border: 1px solid var(--line); border-radius: 5px; padding: 0 6px; margin-top: 2px; background: var(--panel); }
+.opt-txt.mono { font-family: var(--font-mono); font-size: .9rem; white-space: pre; overflow-x: auto; }
+.opt.right { border-color: var(--ok); background: var(--ok-soft); }
+.opt.right .opt-key { border-color: var(--ok); color: var(--ok); }
+.opt.wrong { border-color: var(--bad); background: var(--bad-soft); }
+.opt.wrong .opt-key { border-color: var(--bad); color: var(--bad); }
+.opt.dim { opacity: .55; }
+.q-exp { border-radius: 9px; padding: 10px 14px; background: var(--code-bg); border: 1px solid var(--line); }
+.q-exp strong.ok { color: var(--ok); }
+.q-exp strong.bad { color: var(--bad); }
+.score {
+  background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;
+}
+.score-num { font-family: var(--font-display); font-weight: 800; font-size: 1.6rem; font-variant-numeric: tabular-nums; }
+
+/* ---------- exercícios ---------- */
+.exs { display: grid; gap: 14px; }
+.ex { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: grid; gap: 12px; }
+.ex-label { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .09em; color: var(--muted); margin-bottom: 4px; }
+.ex .term { border-radius: 9px; max-height: none; min-height: 0; }
+details { border: 1px solid var(--line); border-radius: 9px; background: var(--code-bg); }
+summary { cursor: pointer; padding: 9px 14px; font-weight: 700; color: var(--accent); }
+details[open] summary { border-bottom: 1px solid var(--line); }
+.det-body { padding: 12px 14px; display: grid; gap: 10px; }
+.det-body pre.snip { background: var(--panel); }
+.sol-tools { display: flex; justify-content: flex-end; }
+
+/* ---------- navegação entre lições ---------- */
+.pager { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; border-top: 1px solid var(--line); padding-top: 24px; }
+.pager a {
+  display: grid; gap: 2px; text-decoration: none; color: var(--ink); background: var(--panel);
+  border: 1px solid var(--line); border-radius: 10px; padding: 10px 16px; min-width: 220px;
+}
+.pager a:hover { border-color: var(--accent); }
+.pager small { color: var(--muted); font-size: .8rem; }
+.pager .next { text-align: right; margin-left: auto; }
+
+/* ---------- início ---------- */
+.hero { display: grid; gap: 16px; padding-top: 8px; }
+.hero p { font-size: 1.15rem; color: var(--muted); max-width: 58ch; }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.hero-actions .btn { padding: 10px 18px; font-size: 1rem; text-decoration: none; display: inline-block; }
+.steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; counter-reset: s; }
+.steps li { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; display: grid; gap: 6px; counter-increment: s; align-content: start; }
+.steps li::before { content: counter(s); font-family: var(--font-mono); font-weight: 600; font-size: .8rem; color: var(--accent); border: 1px solid var(--accent); border-radius: 6px; width: 1.8em; text-align: center; }
+.steps p { color: var(--muted); font-size: .95rem; }
+.grid-lessons { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; }
+.card-lesson {
+  display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 12px; text-decoration: none; color: var(--ink);
+  background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px; align-content: start;
+}
+.card-lesson:hover { border-color: var(--accent); }
+.card-lesson .nav-num { grid-row: span 2; width: 28px; height: 24px; line-height: 20px; }
+.card-lesson strong { font-family: var(--font-display); font-weight: 600; font-size: 1.02rem; line-height: 1.25; }
+.card-lesson span.s { color: var(--muted); font-size: .88rem; line-height: 1.35; }
+.card-lesson .done-tag { grid-column: 2; font-size: .78rem; font-weight: 700; color: var(--ok); }
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; align-items: start; }
+.box { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; display: grid; gap: 10px; }
+.box ul { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
+.trace td, .trace th { font-family: var(--font-mono); font-size: .84rem; text-align: center; }
+.trace td:last-child, .trace th:last-child { text-align: left; }
+.trace tr.hl td { background: var(--mark); }
+
+/* ---------- cábula ---------- */
+.cheat { columns: 2 380px; column-gap: 14px; }
+.cheat .box { break-inside: avoid; margin-bottom: 14px; }
+.cheat h3 { font-size: 1.05rem; }
+.cheat .t { font-size: .86rem; }
+.checklist { list-style: none; padding: 0 !important; }
+.checklist li { padding-left: 1.6em; position: relative; }
+.checklist li::before { content: ""; position: absolute; left: 0; top: .3em; width: .95em; height: .95em; border: 2px solid var(--muted); border-radius: 3px; }
+
+/* ---------- telemóvel ---------- */
+@media (max-width: 960px) {
+  .app { grid-template-columns: minmax(0, 1fr); }
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    position: sticky; top: 0; z-index: 20; background: var(--panel); border-bottom: 1px solid var(--line); padding: 10px 16px;
+  }
+  .sidebar {
+    position: fixed; z-index: 30; left: 0; top: 0; width: min(300px, 86vw); height: 100%;
+    transform: translateX(-102%); transition: transform .2s; box-shadow: var(--shadow);
+  }
+  .sidebar.open { transform: none; }
+  .scrim { position: fixed; inset: 0; background: rgba(10, 13, 20, .45); z-index: 25; }
+  main { padding-top: 24px; }
+}
+@media (max-width: 820px) {
+  .viz-grid { grid-template-columns: minmax(0, 1fr); }
+  .viz-controls { width: 100%; }
+  .viz-count { min-width: 0; flex: 1; }
+}
+@media (max-width: 480px) {
+  body { font-size: 16px; }
+  .viz { padding: 12px; }
+  .pager a { min-width: 0; flex: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; scroll-behavior: auto !important; }
+}
+</style>
+<style>
+/* ---------- visualizador de referências (Python, C#, ...) ---------- */
+/* Usa as variáveis do template, por isso funciona nos temas claro e escuro. */
+.names { display: flex; flex-wrap: wrap; gap: 6px; }
+.name { display: flex; align-items: baseline; gap: 8px; border: 1px solid var(--line); border-radius: 8px; padding: 4px 9px; background: var(--code-bg); font-family: var(--font-mono); max-width: 100%; }
+.name.is-new { border-color: var(--accent); }
+.name .var-type { font-size: .7rem; }
+.name .var-name { font-size: .9rem; }
+.name > span:last-child { font-size: .95rem; overflow-wrap: anywhere; }
+.ref { display: inline-block; font-family: var(--font-mono); font-size: .78rem; font-weight: 600; border-radius: 5px; padding: 0 5px; border: 1.5px solid currentColor; white-space: nowrap; }
+.ref-c0 { color: var(--t-fn); }
+.ref-c1 { color: var(--t-str); }
+.ref-c2 { color: var(--t-ty); }
+.ref-c3 { color: var(--t-num); }
+.ref-c4 { color: var(--t-kw); }
+.ref-c5 { color: var(--t-pp); }
+.ref.chg, .name .chg, .obj .chg { background: var(--mark); box-shadow: 0 0 0 2px var(--mark-edge); border-radius: 4px; }
+.objs { display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-start; }
+.obj { border: 1px solid var(--line); border-radius: 8px; padding: 6px 9px 7px; background: var(--panel); display: grid; gap: 4px; min-width: 70px; max-width: 100%; }
+.obj.is-new { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.obj.orphan { opacity: .5; border-style: dashed; }
+.obj-top { display: flex; gap: 8px; align-items: baseline; justify-content: space-between; }
+.obj-top .var-type { font-family: var(--font-mono); font-size: .7rem; }
+.obj .var-val { font-size: 1rem; }
+.obj .cells .cell-v { min-width: 2.2em; }
+.obj-empty { font-family: var(--font-mono); font-size: .8rem; color: var(--muted); font-style: italic; }
+.orphan-note { font-size: .7rem; color: var(--muted); font-style: italic; }
+.mini.kv td { font-family: var(--font-mono); }
+.inline-struct { font-size: .88rem; }
+.inline-struct .f-name { color: var(--muted); }
+.inline-struct .sep { color: var(--muted); }
+</style>
+<style>
+:root { --accent: #6a3cc2; --accent-soft: #efe8fb; --t-fn: #6a3cc2; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --accent: #c3a3ff; --accent-soft: #2a2045; --t-fn: #c3a3ff; } }
+:root[data-theme="dark"] { --accent: #c3a3ff; --accent-soft: #2a2045; --t-fn: #c3a3ff; }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <a class="brand" href="#inicio"><span class="brand-mark">.cs</span><span class="brand-name">C# do Zero</span></a>
+    <button class="btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="sidebar">Lições</button>
+  </header>
+  <aside class="sidebar" id="sidebar" aria-label="Lições">
+    <a class="brand" href="#inicio"><span class="brand-mark">.cs</span><span class="brand-name">C# do Zero</span></a>
+    <div class="progress" id="progress"></div>
+    <nav class="nav" id="nav"></nav>
+  </aside>
+  <main id="main" tabindex="-1">
+    <noscript><p>Esta página precisa de JavaScript para funcionar.</p></noscript>
+    <div class="content" id="view"></div>
+  </main>
+</div>
+
+<template id="tpl-home">
+  <section class="hero">
+    <span class="eyebrow">Programação orientada a objetos · para quem já fez o C</span>
+    <h1>Aprender C# a ver a pilha e o heap</h1>
+    <p>Onze lições curtas, do primeiro <code>Console.WriteLine</code> às classes, herança e interfaces. Em cada exemplo carregas em "Seguinte" e vês o que fica na pilha, que objetos estão no heap e que variáveis apontam para eles.</p>
+    <div class="hero-actions" id="hero-actions"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>Como usar</h2></div>
+    <ol class="steps">
+      <li><h3>Lê a explicação</h3><p>É curta e compara com o C sempre que ajuda. As primeiras lições vão depressa, porque muita coisa é igual.</p></li>
+      <li><h3>Corre o exemplo</h3><p>Antes de cada "Seguinte", pergunta-te: isto copia o valor, ou copia uma referência para o mesmo objeto?</p></li>
+      <li><h3>Responde às perguntas</h3><p>"O que aparece no ecrã?" e também "isto compila?". Cada resposta traz a explicação.</p></li>
+      <li><h3>Faz os exercícios no computador</h3><p>Escreve e corre o programa antes de abrires a solução. A dica ajuda a começar.</p></li>
+    </ol>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>Lições</h2><p>Segue a ordem: cada lição usa o que veio antes.</p></div>
+    <div class="grid-lessons" id="home-lessons"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>Para o teste: valor ou referência?</h2>
+      <p>A pergunta que resolve quase todos os exercícios de "o que aparece no ecrã?" com objetos.</p>
+    </div>
+    <div class="two">
+      <div class="prose">
+        <p>Antes de seguires o código, vê o <strong>tipo</strong> de cada variável. Se é um tipo de valor (<code>int</code>, <code>double</code>, <code>bool</code>, <code>struct</code>), <code>b = a</code> faz uma cópia independente.</p>
+        <p>Se é um tipo de referência (uma <code>class</code>, um array, uma <code>List</code>), <code>b = a</code> faz as duas variáveis apontarem para o <strong>mesmo</strong> objeto. Mudar um campo através de uma vê-se pela outra.</p>
+        <p>No papel, desenha a pilha à esquerda e o heap à direita, com uma seta de cada referência para o seu objeto. Cada <code>new</code> é uma caixa nova no heap.</p>
+      </div>
+      <div class="t-wrap">
+        <table class="t trace">
+          <thead><tr><th>Código</th><th>struct Ponto</th><th>class Ponto</th></tr></thead>
+          <tbody>
+            <tr><td>a.X = 1</td><td>a.X = 1</td><td>a → #1, X = 1</td></tr>
+            <tr><td>b = a</td><td>b é uma cópia</td><td>b → #1</td></tr>
+            <tr class="hl"><td>b.X = 9</td><td>a.X = 1, b.X = 9</td><td>a.X = 9, b.X = 9</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="two">
+    <div class="box">
+      <h2>Onde praticar</h2>
+      <ul>
+        <li><strong>No browser, sem instalar nada:</strong> <a href="https://dotnetfiddle.net">.NET Fiddle</a>. Escolhe o compilador mais recente e cola o código.</li>
+        <li><strong>No teu computador:</strong> instala o .NET SDK, cria um projeto com <code>dotnet new console</code> e corre-o com <code>dotnet run</code>. O código vai no ficheiro <code>Program.cs</code>.</li>
+        <li>Com o Windows em português, os reais aparecem com vírgula (<code>3,5</code>). Nos exemplos do curso aparecem com ponto.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h2>Para quem está a explicar</h2>
+      <ul>
+        <li>Pede-lhe que diga, em cada atribuição, se é uma cópia ou uma referência, <em>antes</em> de carregar em "Seguinte".</li>
+        <li>Leiam juntos os erros de compilação: o código (CS0029, CS0165...) e a mensagem dizem quase sempre o que falta.</li>
+        <li>Nas lições 9 e 10, desenhem as classes como caixas ligadas por setas "é um".</li>
+        <li>Se o C estiver fresco, comparem: o <code>ref</code> é o apontador do C, e um objeto é um struct que vive no heap.</li>
+      </ul>
+    </div>
+  </section>
+</template>
+
+<template id="tpl-cheat">
+  <section class="lesson-head">
+    <span class="eyebrow">Resumo</span>
+    <h1>Cábula de C#</h1>
+    <p class="lead">Tudo o que as lições ensinam, numa página. Boa para ter aberta enquanto fazes exercícios.</p>
+  </section>
+  <div class="cheat">
+    <div class="box">
+      <h3>Estrutura de um programa</h3>
+<pre class="snip"><code class="csharp">// 1. instruções (top-level statements)
+Console.Write("Idade? ");
+int idade = int.Parse(Console.ReadLine());
+Console.WriteLine($"Para o ano: {idade + 1}");
+
+// 2. métodos
+static int Dobro(int x)
+{
+    return x * 2;
+}
+
+// 3. classes e interfaces, sempre no fim
+class Aluno { }</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Tipos</h3>
+      <div class="t-wrap"><table class="t">
+        <thead><tr><th>Tipo</th><th>Exemplo</th><th>Valor ou referência</th></tr></thead>
+        <tbody>
+          <tr><td><code>int</code>, <code>double</code></td><td><code>19</code>, <code>14.5</code></td><td>valor</td></tr>
+          <tr><td><code>bool</code>, <code>char</code></td><td><code>true</code>, <code>'A'</code></td><td>valor</td></tr>
+          <tr><td><code>struct</code></td><td><code>struct Ponto { ... }</code></td><td>valor</td></tr>
+          <tr><td><code>string</code></td><td><code>"Ana"</code></td><td>referência (mas não muda)</td></tr>
+          <tr><td>arrays, <code>List&lt;T&gt;</code></td><td><code>int[]</code>, <code>List&lt;int&gt;</code></td><td>referência</td></tr>
+          <tr><td><code>class</code></td><td><code>class Aluno { ... }</code></td><td>referência</td></tr>
+        </tbody>
+      </table></div>
+      <p><code>(int)2.9</code> → 2 · <code>(double)7 / 2</code> → 3.5 · <code>int.Parse("12")</code> → 12</p>
+    </div>
+
+    <div class="box">
+      <h3>Decisões e ciclos</h3>
+<pre class="snip"><code class="csharp">if (nota &gt;= 10 &amp;&amp; nota &lt;= 20) { ... }
+else if (nota &gt;= 0) { ... }
+else { ... }
+
+switch (opcao)
+{
+    case 1:
+        ...
+        break;      // obrigatório
+    default:
+        ...
+        break;
+}
+
+for (int i = 0; i &lt; n; i++) { ... }
+foreach (int x in lista) { ... }
+while (cond) { ... }
+do { ... } while (cond);</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Arrays e List&lt;T&gt;</h3>
+<pre class="snip"><code class="csharp">int[] v = { 12, 17, 9 };     // ou new int[3] (zeros)
+v[0]   v.Length
+
+List&lt;int&gt; l = new List&lt;int&gt;();
+l.Add(5);  l.Insert(0, 3);
+l.Remove(5);  l.RemoveAt(0);
+l[0]  l.Count  l.Contains(3)
+string.Join(", ", l)         // para mostrar</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Classes</h3>
+<pre class="snip"><code class="csharp">class Aluno
+{
+    private int nota;                 // campo escondido
+    public string Nome { get; set; }  // propriedade
+
+    public Aluno(string nome)         // construtor
+    {
+        Nome = nome;
+    }
+
+    public int Nota
+    {
+        get { return nota; }
+        set { if (value &gt;= 0) nota = value; }
+    }
+}
+Aluno a = new Aluno("Ana");</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Herança e interfaces</h3>
+<pre class="snip"><code class="csharp">class Animal
+{
+    public virtual string Som() { return "..."; }
+}
+class Cao : Animal
+{
+    public override string Som() { return "Au"; }
+}
+
+interface IForma { int Area(); }
+class Quadrado : IForma
+{
+    public int Lado;
+    public int Area() { return Lado * Lado; }
+}
+List&lt;IForma&gt; formas = new List&lt;IForma&gt;();</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Erros de compilação</h3>
+      <div class="t-wrap"><table class="t">
+        <thead><tr><th>Código</th><th>Costuma ser</th></tr></thead>
+        <tbody>
+          <tr><td><code>CS1002: ; expected</code></td><td>falta um <code>;</code></td></tr>
+          <tr><td><code>CS0103: The name 'x' does not exist in the current context</code></td><td>nome mal escrito, ou variável de outro bloco</td></tr>
+          <tr><td><code>CS0165: Use of unassigned local variable 'x'</code></td><td>variável usada sem valor (ou objeto sem <code>new</code>)</td></tr>
+          <tr><td><code>CS0029: Cannot implicitly convert type 'int' to 'bool'</code></td><td><code>=</code> em vez de <code>==</code> num if; ou tipos misturados</td></tr>
+          <tr><td><code>CS0266: Cannot implicitly convert type 'double' to 'int'</code></td><td>falta a conversão <code>(int)</code></td></tr>
+          <tr><td><code>CS0163: Control cannot fall through from one case label</code></td><td>falta o <code>break</code> num case</td></tr>
+          <tr><td><code>CS0122: 'Aluno.nota' is inaccessible due to its protection level</code></td><td>o campo é <code>private</code></td></tr>
+          <tr><td><code>CS0144: Cannot create an instance of the abstract type or interface</code></td><td><code>new</code> de uma interface ou classe abstrata</td></tr>
+          <tr><td><code>CS0535: 'X' does not implement interface member</code></td><td>falta um método do contrato</td></tr>
+          <tr><td><code>CS0161: not all code paths return a value</code></td><td>falta o <code>return</code> em algum caminho</td></tr>
+          <tr><td><code>CS8600</code> (aviso)</td><td>nos projetos novos, <code>string s = Console.ReadLine();</code> avisa que pode vir null. Para já, podes ignorar.</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="box">
+      <h3>Exceções (ao correr)</h3>
+      <div class="t-wrap"><table class="t">
+        <thead><tr><th>Exceção</th><th>Costuma ser</th></tr></thead>
+        <tbody>
+          <tr><td><code>NullReferenceException</code></td><td>usaste uma variável que está a <code>null</code></td></tr>
+          <tr><td><code>IndexOutOfRangeException</code></td><td>índice fora do array (o último é <code>Length - 1</code>)</td></tr>
+          <tr><td><code>ArgumentOutOfRangeException</code></td><td>índice fora de uma <code>List</code></td></tr>
+          <tr><td><code>FormatException</code></td><td><code>int.Parse</code> de um texto que não é número</td></tr>
+          <tr><td><code>DivideByZeroException</code></td><td>divisão inteira por zero</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="box">
+      <h3>Antes de entregar</h3>
+      <ul class="checklist">
+        <li>As instruções estão no topo, os métodos a seguir e as classes no fim.</li>
+        <li>Todos os objetos foram criados com <code>new</code> antes de serem usados.</li>
+        <li>Onde querias uma cópia de um objeto, criaste um objeto novo (<code>b = a</code> não copia).</li>
+        <li>Os campos que não devem ser mexidos de fora são <code>private</code>.</li>
+        <li>Os métodos substituídos têm <code>virtual</code> na mãe e <code>override</code> na filha.</li>
+        <li>Cada case do switch tem <code>break</code>.</li>
+        <li>As divisões que precisam de casas decimais têm um <code>double</code>.</li>
+      </ul>
+    </div>
+  </div>
+</template>
+
+<script>
+const COURSE = {"slug":"csharp","title":"C# do Zero","storageKey":"csharpdozero-progresso-v1","cheatTitle":"Cábula de C#","vizLabels":{"names":"Pilha (stack)","objects":"Heap"}};
+// Realce de sintaxe para C#. Cada grupo da regex corresponde, pela ordem, a uma classe em "classes".
+const SYNTAX = {
+  re: /(\/\/.*$)|(\$?"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])')|\b(int|double|bool|char|string|void|var|object|decimal|long|List|Dictionary)\b|\b(class|interface|struct|enum|new|return|if|else|for|foreach|while|do|switch|case|break|default|continue|public|private|protected|static|virtual|override|abstract|this|base|null|true|false|in|out|ref|get|set|using|try|catch|throw)\b|\b(\d+(?:\.\d+)?)\b|\b([A-Za-z_]\w*)(?=\()/g,
+  classes: ['com', 'str', 'ty', 'kw', 'num', 'fn'],
+};
+
+// ===== Visualizador de referências (Python, e mais tarde C# e TypeScript) =====
+// Troca o painel "Memória" por dois: "Nomes" (os frames, com as variáveis) e "Objetos" (o heap).
+// Uma variável que aponta para um objeto mostra "→ #1"; o objeto tem a etiqueta "#1" da mesma cor.
+// Assim, dois nomes a apontar para a mesma lista veem-se logo. Só entra nas páginas com viz: 'refs'.
+
+const VIZ_SIDE = (function () {
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const isRef = v => typeof v === 'string' && v.charAt(0) === '@';
+
+  // A etiqueta de um objeto: o id sem o "o" ('o3' → '#3'), com uma de seis cores.
+  function chip(id, changed, arrow) {
+    const n = parseInt(id.replace(/\D/g, ''), 10) || 0;
+    return '<span class="ref ref-c' + (n % 6) + (changed ? ' chg' : '') + '">' + (arrow ? '→ ' : '') + '#' + esc(id.replace(/^o/, '')) + '</span>';
+  }
+
+  // Um valor dentro de uma variável ou de um objeto: uma referência vira etiqueta, um struct do C#
+  // (um objeto guardado na própria variável) mostra os campos, e o resto aparece tal e qual.
+  function valueHtml(v, changed) {
+    if (isRef(v)) return chip(v.slice(1), changed, true);
+    if (v && typeof v === 'object' && !Array.isArray(v)) {
+      return '<span class="inline-struct' + (changed ? ' chg' : '') + '">' +
+        Object.keys(v).map(k => '<span class="f-name">' + esc(k) + '</span> ' + valueHtml(v[k], false)).join('<span class="sep">, </span>') + '</span>';
+    }
+    return '<span class="' + (changed ? 'chg' : '') + '">' + esc(v) + '</span>';
+  }
+  // Os nomes dos painéis: por omissão os do Python; um curso pode trocá-los em course.js (vizLabels).
+  const LABELS = Object.assign({ names: 'Nomes', objects: 'Objetos' }, typeof COURSE !== 'undefined' && COURSE.vizLabels ? COURSE.vizLabels : {});
+  const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+
+  // ---------- Nomes ----------
+  function namesHtml(frames, prevFrames) {
+    if (!frames.length) return '<p class="mem-empty">O programa ainda não começou a correr.</p>';
+    return frames.map((f, fi) => {
+      const active = fi === frames.length - 1;
+      const prev = prevFrames && prevFrames[fi] && prevFrames[fi].name === f.name ? prevFrames[fi] : null;
+      const vars = f.vars.length
+        ? '<div class="names">' + f.vars.map(v => {
+          const old = prev ? prev.vars.find(x => x.name === v.name) : undefined;
+          const isNew = prevFrames && !old;
+          return '<div class="name' + (isNew ? ' is-new' : '') + '">' +
+            (v.type ? '<span class="var-type">' + esc(v.type) + '</span>' : '') +
+            '<span class="var-name">' + esc(v.name) + '</span>' + valueHtml(v.value, old && !same(old.value, v.value)) + '</div>';
+        }).join('') + '</div>'
+        : '<p class="mem-empty">sem nomes</p>';
+      // O frame de topo chama-se "global" (Python) ou "Main" (C#); os das funções levam () no fim.
+      const label = f.name === 'global' || !/^\w+$/.test(f.name) ? f.name : f.name + '()';
+      return '<div class="frame' + (active ? ' active' : '') + '"><div class="frame-name"><span>' + esc(label) + '</span>' +
+        (active && frames.length > 1 ? '<span>a correr</span>' : (!active ? '<span>em pausa</span>' : '')) + '</div>' + vars + '</div>';
+    }).join('');
+  }
+
+  // ---------- Objetos ----------
+  // O corpo de um objeto depende do tipo: lista/tuplo (caixas com índice), dicionário (chave → valor),
+  // objeto com campos (C#), ou um valor simples (int, str, ...).
+  function objectBody(obj, old) {
+    const v = obj.value;
+    const prevAt = k => (old && old.type === obj.type && old.value ? old.value[k] : undefined);
+    if (Array.isArray(v) && (obj.type === 'dict' || /^Dictionary/.test(obj.type))) {
+      if (!v.length) return '<span class="obj-empty">vazio</span>';
+      const oldMap = {};
+      if (old && Array.isArray(old.value)) old.value.forEach(([k, x]) => { oldMap[JSON.stringify(k)] = x; });
+      return '<div class="t-wrap"><table class="mini kv"><tbody>' + v.map(([k, x]) => {
+        const before = oldMap[JSON.stringify(k)];
+        const changed = old && (before === undefined || !same(before, x));
+        return '<tr><td>' + valueHtml(k, false) + '</td><td>' + valueHtml(x, changed) + '</td></tr>';
+      }).join('') + '</tbody></table></div>';
+    }
+    if (Array.isArray(v)) {
+      if (!v.length) return '<span class="obj-empty">vazia</span>';
+      return '<div class="cells">' + v.map((x, i) => {
+        const before = prevAt(i);
+        const changed = old && (before === undefined || !same(before, x));
+        return '<div class="cell"><span class="cell-v">' + valueHtml(x, changed) + '</span><span class="cell-i">[' + i + ']</span></div>';
+      }).join('') + '</div>';
+    }
+    if (v && typeof v === 'object') {
+      return '<div class="fields">' + Object.keys(v).map(k => {
+        const before = prevAt(k);
+        return '<span class="f-name">' + esc(k) + '</span><span>' + valueHtml(v[k], old && !same(before, v[k])) + '</span>';
+      }).join('') + '</div>';
+    }
+    return '<div class="var-val">' + valueHtml(v, old && !same(old.value, v)) + '</div>';
+  }
+
+  function heapHtml(heap, orphans, prevHeap) {
+    const ids = Object.keys(heap);
+    if (!ids.length) return '<p class="mem-empty">Ainda não há objetos.</p>';
+    return '<div class="objs">' + ids.map(id => {
+      const obj = heap[id];
+      const old = prevHeap ? prevHeap[id] : undefined;
+      const isNew = prevHeap && !old;
+      const orphan = orphans.includes(id);
+      return '<div class="obj' + (isNew ? ' is-new' : '') + (orphan ? ' orphan' : '') + '">' +
+        '<div class="obj-top">' + chip(id, false, false) + '<span class="var-type">' + esc(obj.type) + '</span></div>' +
+        objectBody(obj, old) +
+        (orphan ? '<span class="orphan-note">sem nomes: vai ser apagado</span>' : '') + '</div>';
+    }).join('') + '</div>';
+  }
+
+  return {
+    panelsHtml() {
+      return '<div class="panel"><div class="panel-label"><span>' + esc(LABELS.names) + '</span><span>→ #n = aponta para o objeto #n</span></div><div class="mem names-box"></div></div>' +
+        '<div class="panel"><div class="panel-label"><span>' + esc(LABELS.objects) + '</span><span>amarelo = mudou agora</span></div><div class="mem heap-box"></div></div>' +
+        '<div class="panel out"><div class="panel-label"><span>Ecrã</span></div><pre class="term"></pre></div>';
+    },
+    // helpers vem do template: renderTerm (o ecrã) e isLast (se é o último passo).
+    render(host, step, prev, helpers) {
+      host.querySelector('.names-box').innerHTML = namesHtml(step.frames, prev ? prev.frames : null);
+      host.querySelector('.heap-box').innerHTML = heapHtml(step.heap, step.orphans, prev ? prev.heap : null);
+      const term = host.querySelector('.term');
+      term.innerHTML = helpers.renderTerm(step.out, !helpers.isLast);
+      term.scrollTop = term.scrollHeight;
+    },
+  };
+})();
+
+if (typeof module !== 'undefined') module.exports = { VIZ_SIDE };
+
+</script>
+<script>
+// ===== Motor do visualizador: transforma a lista de passos de um exemplo em fotografias da memória. =====
+// É partilhado por todos os cursos e corre tanto na página como nos testes (shared/check.js).
+function parseVarPath(key) {
+  const m = key.match(/^([A-Za-z_]\w*)(.*)$/);
+  if (!m) throw new Error('caminho inválido: ' + key);
+  const path = [];
+  const re = /\[(\d+)\]|\.([A-Za-z_]\w*)/g;
+  let t;
+  let consumed = 0;
+  while ((t = re.exec(m[2]))) {
+    path.push(t[1] !== undefined ? Number(t[1]) : t[2]);
+    consumed += t[0].length;
+  }
+  if (consumed !== m[2].length) throw new Error('caminho inválido: ' + key);
+  return { name: m[1], path };
+}
+
+// ---------- tabelas (cursos de SQL) ----------
+// Uma coluna escreve-se como no CREATE TABLE: ['numero', 'INTEGER PRIMARY KEY'] ou ['curso', 'INTEGER REFERENCES cursos(id)'].
+function parseColumn(spec) {
+  const [name, def] = spec;
+  const fk = /REFERENCES\s+(\w+)\s*\((\w+)\)/i.exec(def);
+  return {
+    name,
+    def,
+    type: def.split(/\s+/)[0].toUpperCase(),
+    pk: /PRIMARY\s+KEY/i.test(def),
+    fk: fk ? fk[1] + '.' + fk[2] : null,
+  };
+}
+
+// Transforma { cols, key?, rows? } numa tabela do motor. Cada linha leva um id interno,
+// para o visualizador saber que linha é qual mesmo depois de outras serem apagadas.
+function makeTable(spec, nextId) {
+  const cols = spec.cols.map(parseColumn);
+  (spec.key || []).forEach(k => {
+    const col = cols.find(c => c.name === k);
+    if (!col) throw new Error('chave com coluna inexistente: ' + k);
+    col.pk = true;
+  });
+  const table = { cols, rows: [] };
+  (spec.rows || []).forEach(cells => addRow(table, cells, nextId));
+  return table;
+}
+
+function addRow(table, cells, nextId) {
+  if (cells.length !== table.cols.length) throw new Error('linha com ' + cells.length + ' valores numa tabela com ' + table.cols.length + ' colunas');
+  table.rows.push({ id: nextId(), cells: cells.slice() });
+}
+
+// Aplica as operações de tabelas de um passo: create, ins, upd, del, drop.
+function applyTableOps(tables, s, where, nextId) {
+  const find = name => {
+    if (!tables[name]) throw new Error('tabela inexistente: ' + name + where);
+    return tables[name];
+  };
+  if (s.create) {
+    for (const [name, spec] of Object.entries(s.create)) {
+      if (tables[name]) throw new Error('tabela repetida: ' + name + where);
+      tables[name] = makeTable(spec, nextId);
+    }
+  }
+  if (s.ins) {
+    for (const [name, rows] of Object.entries(s.ins)) rows.forEach(cells => addRow(find(name), cells, nextId));
+  }
+  if (s.upd) {
+    for (const [name, changes] of Object.entries(s.upd)) {
+      const t = find(name);
+      for (const [index, sets] of Object.entries(changes)) {
+        const row = t.rows[Number(index)];
+        if (!row) throw new Error('linha inexistente: ' + name + '[' + index + ']' + where);
+        for (const [col, value] of Object.entries(sets)) {
+          const c = t.cols.findIndex(x => x.name === col);
+          if (c < 0) throw new Error('coluna inexistente: ' + name + '.' + col + where);
+          row.cells[c] = value;
+        }
+      }
+    }
+  }
+  if (s.del) {
+    for (const [name, indexes] of Object.entries(s.del)) {
+      const t = find(name);
+      indexes.forEach(i => { if (!t.rows[i]) throw new Error('apagar linha inexistente: ' + name + '[' + i + ']' + where); });
+      t.rows = t.rows.filter((_, i) => !indexes.includes(i));
+    }
+  }
+  if (s.drop) s.drop.forEach(name => { find(name); delete tables[name]; });
+  // tm: marcas que só valem neste passo, por exemplo as linhas que o WHERE de um UPDATE encontrou.
+  if (s.tm) {
+    for (const [name, marks] of Object.entries(s.tm)) {
+      const t = find(name);
+      Object.keys(marks).forEach(i => { if (!t.rows[i]) throw new Error('marca em linha inexistente: ' + name + '[' + i + ']' + where); });
+    }
+  }
+}
+
+// g: a grelha de trabalho de uma consulta (o que o FROM, o WHERE, o GROUP BY... já construíram).
+function checkGrid(g, where) {
+  if (g === null) return;
+  if (!Array.isArray(g.cols) || !Array.isArray(g.rows)) throw new Error('grelha sem cols ou rows' + where);
+  g.rows.forEach(r => { if (r.length !== g.cols.length) throw new Error('linha da grelha com ' + r.length + ' valores e ' + g.cols.length + ' colunas' + where); });
+  if (g.marks && g.marks.length !== g.rows.length) throw new Error('marks da grelha com tamanho diferente das linhas' + where);
+  if (g.groups && g.groups.reduce((a, b) => a + b, 0) !== g.rows.length) throw new Error('groups da grelha não somam o número de linhas' + where);
+}
+
+// ---------- referências e objetos (cursos de Python, C#, ...) ----------
+// Um valor que começa por @ é uma referência para um objeto do heap: '@o1'.
+const isRef = v => typeof v === 'string' && v.charAt(0) === '@';
+
+// Todas as referências que um valor contém (o próprio valor, os elementos de uma lista, os campos de um objeto).
+function refsIn(value) {
+  if (isRef(value)) return [value.slice(1)];
+  if (Array.isArray(value)) return value.flatMap(refsIn);
+  if (value && typeof value === 'object') return Object.values(value).flatMap(refsIn);
+  return [];
+}
+
+// Os objetos a que já ninguém chega, partindo dos nomes de todos os frames.
+function unreachable(frames, heap) {
+  const seen = new Set();
+  const visit = id => {
+    if (seen.has(id) || !heap[id]) return;
+    seen.add(id);
+    refsIn(heap[id].value).forEach(visit);
+  };
+  frames.forEach(f => f.vars.forEach(v => refsIn(v.value).forEach(visit)));
+  return Object.keys(heap).filter(id => !seen.has(id));
+}
+
+// initialTables: a base de dados com que o exemplo começa ({ nome: { cols, rows } }), ou nada.
+function buildSteps(raw, initialTables) {
+  let frames = [];
+  let out = '';
+  let lastId = 0;
+  const nextId = () => ++lastId;
+  let tables = {};
+  for (const [name, spec] of Object.entries(initialTables || {})) tables[name] = makeTable(spec, nextId);
+  let grid = null;
+  // heap: os objetos ({ id: { type, value } }). Um objeto sem nomes aparece desbotado num passo e desaparece no seguinte.
+  let heap = {};
+  let orphans = [];
+  const res = [];
+  raw.forEach((s, idx) => {
+    frames = JSON.parse(JSON.stringify(frames));
+    tables = JSON.parse(JSON.stringify(tables));
+    heap = JSON.parse(JSON.stringify(heap));
+    orphans.forEach(id => { delete heap[id]; });
+    const where = ' (passo ' + (idx + 1) + ')';
+    applyTableOps(tables, s, where, nextId);
+    // obj: cria ou muda objetos: { o1: ['list', ['@o2', 3]] }
+    if (s.obj) {
+      for (const [id, spec] of Object.entries(s.obj)) heap[id] = { type: spec[0], value: JSON.parse(JSON.stringify(spec[1])) };
+    }
+    if (s.g !== undefined) {
+      checkGrid(s.g, where);
+      grid = JSON.parse(JSON.stringify(s.g));
+    }
+    const findFrame = name => {
+      for (let i = frames.length - 1; i >= 0; i--) if (frames[i].name === name) return frames[i];
+      throw new Error('frame inexistente: ' + name + where);
+    };
+    if (s.pop) {
+      if (!frames.length) throw new Error('pop sem frames' + where);
+      frames.pop();
+    }
+    if (s.push) frames.push({ name: s.push, vars: [] });
+    if (s.x) {
+      for (const [fn, names] of Object.entries(s.x)) {
+        const f = findFrame(fn);
+        names.forEach(n => {
+          if (!f.vars.some(v => v.name === n)) throw new Error('apagar variável inexistente: ' + n + where);
+        });
+        f.vars = f.vars.filter(v => !names.includes(v.name));
+      }
+    }
+    if (s.d) {
+      for (const [fn, vars] of Object.entries(s.d)) {
+        const f = findFrame(fn);
+        for (const [name, spec] of Object.entries(vars)) {
+          if (f.vars.some(v => v.name === name)) throw new Error('variável repetida: ' + name + where);
+          const [type, value, addr] = spec;
+          f.vars.push({ name, type, value: JSON.parse(JSON.stringify(value)), addr: addr || null });
+        }
+      }
+    }
+    if (s.u) {
+      for (const [fn, sets] of Object.entries(s.u)) {
+        const f = findFrame(fn);
+        for (const [key, value] of Object.entries(sets)) {
+          const { name, path } = parseVarPath(key);
+          const v = f.vars.find(x => x.name === name);
+          if (!v) throw new Error('atualizar variável inexistente: ' + name + where);
+          if (!path.length) { v.value = value; continue; }
+          let target = v.value;
+          for (let i = 0; i < path.length - 1; i++) {
+            target = target[path[i]];
+            if (target === undefined) throw new Error('caminho inexistente: ' + key + where);
+          }
+          const last = path[path.length - 1];
+          if (target[last] === undefined) throw new Error('caminho inexistente: ' + key + where);
+          target[last] = value;
+        }
+      }
+    }
+    if (s.o) out += s.o;
+    // Todas as referências têm de apontar para objetos que existem.
+    const allValues = frames.flatMap(f => f.vars.map(v => v.value)).concat(Object.values(heap).map(o => o.value));
+    allValues.flatMap(refsIn).forEach(id => { if (!heap[id]) throw new Error('referência para um objeto inexistente: @' + id + where); });
+    orphans = unreachable(frames, heap);
+    res.push({ l: s.l, frames, out, n: s.n || '', tables, tmarks: s.tm || {}, grid, err: s.err || '', heap, orphans });
+  });
+  return res;
+}
+
+if (typeof module !== 'undefined') module.exports = { buildSteps, parseVarPath, makeTable };
+
+</script>
+<script>
+// ===== C# do Zero — conteúdo das lições (parte 1) =====
+// Formato de um passo do visualizador (l, n, o, push, pop, d, u e x são como no C):
+//   d: { Main: { idade: ['int', '19'] } }       uma variável de tipo de valor guarda o valor na pilha
+//   d: { Main: { a: ['Aluno', '@o1'] } }         uma variável de tipo de referência guarda uma referência para o heap
+//   obj: { o1: ['Aluno', { Nome: '"Ana"', Nota: '17' }] }   cria ou muda um objeto no heap
+//        arrays e listas: ['int[]', ['12', '17']]; um struct guarda-se na própria variável: ['Ponto', { X: '1', Y: '2' }]
+// O frame de topo chama-se Main (os programas usam top-level statements). Os textos (string) aparecem
+// direto na variável, para não encher o heap: são de referência, mas nunca mudam por dentro.
+const C = (s, ...v) => String.raw(s, ...v).replace(/^\n/, '').replace(/\n\s*$/, '');
+const H = (s, ...v) => String.raw(s, ...v);
+const LESSONS = [];
+
+// ---------------------------------------------------------------- 0
+LESSONS.push({
+  id: 0,
+  title: 'Olá, C#',
+  short: 'Console.WriteLine, top-level statements e texto com $"{...}"',
+  body: H`
+<p>O C# tem a cara do C (chavetas, <code>;</code>, <code>if</code>, <code>for</code>), mas vem com muito mais coisas feitas. O programa mais curto é uma linha:</p>
+<pre class="snip"><code>Console.WriteLine("Ola!");</code></pre>
+<ul>
+<li>Não há <code>#include</code> nem <code>main</code> escrito à mão: as instruções escritas no topo do ficheiro (<em>top-level statements</em>) são o programa, e correm de cima para baixo.</li>
+<li><code>Console.WriteLine</code> escreve e muda de linha; <code>Console.Write</code> escreve sem mudar.</li>
+<li>Para pôr valores no meio do texto, usa <strong>interpolação</strong>: um <code>$</code> antes das aspas e as expressões entre chavetas, <code>$"{nome} tem {idade} anos"</code>. Não há <code>%d</code>.</li>
+<li>Cada instrução acaba em <code>;</code>, como em C. Para correr: <code>dotnet run</code>, dentro da pasta do projeto (cria-se com <code>dotnet new console</code>).</li>
+</ul>`,
+  analogy: 'Se o C é uma cozinha onde fazes tudo à mão, o C# é a mesma cozinha com eletrodomésticos: as regras de segurança são as mesmas (tipos, chavetas, ponto e vírgula), mas muita coisa já vem feita.',
+  examples: [{
+    title: 'Escrever no ecrã',
+    code: C`
+Console.WriteLine("Ola, C#!");
+string nome = "Rita";
+int idade = 19;
+Console.WriteLine($"{nome} tem {idade} anos");
+Console.Write("sem mudar ");
+Console.WriteLine("de linha");`,
+    steps: [
+      { l: 1, push: 'Main', o: 'Ola, C#!\n', n: H`O programa começa na primeira instrução. <code>WriteLine</code> escreve o texto e muda de linha.` },
+      { l: 2, d: { Main: { nome: ['string', '"Rita"'] } }, n: H`Uma variável de texto: em C# há o tipo <code>string</code>, sem arrays de char nem <code>'\0'</code>.` },
+      { l: 3, d: { Main: { idade: ['int', '19'] } }, n: H`Um <code>int</code>, como em C. Fica guardado na pilha (o painel "Pilha").` },
+      { l: 4, o: 'Rita tem 19 anos\n', n: H`Com o <code>$</code> antes das aspas, cada <code>{...}</code> é trocado pelo valor lá dentro.` },
+      { l: 5, o: 'sem mudar ', n: H`<code>Write</code> não muda de linha...` },
+      { l: 6, o: 'de linha\n', n: '...por isso este texto continua na mesma linha.' },
+    ],
+  }],
+  mistakes: [
+    H`Esquecer o <code>;</code>: <em>error CS1002: ; expected</em>.`,
+    H`Esquecer o <code>$</code> antes das aspas: aparece literalmente <code>{nome}</code> no ecrã.`,
+    H`Escrever <code>console.writeline</code>: o C# distingue maiúsculas de minúsculas, e os métodos começam por maiúscula.`,
+    H`Usar plicas para texto: <code>'ola'</code> é erro; plicas são só para um <code>char</code>, como em C.`,
+  ],
+  quiz: [
+    { q: 'O que aparece no ecrã?', code: C`
+Console.Write("A");
+Console.WriteLine("B");
+Console.Write("C");`, opts: ['A\nB\nC', 'AB\nC', 'ABC', 'A B C'], ok: 1, mono: true, check: true,
+      exp: H`Só o <code>WriteLine</code> muda de linha, e muda depois de escrever o "B".` },
+    { q: 'O que aparece no ecrã? (esta é difícil)', code: C`Console.WriteLine(1 + 2 + "3" + 4 + 5);`, opts: ['12345', '15', '3345', '339'], ok: 2, mono: true, check: true,
+      exp: H`Faz-se da esquerda para a direita. 1 + 2 são dois números: dá 3. Depois 3 + "3" já envolve texto, por isso junta: "33". A partir daí é tudo texto: "334", "3345".` },
+    { q: 'O que aparece no ecrã?', code: C`
+int x = 4;
+Console.WriteLine($"x = {x * 2}");`, opts: ['x = 8', 'x = {x * 2}', 'x = 4 * 2', 'x = x * 2'], ok: 0, mono: true, check: true,
+      exp: H`Dentro das chavetas pode ir qualquer expressão: <code>x * 2</code> é calculado e dá 8.` },
+    { q: 'Num programa com top-level statements, onde começa a execução?', opts: ['Na primeira instrução do ficheiro', 'Na função main, que tens de escrever', 'Na última linha', 'Na primeira classe'], ok: 0,
+      exp: 'As instruções soltas no topo do ficheiro são o programa: correm de cima para baixo. O compilador cria o Main por ti.' },
+  ],
+  exercises: [{
+    title: 'Apresenta-te',
+    text: 'Escreve um programa que mostre o teu nome numa linha e o teu curso na linha seguinte.',
+    run: 'Nome: Joao\nCurso: Engenharia Informatica\n',
+    hint: H`Dois <code>Console.WriteLine</code>.`,
+    solution: C`
+Console.WriteLine("Nome: Joao");
+Console.WriteLine("Curso: Engenharia Informatica");`,
+  }, {
+    title: 'Contas',
+    text: 'Cria as variáveis a = 8 e b = 3 e mostra a soma, a diferença e o produto, exatamente neste formato.',
+    run: '8 + 3 = 11\n8 - 3 = 5\n8 * 3 = 24\n',
+    hint: H`<code>Console.WriteLine($"{a} + {b} = {a + b}");</code>`,
+    solution: C`
+int a = 8;
+int b = 3;
+Console.WriteLine($"{a} + {b} = {a + b}");
+Console.WriteLine($"{a} - {b} = {a - b}");
+Console.WriteLine($"{a} * {b} = {a * b}");`,
+  }],
+});
+
+// ---------------------------------------------------------------- 1
+LESSONS.push({
+  id: 1,
+  title: 'Tipos, variáveis e ler do teclado',
+  short: 'int, double, bool, string, var, int.Parse e conversões',
+  body: H`
+<p>Tal como em C, cada variável tem um tipo fixo, e o compilador recusa misturas sem sentido.</p>
+<table class="t">
+<thead><tr><th>Tipo</th><th>Guarda</th><th>Exemplo</th></tr></thead>
+<tbody>
+<tr><td><code>int</code></td><td>inteiros</td><td><code>19</code></td></tr>
+<tr><td><code>double</code></td><td>reais</td><td><code>14.5</code></td></tr>
+<tr><td><code>bool</code></td><td>verdadeiro ou falso</td><td><code>true</code>, <code>false</code></td></tr>
+<tr><td><code>char</code></td><td>um carácter</td><td><code>'A'</code></td></tr>
+<tr><td><code>string</code></td><td>texto</td><td><code>"Ana"</code></td></tr>
+</tbody>
+</table>
+<ul>
+<li><code>var x = 5;</code> deixa o compilador descobrir o tipo (aqui, <code>int</code>). O tipo continua fixo: depois não podes guardar texto em <code>x</code>.</li>
+<li><code>Console.ReadLine()</code> lê uma linha e devolve sempre um <code>string</code>. Para um número: <code>int.Parse(Console.ReadLine())</code>.</li>
+<li>Inteiro a dividir por inteiro dá inteiro, como em C: <code>7 / 2</code> é 3. <code>(double)7 / 2</code> dá 3.5 e <code>(int)2.9</code> dá 2.</li>
+<li>Guardar um <code>double</code> num <code>int</code> sem conversão é um <strong>erro de compilação</strong> (em C só dava um aviso).</li>
+</ul>
+<p>Atenção: num Windows em português, o C# escreve os reais com vírgula (<code>3,5</code>). Nos exemplos aparece o ponto, como nos compiladores online.</p>`,
+  analogy: 'O compilador do C# é um porteiro mais rigoroso do que o do C: se a etiqueta da caixa diz int, não deixa entrar um 2.5, nem que seja "só desta vez".',
+  examples: [{
+    title: 'Perguntar e responder',
+    code: C`
+Console.Write("Nome? ");
+string nome = Console.ReadLine();
+Console.Write("Idade? ");
+int idade = int.Parse(Console.ReadLine());
+Console.WriteLine($"{nome} faz {idade + 1} anos para o ano.");`,
+    steps: [
+      { l: 1, push: 'Main', o: 'Nome? ', n: H`<code>Write</code>, para o cursor ficar à frente da pergunta.` },
+      { l: 2, o: '⟦Rita⟧', d: { Main: { nome: ['string', '"Rita"'] } }, n: H`<code>ReadLine</code> espera que o utilizador escreva e carregue em Enter, e devolve o texto. Não há <code>&amp;</code> nem formatos como no scanf.` },
+      { l: 3, o: 'Idade? ', n: 'Segunda pergunta.' },
+      { l: 4, o: '⟦19⟧', d: { Main: { idade: ['int', '19'] } }, n: H`O <code>ReadLine</code> devolve o texto "19" e o <code>int.Parse</code> converte-o no número 19.` },
+      { l: 5, o: 'Rita faz 20 anos para o ano.\n', n: H`<code>idade + 1</code> é feito dentro das chavetas.` },
+    ],
+  }, {
+    title: 'Divisões e conversões',
+    code: C`
+int a = 7, b = 2;
+int q = a / b;
+double d = (double)a / b;
+int corte = (int)2.9;
+Console.WriteLine($"{q} {d} {corte}");`,
+    steps: [
+      { l: 1, push: 'Main', d: { Main: { a: ['int', '7'], b: ['int', '2'] } }, n: 'Duas variáveis na mesma linha, como em C.' },
+      { l: 2, d: { Main: { q: ['int', '3'] } }, n: H`<code>int / int</code> dá <code>int</code>: 3. É igual ao C.` },
+      { l: 3, d: { Main: { d: ['double', '3.5'] } }, n: H`<code>(double)a</code> converte o 7 em 7.0 antes de dividir, e dá 3.5.` },
+      { l: 4, d: { Main: { corte: ['int', '2'] } }, n: H`<code>(int)2.9</code> corta as casas decimais (não arredonda). Sem o <code>(int)</code>, era erro de compilação.` },
+      { l: 5, o: '3 3.5 2\n', n: 'Num Windows em português, o 3.5 aparece como 3,5.' },
+    ],
+  }],
+  mistakes: [
+    H`Guardar um real num int: <em>error CS0266: Cannot implicitly convert type 'double' to 'int'</em>. Usa <code>(int)</code> se é mesmo isso que queres.`,
+    H`Fazer contas com o resultado de <code>ReadLine</code> sem converter: é texto.`,
+    H`Converter texto que não é número: <em>System.FormatException: The input string 'abc' was not in a correct format.</em>`,
+    H`Usar uma variável sem lhe dar valor: <em>error CS0165: Use of unassigned local variable 'x'</em>. Em C dava lixo; em C# nem compila.`,
+    H`Esperar 3.5 de <code>7 / 2</code>. Tal como em C, a divisão é inteira.`,
+  ],
+  quiz: [
+    { q: 'O que aparece no ecrã?', code: C`Console.WriteLine(7 / 2 + " " + 7 / 2.0);`, opts: ['3 3.5', '3.5 3.5', '3 3', '3.5 3'], ok: 0, mono: true, check: true,
+      exp: H`<code>7 / 2</code> é divisão inteira (3); <code>7 / 2.0</code> tem um real e dá 3.5. Tal como em C.` },
+    { q: 'O que acontece com este programa?', code: C`
+int x = 2.5;
+Console.WriteLine(x);`, opts: ['2', '2.5', '3', "error CS0266: Cannot implicitly convert type 'double' to 'int'. An explicit conversion exists (are you missing a cast?)"], ok: 3, mono: true, check: true,
+      exp: H`Em C, <code>int x = 2.5;</code> guardava 2. Em C# não compila: perder as casas decimais tem de ser pedido de propósito, com <code>(int)2.5</code>.` },
+    { q: 'O que acontece com este programa?', code: C`
+var x = 5;
+x = "cinco";
+Console.WriteLine(x);`, opts: ['cinco', '5', "error CS0029: Cannot implicitly convert type 'string' to 'int'", '5cinco'], ok: 2, mono: true, check: true,
+      exp: H`<code>var</code> não quer dizer "qualquer tipo": o compilador vê o 5 e decide que <code>x</code> é <code>int</code>, para sempre. Ao contrário do Python, não se pode mudar.` },
+    { q: 'O que aparece no ecrã?', code: C`
+int n = int.Parse("12") + 1;
+Console.WriteLine(n);`, opts: ['121', '13', '12', 'error CS0029'], ok: 1, mono: true, check: true,
+      exp: H`<code>int.Parse("12")</code> dá o número 12, e 12 + 1 = 13. Sem o Parse, <code>"12" + 1</code> juntava texto e dava "121".` },
+  ],
+  exercises: [{
+    title: 'Somar dois números',
+    text: 'Pede dois inteiros ao utilizador e mostra a soma.',
+    run: 'Primeiro: ⟦4⟧Segundo: ⟦9⟧Soma: 13\n',
+    hint: H`<code>int a = int.Parse(Console.ReadLine());</code> depois de cada <code>Console.Write</code>.`,
+    solution: C`
+Console.Write("Primeiro: ");
+int a = int.Parse(Console.ReadLine());
+Console.Write("Segundo: ");
+int b = int.Parse(Console.ReadLine());
+Console.WriteLine($"Soma: {a + b}");`,
+  }, {
+    title: 'Média de três notas',
+    text: 'Lê três notas inteiras (uma por linha) e mostra a média com 2 casas decimais. Atenção à divisão inteira.',
+    run: 'Nota 1: ⟦12⟧Nota 2: ⟦15⟧Nota 3: ⟦14⟧Media: 13.67\n',
+    hint: H`Divide por <code>3.0</code>. Para 2 casas: <code>$"Media: {media:F2}"</code>.`,
+    solution: C`
+Console.Write("Nota 1: ");
+int a = int.Parse(Console.ReadLine());
+Console.Write("Nota 2: ");
+int b = int.Parse(Console.ReadLine());
+Console.Write("Nota 3: ");
+int c = int.Parse(Console.ReadLine());
+double media = (a + b + c) / 3.0;
+Console.WriteLine($"Media: {media:F2}");`,
+  }],
+});
+
+// ---------------------------------------------------------------- 2
+LESSONS.push({
+  id: 2,
+  title: 'Decisões e ciclos: quase igual ao C',
+  short: 'if, switch sem cair para o seguinte, for, while e foreach',
+  body: H`
+<p>Esta lição é curta porque já sabes quase tudo: <code>if</code>, <code>else</code>, <code>for</code>, <code>while</code>, <code>do-while</code>, <code>&amp;&amp;</code>, <code>||</code> e <code>!</code> escrevem-se como em C. As diferenças:</p>
+<ul>
+<li>As condições têm de ser <code>bool</code>. <code>if (x = 5)</code> e <code>if (1)</code> não compilam, o que acaba com o erro clássico do <code>=</code> no lugar do <code>==</code>.</li>
+<li>No <code>switch</code>, cada <code>case</code> tem de acabar com <code>break</code> (ou <code>return</code>). Esquecer o break é erro de compilação, em vez de "cair" para o case seguinte.</li>
+<li>Há <code>foreach</code>, que percorre todos os elementos de um array, lista ou texto: <code>foreach (char c in "ola")</code>.</li>
+<li>Por convenção, em C# as chavetas abrem numa linha própria.</li>
+</ul>`,
+  analogy: 'É como mudar de carro com caixa manual para um com sensores: os pedais estão no mesmo sítio, mas agora o carro apita antes de bateres (o = num if, o break esquecido).',
+  examples: [{
+    title: 'Somar os pares',
+    code: C`
+int soma = 0;
+for (int i = 1; i <= 4; i++)
+{
+    if (i % 2 == 0)
+    {
+        soma += i;
+    }
+}
+Console.WriteLine($"Soma dos pares: {soma}");`,
+    steps: [
+      { l: 1, push: 'Main', d: { Main: { soma: ['int', '0'] } }, n: 'O acumulador começa em 0.' },
+      { l: 2, d: { Main: { i: ['int', '1'] } }, n: H`Igual ao C: cria <code>i = 1</code> e testa 1 &lt;= 4.` },
+      { l: 4, n: H`1 % 2 == 0? Não: salta o bloco do if.` },
+      { l: 2, u: { Main: { i: '2' } }, n: H`<code>i++</code>: 2. 2 &lt;= 4, continua.` },
+      { l: 4, n: '2 % 2 == 0? Sim.' },
+      { l: 6, u: { Main: { soma: '2' } }, n: 'soma = 0 + 2 = 2' },
+      { l: 2, u: { Main: { i: '3' } }, n: 'i passa a 3.' },
+      { l: 4, n: '3 é ímpar: salta.' },
+      { l: 2, u: { Main: { i: '4' } }, n: 'i passa a 4.' },
+      { l: 6, u: { Main: { soma: '6' } }, n: '4 é par: soma = 2 + 4 = 6.' },
+      { l: 2, u: { Main: { i: '5' } }, n: H`i passa a 5. 5 &lt;= 4 é falso: o ciclo acaba.` },
+      { l: 9, x: { Main: ['i'] }, o: 'Soma dos pares: 6\n', n: H`O <code>i</code> só existia dentro do for, como em C.` },
+    ],
+  }, {
+    title: 'O switch obriga ao break',
+    code: C`
+int opcao = 2;
+switch (opcao)
+{
+    case 1:
+        Console.WriteLine("Somar");
+        break;
+    case 2:
+        Console.WriteLine("Subtrair");
+        break;
+    default:
+        Console.WriteLine("Opcao invalida");
+        break;
+}`,
+    steps: [
+      { l: 1, push: 'Main', d: { Main: { opcao: ['int', '2'] } }, n: 'A opção escolhida.' },
+      { l: 2, n: H`O <code>switch</code> salta para o case igual a <code>opcao</code>.` },
+      { l: 9, o: 'Subtrair\n', n: 'Executa o case 2.' },
+      { l: 10, n: H`O <code>break</code> sai do switch. Em C, esquecê-lo fazia correr também o case seguinte; em C# o programa nem compila sem ele.` },
+    ],
+  }],
+  mistakes: [
+    H`<code>if (x = 5)</code>: <em>error CS0029: Cannot implicitly convert type 'int' to 'bool'</em>. Para comparar é <code>==</code>.`,
+    H`Esquecer o <code>break</code> num case: <em>error CS0163: Control cannot fall through from one case label</em>.`,
+    H`Pôr <code>;</code> logo depois do <code>if (...)</code> ou do <code>for (...)</code>, tal como em C.`,
+    H`Tentar mudar a variável do <code>foreach</code> (<code>c = 'x'</code>): não é permitido.`,
+  ],
+  quiz: [
+    { q: 'O que aparece no ecrã?', code: C`
+for (int i = 0; i < 3; i++)
+{
+    Console.Write(i + " ");
+}`, opts: ['0 1 2', '1 2 3', '0 1 2 3', '1 2'], ok: 0, mono: true, check: true,
+      exp: 'Igual ao C: começa em 0 e pára quando i chega a 3.' },
+    { q: 'O que acontece com este programa?', code: C`
+int x = 0;
+if (x = 5)
+{
+    Console.WriteLine("cinco");
+}`, opts: ['cinco', 'Nada', "error CS0029: Cannot implicitly convert type 'int' to 'bool'", '5'], ok: 2, mono: true, check: true,
+      exp: H`Em C isto compilava e era sempre verdadeiro. Em C# a condição tem de ser um <code>bool</code>, e <code>x = 5</code> dá um int: não compila.` },
+    { q: 'O que acontece com este programa?', code: C`
+int x = 1;
+switch (x)
+{
+    case 1:
+        Console.WriteLine("um");
+    case 2:
+        Console.WriteLine("dois");
+        break;
+}`, opts: ['um\ndois', 'um', "error CS0163: Control cannot fall through from one case label ('case 1:') to another", 'dois'], ok: 2, mono: true, check: true,
+      exp: H`Em C, sem o break, escrevia "um" e "dois". Em C# não compila: cada case tem de acabar com <code>break</code>.` },
+    { q: 'O que aparece no ecrã?', code: C`
+foreach (char c in "ola")
+{
+    Console.Write(c + "-");
+}`, opts: ['o-l-a-', 'ola-', 'o-l-a', '-o-l-a'], ok: 0, mono: true, check: true,
+      exp: H`O <code>foreach</code> dá cada letra do texto, uma de cada vez. Cada uma é seguida de um hífen, incluindo a última.` },
+  ],
+  exercises: [{
+    title: 'Tabuada',
+    text: 'Lê um número e mostra a tabuada dele, de 1 a 10.',
+    run: 'Numero: ⟦7⟧' + Array.from({ length: 10 }, (_, i) => `7 x ${i + 1} = ${7 * (i + 1)}\n`).join(''),
+    hint: H`Um <code>for</code> com i de 1 a 10 e <code>Console.WriteLine($"{n} x {i} = {n * i}");</code>`,
+    solution: C`
+Console.Write("Numero: ");
+int n = int.Parse(Console.ReadLine());
+for (int i = 1; i <= 10; i++)
+{
+    Console.WriteLine($"{n} x {i} = {n * i}");
+}`,
+  }, {
+    title: 'Somar até aparecer um zero',
+    text: 'Lê números até o utilizador escrever 0. No fim mostra a soma e quantos números foram lidos (sem contar o 0).',
+    run: 'Numero (0 termina): ⟦5⟧Numero (0 termina): ⟦3⟧Numero (0 termina): ⟦10⟧Numero (0 termina): ⟦0⟧Soma: 18\nLidos: 3\n',
+    hint: H`Um <code>do { ... } while (n != 0);</code>, como no C, com dois acumuladores.`,
+    solution: C`
+int n, soma = 0, conta = 0;
+do
+{
+    Console.Write("Numero (0 termina): ");
+    n = int.Parse(Console.ReadLine());
+    if (n != 0)
+    {
+        soma += n;
+        conta++;
+    }
+} while (n != 0);
+Console.WriteLine($"Soma: {soma}");
+Console.WriteLine($"Lidos: {conta}");`,
+  }],
+});
+
+// ---------------------------------------------------------------- 3
+LESSONS.push({
+  id: 3,
+  title: 'Arrays e List<T>: o primeiro contacto com o heap',
+  short: 'new int[3], Length, duas variáveis para o mesmo array, e List<T>',
+  body: H`
+<p>Em C, um array vivia dentro da função. Em C# vive noutra zona da memória, o <strong>heap</strong>, e a variável guarda só uma <strong>referência</strong> para ele (no visualizador: <code>→ #1</code>). Parece um pormenor, mas muda o que acontece numa atribuição:</p>
+<ul>
+<li><code>int[] v = { 12, 17, 9 };</code> ou <code>int[] v = new int[3];</code> (fica com zeros, nunca com lixo). <code>v.Length</code> dá o tamanho.</li>
+<li><code>int[] w = v;</code> <strong>não copia o array</strong>: põe <code>w</code> a apontar para o mesmo. Mudar <code>w[0]</code> muda o que <code>v</code> vê. (Em C, <code>w = v</code> nem compilava com arrays.)</li>
+<li>Sair dos limites não estraga memória como em C: o programa pára com <em>IndexOutOfRangeException</em>.</li>
+</ul>
+<p>Um array tem tamanho fixo. Quando não sabes quantos elementos vais ter, usa uma <strong>lista</strong>: <code>List&lt;int&gt; notas = new List&lt;int&gt;();</code>. O <code>&lt;int&gt;</code> diz o tipo dos elementos. Tem <code>Add</code>, <code>Insert</code>, <code>Remove</code>, <code>RemoveAt</code>, <code>Count</code>, <code>Contains</code> e acede-se com <code>notas[0]</code>, como num array.</p>`,
+  analogy: 'O array é um armário num armazém (o heap). A variável não é o armário: é um papel com o número do armário. Copiar o papel (w = v) dá-te outro papel com o mesmo número, não outro armário.',
+  examples: [{
+    title: 'Duas variáveis, um array',
+    code: C`
+int[] notas = { 12, 17, 9 };
+int[] outra = notas;
+outra[2] = 10;
+Console.WriteLine(notas[2]);
+Console.WriteLine(notas.Length);`,
+    steps: [
+      { l: 1, push: 'Main', obj: { o1: ['int[]', ['12', '17', '9']] }, d: { Main: { notas: ['int[]', '@o1'] } }, n: H`O array é criado no heap (objeto #1). Na pilha, <code>notas</code> guarda só a referência para ele.` },
+      { l: 2, d: { Main: { outra: ['int[]', '@o1'] } }, n: H`<code>outra = notas</code> copia a <strong>referência</strong>, não o array. As duas variáveis apontam para o #1.` },
+      { l: 3, obj: { o1: ['int[]', ['12', '17', '10']] }, n: H`Muda o elemento de índice 2 do único array que existe.` },
+      { l: 4, o: '10\n', n: H`Por isso <code>notas[2]</code> também dá 10.` },
+      { l: 5, o: '3\n', n: H`<code>Length</code> dá o tamanho, sem teres de o guardar à parte como em C.` },
+    ],
+  }, {
+    title: 'Uma lista que cresce',
+    code: C`
+List<string> fila = new List<string>();
+fila.Add("Ana");
+fila.Add("Rui");
+fila.Insert(0, "Ines");
+fila.Remove("Ana");
+Console.WriteLine($"{fila.Count}: {string.Join(", ", fila)}");`,
+    steps: [
+      { l: 1, push: 'Main', obj: { o1: ['List<string>', []] }, d: { Main: { fila: ['List<string>', '@o1'] } }, n: H`Uma lista vazia, no heap. O <code>&lt;string&gt;</code> diz que só leva texto.` },
+      { l: 2, obj: { o1: ['List<string>', ['"Ana"']] }, n: H`<code>Add</code> acrescenta no fim.` },
+      { l: 3, obj: { o1: ['List<string>', ['"Ana"', '"Rui"']] }, n: 'A lista cresce: um array não podia.' },
+      { l: 4, obj: { o1: ['List<string>', ['"Ines"', '"Ana"', '"Rui"']] }, n: H`<code>Insert(0, ...)</code> põe no início e empurra os outros.` },
+      { l: 5, obj: { o1: ['List<string>', ['"Ines"', '"Rui"']] }, n: H`<code>Remove</code> tira a primeira "Ana" que encontrar.` },
+      { l: 6, o: '2: Ines, Rui\n', n: H`<code>Count</code> é o tamanho da lista e <code>string.Join</code> junta os elementos com ", " no meio.` },
+    ],
+  }],
+  mistakes: [
+    H`Achar que <code>int[] b = a;</code> faz uma cópia. Para copiar: <code>int[] b = (int[])a.Clone();</code>.`,
+    H`Sair dos limites: <em>System.IndexOutOfRangeException: Index was outside the bounds of the array.</em> Numa lista é <em>ArgumentOutOfRangeException</em>.`,
+    H`Usar <code>Length</code> numa lista ou <code>Count</code> num array: é <code>Length</code> nos arrays e <code>Count</code> nas listas.`,
+    H`Escrever <code>Console.WriteLine(lista)</code> à espera dos elementos: aparece o nome do tipo. Usa <code>string.Join(", ", lista)</code>.`,
+  ],
+  quiz: [
+    { q: 'O que aparece no ecrã?', code: C`
+int[] v = new int[3];
+v[1] = 5;
+Console.WriteLine(string.Join(" ", v));`, opts: ['0 5 0', '5 0 0', '? 5 ?', '0 5'], ok: 0, mono: true, check: true,
+      exp: H`<code>new int[3]</code> cria 3 elementos a zero (em C teriam lixo). Só o de índice 1 muda.` },
+    { q: 'O que aparece no ecrã?', code: C`
+int[] a = { 1, 2, 3 };
+int[] b = a;
+b[0] = 99;
+Console.WriteLine(a[0]);`, opts: ['1', '99', '0', 'error CS0029'], ok: 1, mono: true, check: true,
+      exp: H`<code>a</code> e <code>b</code> apontam para o mesmo array no heap. Mudar através de um vê-se pelo outro.` },
+    { q: 'O que aparece no ecrã?', code: C`
+var l = new List<int> { 3, 1, 2 };
+l.Add(5);
+l.RemoveAt(0);
+Console.WriteLine(l.Count + " " + l[0]);`, opts: ['3 1', '4 3', '3 3', '4 1'], ok: 0, mono: true, check: true,
+      exp: H`Depois do Add a lista é 3, 1, 2, 5. <code>RemoveAt(0)</code> tira o elemento da <strong>posição</strong> 0 (o 3): fica 1, 2, 5, com 3 elementos.` },
+    { q: 'O que aparece no ecrã?', code: C`
+int[] v = { 1, 2 };
+Console.WriteLine(v[2]);`, opts: ['0', '2', 'Unhandled exception. System.IndexOutOfRangeException: Index was outside the bounds of the array.', 'Um valor qualquer (lixo)'], ok: 2, mono: true, check: true,
+      exp: 'Em C lias memória que não era tua. Em C#, o acesso fora dos limites é apanhado e o programa pára com uma exceção.' },
+  ],
+  exercises: [{
+    title: 'O maior',
+    text: 'Dado o array { 4, 8, 15, 16, 23, 42, 7 }, mostra o maior valor e a posição onde está.',
+    run: 'Maior: 42 na posicao 5\n',
+    hint: H`Como em C: começa com o primeiro e percorre com um <code>for</code> até <code>v.Length</code>, guardando o maior e o índice.`,
+    solution: C`
+int[] v = { 4, 8, 15, 16, 23, 42, 7 };
+int maior = v[0];
+int posicao = 0;
+for (int i = 1; i < v.Length; i++)
+{
+    if (v[i] > maior)
+    {
+        maior = v[i];
+        posicao = i;
+    }
+}
+Console.WriteLine($"Maior: {maior} na posicao {posicao}");`,
+  }, {
+    title: 'Notas até zero',
+    text: 'Lê notas para uma List<int> até aparecer um 0. Mostra quantas notas foram lidas e quantas são positivas (10 ou mais).',
+    run: 'Nota: ⟦12⟧Nota: ⟦8⟧Nota: ⟦15⟧Nota: ⟦0⟧Lidas: 3\nPositivas: 2\n',
+    hint: H`Um ciclo que lê e faz <code>notas.Add(n)</code> enquanto n não for 0. Depois um <code>foreach</code> para contar as positivas.`,
+    solution: C`
+List<int> notas = new List<int>();
+Console.Write("Nota: ");
+int n = int.Parse(Console.ReadLine());
+while (n != 0)
+{
+    notas.Add(n);
+    Console.Write("Nota: ");
+    n = int.Parse(Console.ReadLine());
+}
+int positivas = 0;
+foreach (int nota in notas)
+{
+    if (nota >= 10)
+    {
+        positivas++;
+    }
+}
+Console.WriteLine($"Lidas: {notas.Count}");
+Console.WriteLine($"Positivas: {positivas}");`,
+  }],
+});
+
+// ===== C# do Zero — conteúdo das lições (parte 2) =====
+
+// ---------------------------------------------------------------- 4
+LESSONS.push({
+  id: 4,
+  title: 'Métodos',
+  short: 'parâmetros por valor, arrays que mudam, e ref',
+  body: H`
+<p>Um método é a função do C: <code>static int Quadrado(int x) { return x * x; }</code>. Num programa com top-level statements, escreve-se <strong>depois</strong> das instruções, e pode ser chamado antes de aparecer no ficheiro.</p>
+<ul>
+<li>Os parâmetros de <strong>tipos de valor</strong> (<code>int</code>, <code>double</code>, <code>bool</code>...) recebem uma <strong>cópia</strong>, como em C. Mudar o parâmetro não muda a variável de quem chamou.</li>
+<li>Num array (ou objeto), o que se copia é a <strong>referência</strong>: o método recebe uma seta para o mesmo array, e se mudar um elemento a mudança vê-se fora.</li>
+<li>Para um método mudar um <code>int</code> de quem chama (o que em C fazias com <code>int *</code> e <code>&amp;</code>), usa-se <code>ref</code> nos dois lados: <code>static void Dobra(ref int x)</code> e <code>Dobra(ref a);</code>.</li>
+</ul>`,
+  analogy: 'Dar um int a um método é dar uma fotocópia de um número. Dar um array é dar o número do armário: o colega não leva o armário, mas pode abrir o teu e mexer lá dentro. O ref é dar-lhe a chave da tua própria gaveta.',
+  examples: [{
+    title: 'Um método que devolve um valor',
+    code: C`
+int n = 4;
+int q = Quadrado(n);
+Console.WriteLine($"{n} {q}");
+
+static int Quadrado(int x)
+{
+    int r = x * x;
+    return r;
+}`,
+    steps: [
+      { l: 1, push: 'Main', d: { Main: { n: ['int', '4'] } }, n: 'Começa pelas instruções do topo.' },
+      { l: 2, n: H`Chama <code>Quadrado(n)</code>. O Main fica em pausa.` },
+      { l: 5, push: 'Quadrado', d: { Quadrado: { x: ['int', '4'] } }, n: H`O método ganha o seu frame na pilha. O parâmetro <code>x</code> recebe uma <strong>cópia</strong> do valor de n.` },
+      { l: 7, d: { Quadrado: { r: ['int', '16'] } }, n: 'r = 4 × 4 = 16' },
+      { l: 8, n: H`<code>return</code> devolve 16.` },
+      { l: 2, pop: true, d: { Main: { q: ['int', '16'] } }, n: 'O frame do método desaparece e o 16 fica em q.' },
+      { l: 3, o: '4 16\n', n: 'Igual ao que farias em C.' },
+    ],
+  }, {
+    title: 'Cópia, referência e ref',
+    code: C`
+int a = 5;
+int[] v = { 5 };
+Muda(a, v);
+Console.WriteLine($"{a} {v[0]}");
+Dobra(ref a);
+Console.WriteLine(a);
+
+static void Muda(int x, int[] arr)
+{
+    x = 100;
+    arr[0] = 100;
+}
+
+static void Dobra(ref int x)
+{
+    x = x * 2;
+}`,
+    steps: [
+      { l: 1, push: 'Main', d: { Main: { a: ['int', '5'] } }, n: 'Um int, na pilha.' },
+      { l: 2, obj: { o1: ['int[]', ['5']] }, d: { Main: { v: ['int[]', '@o1'] } }, n: 'Um array, no heap, com a referência na pilha.' },
+      { l: 8, push: 'Muda', d: { Muda: { x: ['int', '5'], arr: ['int[]', '@o1'] } }, n: H`Na chamada, <code>x</code> recebe uma cópia do 5 e <code>arr</code> uma cópia da <strong>referência</strong>: aponta para o mesmo array #1.` },
+      { l: 10, u: { Muda: { x: '100' } }, n: H`Muda só a cópia. O <code>a</code> do Main fica com 5.` },
+      { l: 11, obj: { o1: ['int[]', ['100']] }, n: 'Muda o elemento do array #1, que é o mesmo do Main.' },
+      { l: 3, pop: true, n: 'O método acaba.' },
+      { l: 4, o: '5 100\n', n: 'O int não mudou, o array sim.' },
+      { l: 14, push: 'Dobra', d: { Dobra: { x: ['ref int', '→ a do Main'] } }, n: H`Com <code>ref</code>, o <code>x</code> não é uma cópia: é outro nome para a própria variável <code>a</code> do Main. É o que em C fazias com um apontador.` },
+      { l: 16, u: { Main: { a: '10' } }, n: H`Mudar <code>x</code> muda o <code>a</code> do Main.` },
+      { l: 5, pop: true, n: 'O método acaba.' },
+      { l: 6, o: '10\n', n: H`O <code>a</code> passou a 10.` },
+    ],
+  }],
+  mistakes: [
+    H`Esperar que um método mude um <code>int</code> recebido sem <code>ref</code>. Ele só muda uma cópia.`,
+    H`Esquecer o <code>ref</code> na chamada: <code>Dobra(a)</code> não compila se o método tem <code>ref int</code>.`,
+    H`Esquecer o <code>return</code> num método que não é <code>void</code>: <em>error CS0161: not all code paths return a value</em>.`,
+    H`Escrever o método no meio das instruções do topo. Os métodos e classes vão depois de todas as instruções.`,
+  ],
+  quiz: [
+    { q: 'O que aparece no ecrã?', code: C`
+Console.WriteLine(Dobro(Dobro(3)));
+
+static int Dobro(int n)
+{
+    return n * 2;
+}`, opts: ['6', '9', '12', '3'], ok: 2, mono: true, check: true,
+      exp: 'Começa por dentro: Dobro(3) = 6, depois Dobro(6) = 12.' },
+    { q: 'O que aparece no ecrã?', code: C`
+int a = 1;
+F(a);
+Console.WriteLine(a);
+
+static void F(int x)
+{
+    x = x + 1;
+}`, opts: ['1', '2', '0', 'error CS0165'], ok: 0, mono: true, check: true,
+      exp: H`Um <code>int</code> é passado por cópia, como em C. O F muda a cópia; o <code>a</code> fica com 1.` },
+    { q: 'O que aparece no ecrã?', code: C`
+int[] a = { 1, 2 };
+F(a);
+Console.WriteLine(a[0]);
+
+static void F(int[] v)
+{
+    v[0] = 9;
+}`, opts: ['1', '9', '2', '0'], ok: 1, mono: true, check: true,
+      exp: H`O array não é copiado: o F recebe uma referência para o mesmo array e muda-lhe o elemento 0.` },
+    { q: 'O que aparece no ecrã?', code: C`
+int a = 1;
+F(ref a);
+Console.WriteLine(a);
+
+static void F(ref int x)
+{
+    x = 7;
+}`, opts: ['1', '7', '8', 'error CS1620'], ok: 1, mono: true, check: true,
+      exp: H`Com <code>ref</code>, <code>x</code> é outro nome para o próprio <code>a</code>, por isso <code>x = 7</code> muda o a.` },
+  ],
+  exercises: [{
+    title: 'Método EhPar',
+    text: 'Escreve um método static bool EhPar(int n) que devolve true se n for par. Usa-o para classificar os números de 1 a 4.',
+    run: '1: impar\n2: par\n3: impar\n4: par\n',
+    hint: H`O corpo pode ser só <code>return n % 2 == 0;</code>.`,
+    solution: C`
+for (int i = 1; i <= 4; i++)
+{
+    if (EhPar(i))
+    {
+        Console.WriteLine($"{i}: par");
+    }
+    else
+    {
+        Console.WriteLine($"{i}: impar");
+    }
+}
+
+static bool EhPar(int n)
+{
+    return n % 2 == 0;
+}`,
+  }, {
+    title: 'Método Media',
+    text: 'Escreve um método static double Media(int[] v) que devolve a média dos elementos. Mostra a média de { 12, 15, 14 } com 2 casas decimais.',
+    run: 'Media: 13.67\n',
+    hint: H`Soma tudo num ciclo e devolve <code>(double)soma / v.Length</code>.`,
+    solution: C`
+int[] notas = { 12, 15, 14 };
+Console.WriteLine($"Media: {Media(notas):F2}");
+
+static double Media(int[] v)
+{
+    int soma = 0;
+    foreach (int x in v)
+    {
+        soma += x;
+    }
+    return (double)soma / v.Length;
+}`,
+  }],
+});
+
+// ---------------------------------------------------------------- 5
+LESSONS.push({
+  id: 5,
+  title: 'Classes e objetos',
+  short: 'uma classe é o molde, new cria um objeto no heap',
+  body: H`
+<p>Em C juntavas dados num <code>struct</code>. Em C# usa-se sobretudo uma <strong>classe</strong>, que junta os dados (<strong>campos</strong>) e o que se pode fazer com eles (<strong>métodos</strong>).</p>
+<pre class="snip"><code>class Aluno
+{
+    public string Nome;
+    public int Nota;
+}</code></pre>
+<ul>
+<li>A classe é só o <strong>molde</strong>. Para ter um aluno a sério, cria-se um <strong>objeto</strong> com <code>new</code>: <code>Aluno a = new Aluno();</code>.</li>
+<li>O objeto vive no <strong>heap</strong>; a variável <code>a</code>, na pilha, guarda a referência para ele.</li>
+<li>Os campos começam com um valor por omissão: 0 nos números, <code>false</code> nos bool, <code>null</code> nos textos e objetos. Nunca há lixo.</li>
+<li>Um método da classe trabalha sobre o objeto em que é chamado: em <code>c.Depositar(50)</code>, lá dentro <code>Saldo</code> é o saldo do objeto <code>c</code> (que se chama <code>this</code>).</li>
+<li><code>public</code> quer dizer que o campo ou método pode ser usado fora da classe.</li>
+</ul>`,
+  analogy: 'A classe é a planta de uma casa; os objetos são as casas construídas a partir dela. Todas têm as mesmas divisões, mas cada uma tem os seus móveis. A variável é a morada escrita num papel.',
+  examples: [{
+    title: 'Dois alunos, um molde',
+    code: C`
+Aluno a = new Aluno();
+a.Nome = "Ana";
+a.Nota = 17;
+Aluno b = new Aluno();
+b.Nome = "Rui";
+Console.WriteLine($"{a.Nome} {a.Nota} / {b.Nome} {b.Nota}");
+
+class Aluno
+{
+    public string Nome;
+    public int Nota;
+}`,
+    steps: [
+      { l: 1, push: 'Main', obj: { o1: ['Aluno', { Nome: 'null', Nota: '0' }] }, d: { Main: { a: ['Aluno', '@o1'] } }, n: H`<code>new Aluno()</code> cria um objeto no heap a partir do molde (a classe, no fim do ficheiro). Os campos começam com null e 0. A variável <code>a</code> guarda a referência.` },
+      { l: 2, obj: { o1: ['Aluno', { Nome: '"Ana"', Nota: '0' }] }, n: H`<code>a.Nome</code>: segue a referência até ao objeto e muda o campo Nome.` },
+      { l: 3, obj: { o1: ['Aluno', { Nome: '"Ana"', Nota: '17' }] }, n: 'O mesmo para a nota.' },
+      { l: 4, obj: { o2: ['Aluno', { Nome: 'null', Nota: '0' }] }, d: { Main: { b: ['Aluno', '@o2'] } }, n: H`Outro <code>new</code>, outro objeto (#2), com os seus próprios campos.` },
+      { l: 5, obj: { o2: ['Aluno', { Nome: '"Rui"', Nota: '0' }] }, n: H`Só o Nome do #2 muda. A nota do Rui fica 0.` },
+      { l: 6, o: 'Ana 17 / Rui 0\n', n: 'Cada objeto tem os seus valores.' },
+    ],
+  }, {
+    title: 'Um método que muda o objeto',
+    code: C`
+Conta c = new Conta();
+c.Depositar(50);
+c.Depositar(20);
+Console.WriteLine(c.Saldo);
+
+class Conta
+{
+    public int Saldo;
+
+    public void Depositar(int valor)
+    {
+        Saldo = Saldo + valor;
+    }
+}`,
+    steps: [
+      { l: 1, push: 'Main', obj: { o1: ['Conta', { Saldo: '0' }] }, d: { Main: { c: ['Conta', '@o1'] } }, n: 'Uma conta nova, com saldo 0.' },
+      { l: 10, push: 'Depositar', d: { Depositar: { this: ['Conta', '@o1'], valor: ['int', '50'] } }, n: H`Chamar <code>c.Depositar(50)</code> abre um frame com o parâmetro <code>valor</code> e com <code>this</code>, a referência para o objeto em que o método foi chamado.` },
+      { l: 12, obj: { o1: ['Conta', { Saldo: '50' }] }, n: H`<code>Saldo</code> aqui quer dizer <code>this.Saldo</code>: o saldo do objeto #1.` },
+      { l: 2, pop: true, n: 'O método acaba; a mudança ficou no objeto.' },
+      { l: 10, push: 'Depositar', d: { Depositar: { this: ['Conta', '@o1'], valor: ['int', '20'] } }, n: 'Segunda chamada, no mesmo objeto.' },
+      { l: 12, obj: { o1: ['Conta', { Saldo: '70' }] }, n: 'Saldo = 50 + 20 = 70' },
+      { l: 3, pop: true, n: 'Acaba.' },
+      { l: 4, o: '70\n', n: 'O objeto guardou o saldo entre as duas chamadas.' },
+    ],
+  }],
+  mistakes: [
+    H`Esquecer o <code>new</code>: <code>Aluno a; a.Nome = "Ana";</code> dá <em>error CS0165: Use of unassigned local variable 'a'</em>.`,
+    H`Esquecer o <code>public</code> num campo: <em>error CS0122: 'Aluno.Nota' is inaccessible due to its protection level</em>.`,
+    H`Pôr a classe antes das instruções do topo. Com top-level statements, as classes vão no fim do ficheiro.`,
+    H`Confundir a classe com o objeto: <code>Aluno.Nome = "Ana"</code> não faz sentido; é <code>a.Nome</code>, o nome deste aluno.`,
+  ],
+  quiz: [
+    { q: 'O que aparece no ecrã?', code: C`
+Aluno a = new Aluno();
+a.Nota = 12;
+Console.WriteLine(a.Nota + 1);
+
+class Aluno
+{
+    public int Nota;
+}`, opts: ['12', '13', '1', '121'], ok: 1, mono: true, check: true,
+      exp: 'a.Nota é 12, e 12 + 1 = 13. A soma é feita com números, não com texto.' },
+    { q: 'O que aparece no ecrã?', code: C`
+Aluno a = new Aluno();
+Console.WriteLine(a.Nota);
+
+class Aluno
+{
+    public int Nota;
+}`, opts: ['0', 'Um valor qualquer (lixo)', 'null', 'error CS0165'], ok: 0, mono: true, check: true,
+      exp: 'Os campos de um objeto começam sempre com o valor por omissão: 0 para um int. Ao contrário das variáveis locais do C, nunca há lixo.' },
+    { q: 'O que aparece no ecrã?', code: C`
+Contador c = new Contador();
+c.Mais();
+c.Mais();
+c.Mais();
+Console.WriteLine(c.Valor);
+
+class Contador
+{
+    public int Valor;
+
+    public void Mais()
+    {
+        Valor++;
+    }
+}`, opts: ['0', '1', '3', 'error CS0120'], ok: 2, mono: true, check: true,
+      exp: H`As três chamadas trabalham no mesmo objeto, e cada uma soma 1 ao seu <code>Valor</code>.` },
+    { q: 'Qual é a diferença entre uma classe e um objeto?', opts: ['Nenhuma, são duas palavras para a mesma coisa', 'A classe é o molde; um objeto é uma coisa criada a partir dele com new', 'O objeto é o molde; a classe é criada com new', 'A classe guarda os dados e o objeto os métodos'], ok: 1,
+      exp: H`A classe diz que campos e métodos existem. Cada <code>new</code> cria um objeto novo, com os seus próprios valores.` },
+  ],
+  exercises: [{
+    title: 'Retângulo',
+    text: 'Cria a classe Retangulo com os campos Largura e Altura e um método Area() que devolve a área. Cria um retângulo 3 × 4 e mostra a área.',
+    run: 'Area: 12\n',
+    hint: H`<code>public int Area() { return Largura * Altura; }</code> dentro da classe.`,
+    solution: C`
+Retangulo r = new Retangulo();
+r.Largura = 3;
+r.Altura = 4;
+Console.WriteLine($"Area: {r.Area()}");
+
+class Retangulo
+{
+    public int Largura;
+    public int Altura;
+
+    public int Area()
+    {
+        return Largura * Altura;
+    }
+}`,
+  }, {
+    title: 'O livro maior',
+    text: 'Cria a classe Livro com Titulo e Paginas. Cria dois livros, "Os Maias" com 500 páginas e "Mensagem" com 100, e mostra o título do que tem mais páginas.',
+    run: 'Os Maias tem mais paginas\n',
+    hint: H`Compara <code>l1.Paginas &gt; l2.Paginas</code> com um if.`,
+    solution: C`
+Livro l1 = new Livro();
+l1.Titulo = "Os Maias";
+l1.Paginas = 500;
+Livro l2 = new Livro();
+l2.Titulo = "Mensagem";
+l2.Paginas = 100;
+if (l1.Paginas > l2.Paginas)
+{
+    Console.WriteLine($"{l1.Titulo} tem mais paginas");
+}
+else
+{
+    Console.WriteLine($"{l2.Titulo} tem mais paginas");
+}
+
+class Livro
+{
+    public string Titulo;
+    public int Paginas;
+}`,
+  }],
+});
+
+// ---------------------------------------------------------------- 6
+LESSONS.push({
+  id: 6,
+  title: 'Referências e null',
+  short: 'duas variáveis para o mesmo objeto, == entre objetos, e a NullReferenceException',
+  body: H`
+<p>Como o objeto vive no heap e a variável só guarda a referência, <code>Aluno b = a;</code> <strong>não cria um aluno novo</strong>: põe <code>b</code> a apontar para o mesmo objeto. Mudar <code>b.Nota</code> muda o que <code>a</code> vê.</p>
+<ul>
+<li>Já <code>b = new Aluno();</code> põe o <code>b</code> a apontar para outro objeto, e o <code>a</code> não é afetado.</li>
+<li>Entre objetos de uma classe, <code>==</code> compara as <strong>referências</strong> ("é o mesmo objeto?"), não o conteúdo. Dois alunos criados em separado, com o mesmo nome, não são <code>==</code>.</li>
+<li>Passar um objeto a um método passa a referência: o método pode mudar os campos do objeto original.</li>
+<li><code>null</code> quer dizer "não aponta para nenhum objeto". Usar um campo ou método através de <code>null</code> dá <em>NullReferenceException</em>, um dos erros mais comuns em C#.</li>
+</ul>
+<p>Lembras-te dos apontadores do C? Uma referência é parecida, mas mais segura: não há aritmética, não há moradas inventadas, e um acesso a <code>null</code> é apanhado em vez de rebentar com o programa.</p>`,
+  analogy: 'A variável é uma trela e o objeto é o cão. b = a dá uma segunda trela para o mesmo cão. b = new Aluno() é ir buscar outro cão para a trela b. null é uma trela sem cão: se puxares, não vem nada.',
+  examples: [{
+    title: 'Duas variáveis, um objeto',
+    code: C`
+Aluno a = new Aluno();
+a.Nota = 12;
+Aluno b = a;
+b.Nota = 20;
+Console.WriteLine(a.Nota);
+b = new Aluno();
+b.Nota = 5;
+Console.WriteLine($"{a.Nota} {b.Nota}");
+
+class Aluno
+{
+    public int Nota;
+}`,
+    steps: [
+      { l: 1, push: 'Main', obj: { o1: ['Aluno', { Nota: '0' }] }, d: { Main: { a: ['Aluno', '@o1'] } }, n: 'Um aluno no heap.' },
+      { l: 2, obj: { o1: ['Aluno', { Nota: '12' }] }, n: 'Nota 12.' },
+      { l: 3, d: { Main: { b: ['Aluno', '@o1'] } }, n: H`<code>b = a</code> copia a <strong>referência</strong>: <code>a</code> e <code>b</code> apontam para o mesmo objeto #1. Não há nenhum aluno novo.` },
+      { l: 4, obj: { o1: ['Aluno', { Nota: '20' }] }, n: H`Muda a nota do #1 através de <code>b</code>...` },
+      { l: 5, o: '20\n', n: H`...e o <code>a</code> vê a mudança, porque é o mesmo objeto.` },
+      { l: 6, obj: { o2: ['Aluno', { Nota: '0' }] }, u: { Main: { b: '@o2' } }, n: H`<code>b = new Aluno()</code> cria outro objeto e muda só para onde o <code>b</code> aponta.` },
+      { l: 7, obj: { o2: ['Aluno', { Nota: '5' }] }, n: 'Agora mudar b não mexe no objeto do a.' },
+      { l: 8, o: '20 5\n', n: 'Dois objetos, cada um com a sua nota.' },
+    ],
+  }, {
+    title: 'null e a NullReferenceException',
+    code: C`
+Aluno a = new Aluno();
+Aluno b = null;
+Console.WriteLine(a == b);
+b = a;
+Console.WriteLine(a == b);
+a = null;
+Console.WriteLine(b.Nota);
+Console.WriteLine(a.Nota);
+
+class Aluno
+{
+    public int Nota = 10;
+}`,
+    steps: [
+      { l: 1, push: 'Main', obj: { o1: ['Aluno', { Nota: '10' }] }, d: { Main: { a: ['Aluno', '@o1'] } }, n: H`O <code>= 10</code> na classe dá um valor inicial ao campo.` },
+      { l: 2, d: { Main: { b: ['Aluno', 'null'] } }, n: H`<code>b</code> não aponta para nenhum objeto.` },
+      { l: 3, o: 'False\n', n: H`<code>==</code> pergunta se apontam para o mesmo objeto: não.` },
+      { l: 4, u: { Main: { b: '@o1' } }, n: 'Agora b aponta para o #1.' },
+      { l: 5, o: 'True\n', n: 'É o mesmo objeto.' },
+      { l: 6, u: { Main: { a: 'null' } }, n: H`<code>a = null</code> só apaga a seta do <code>a</code>. O objeto continua lá, porque o <code>b</code> ainda aponta para ele.` },
+      { l: 7, o: '10\n', n: 'Através do b ainda se chega ao objeto.' },
+      { l: 8, o: 'Unhandled exception. System.NullReferenceException: Object reference not set to an instance of an object.\n', n: H`Através do <code>a</code> não há objeto nenhum. O programa pára com a NullReferenceException.` },
+    ],
+  }],
+  mistakes: [
+    H`Fazer <code>Aluno copia = original;</code> a pensar que tem uma cópia. Tem uma segunda referência para o mesmo objeto.`,
+    H`Comparar objetos com <code>==</code> para saber se têm os mesmos dados. Compara os campos (<code>a.Nome == b.Nome</code>).`,
+    H`Usar um objeto que ficou a <code>null</code>: <em>System.NullReferenceException: Object reference not set to an instance of an object.</em> Confirma com <code>if (a != null)</code>.`,
+    H`Esquecer que um método que recebe um objeto pode mudar-lhe os campos.`,
+  ],
+  quiz: [
+    { q: 'O que aparece no ecrã?', code: C`
+Ponto p = new Ponto();
+Ponto q = p;
+q.X = 7;
+Console.WriteLine(p.X);
+
+class Ponto
+{
+    public int X;
+}`, opts: ['0', '7', 'null', 'error CS0165'], ok: 1, mono: true, check: true,
+      exp: H`<code>q = p</code> copia a referência; os dois apontam para o mesmo objeto, por isso p.X também é 7.` },
+    { q: 'O que aparece no ecrã?', code: C`
+Aluno a = new Aluno();
+a.Nome = "Ana";
+Aluno b = new Aluno();
+b.Nome = "Ana";
+Console.WriteLine(a == b);
+
+class Aluno
+{
+    public string Nome;
+}`, opts: ['True', 'False', 'Ana', 'error CS0019'], ok: 1, mono: true, check: true,
+      exp: H`São dois objetos diferentes (dois <code>new</code>), mesmo com o mesmo nome. Entre objetos de uma classe, <code>==</code> compara as referências.` },
+    { q: 'O que aparece no ecrã?', code: C`
+Aluno a = new Aluno();
+Aumenta(a);
+Console.WriteLine(a.Nota);
+
+static void Aumenta(Aluno x)
+{
+    x.Nota = x.Nota + 5;
+}
+
+class Aluno
+{
+    public int Nota = 10;
+}`, opts: ['10', '15', '5', '0'], ok: 1, mono: true, check: true,
+      exp: H`O método recebe uma cópia da referência, que aponta para o mesmo objeto. Ao mudar <code>x.Nota</code>, muda o aluno original.` },
+    { q: 'O que aparece no ecrã?', code: C`
+Aluno a = null;
+Console.WriteLine(a.Nota);
+
+class Aluno
+{
+    public int Nota;
+}`, opts: ['0', 'null', 'Unhandled exception. System.NullReferenceException: Object reference not set to an instance of an object.', "error CS0165: Use of unassigned local variable 'a'"], ok: 2, mono: true, check: true,
+      exp: H`A variável tem valor (<code>null</code>), por isso compila. Mas a correr não há objeto onde ir buscar a nota, e dá NullReferenceException.` },
+  ],
+  exercises: [{
+    title: 'Bónus',
+    text: 'Escreve um método static void DarBonus(Aluno a, int bonus) que soma o bónus à nota do aluno. Cria um aluno com nota 12, dá-lhe um bónus de 3 e mostra a nota.',
+    run: 'Nota: 15\n',
+    hint: 'O método recebe a referência para o aluno, por isso pode mudar-lhe a nota diretamente.',
+    solution: C`
+Aluno a = new Aluno();
+a.Nota = 12;
+DarBonus(a, 3);
+Console.WriteLine($"Nota: {a.Nota}");
+
+static void DarBonus(Aluno a, int bonus)
+{
+    a.Nota = a.Nota + bonus;
+}
+
+class Aluno
+{
+    public int Nota;
+}`,
+  }, {
+    title: 'Trocar as setas',
+    text: 'Cria dois alunos, Ana (em a) e Rui (em b). Troca as variáveis a e b (sem criar alunos novos nem mudar os nomes) e mostra-as.',
+    run: 'a: Rui, b: Ana\n',
+    hint: H`Como no C: uma variável auxiliar <code>Aluno aux = a;</code>. Só as referências trocam; os objetos ficam iguais.`,
+    solution: C`
+Aluno a = new Aluno();
+a.Nome = "Ana";
+Aluno b = new Aluno();
+b.Nome = "Rui";
+Aluno aux = a;
+a = b;
+b = aux;
+Console.WriteLine($"a: {a.Nome}, b: {b.Nome}");
+
+class Aluno
+{
+    public string Nome;
+}`,
+  }],
+});
+
+// ---------------------------------------------------------------- 7
+LESSONS.push({
+  id: 7,
+  title: 'Construtores e propriedades',
+  short: 'criar objetos já preenchidos, private, get e set',
+  body: H`
+<p>Preencher um objeto campo a campo, depois do <code>new</code>, é cansativo e fácil de esquecer. Um <strong>construtor</strong> é um método especial, com o nome da classe e sem tipo de retorno, que corre no <code>new</code>:</p>
+<pre class="snip"><code>public Aluno(string nome, int nota)
+{
+    Nome = nome;
+    Nota = nota;
+}
+// usar: Aluno a = new Aluno("Ana", 17);</code></pre>
+<ul>
+<li>Se o parâmetro tiver o mesmo nome que o campo, usa <code>this.Nome = Nome;</code> para dizer qual é qual.</li>
+<li><strong>Encapsular</strong> é esconder os campos (<code>private</code>) e deixar mexer só através de métodos ou <strong>propriedades</strong>, que podem validar os valores.</li>
+<li>Uma propriedade parece um campo por fora (<code>a.Nota = 15</code>), mas por dentro tem um <code>get</code> (ler) e um <code>set</code> (escrever; o valor novo chama-se <code>value</code>).</li>
+<li>Sem validação, escreve-se só <code>public int Nota { get; set; }</code>. Com <code>{ get; private set; }</code>, só a própria classe pode mudar o valor.</li>
+</ul>`,
+  analogy: 'O construtor é a linha de montagem: o carro sai da fábrica já com rodas e motor. A propriedade com validação é o balcão de um banco: não mexes no cofre (o campo private); pedes ao funcionário (o set), que verifica antes de aceitar.',
+  examples: [{
+    title: 'Um construtor',
+    code: C`
+Aluno a = new Aluno("Ana", 17);
+Aluno b = new Aluno("Rui", 9);
+Console.WriteLine(a.Descricao());
+Console.WriteLine(b.Descricao());
+
+class Aluno
+{
+    public string Nome;
+    public int Nota;
+
+    public Aluno(string nome, int nota)
+    {
+        Nome = nome;
+        Nota = nota;
+    }
+
+    public string Descricao()
+    {
+        return $"{Nome} ({Nota})";
+    }
+}`,
+    steps: [
+      { l: 1, push: 'Main', n: H`<code>new Aluno("Ana", 17)</code>: primeiro cria o objeto, com os valores por omissão...` },
+      { l: 11, obj: { o1: ['Aluno', { Nome: 'null', Nota: '0' }] }, push: 'Aluno', d: { Aluno: { this: ['Aluno', '@o1'], nome: ['string', '"Ana"'], nota: ['int', '17'] } }, n: H`...e depois corre o construtor, com <code>this</code> a apontar para o objeto novo.` },
+      { l: 13, obj: { o1: ['Aluno', { Nome: '"Ana"', Nota: '0' }] }, n: H`<code>Nome</code> é o campo do objeto e <code>nome</code> (com minúscula) é o parâmetro.` },
+      { l: 14, obj: { o1: ['Aluno', { Nome: '"Ana"', Nota: '17' }] }, n: 'O objeto fica preenchido.' },
+      { l: 1, pop: true, d: { Main: { a: ['Aluno', '@o1'] } }, n: H`Só agora a referência é guardada em <code>a</code>: o aluno já está pronto.` },
+      { l: 2, obj: { o2: ['Aluno', { Nome: '"Rui"', Nota: '9' }] }, d: { Main: { b: ['Aluno', '@o2'] } }, n: 'O mesmo para o Rui, numa linha só.' },
+      { l: 3, o: 'Ana (17)\n', n: H`<code>a.Descricao()</code> devolve o texto do objeto #1.` },
+      { l: 4, o: 'Rui (9)\n', n: 'E do #2.' },
+    ],
+  }, {
+    title: 'Uma propriedade que valida',
+    code: C`
+Aluno a = new Aluno();
+a.Nota = 15;
+a.Nota = 25;
+Console.WriteLine(a.Nota);
+
+class Aluno
+{
+    private int nota;
+
+    public int Nota
+    {
+        get { return nota; }
+        set
+        {
+            if (value >= 0 && value <= 20)
+            {
+                nota = value;
+            }
+        }
+    }
+}`,
+    steps: [
+      { l: 1, push: 'Main', obj: { o1: ['Aluno', { nota: '0' }] }, d: { Main: { a: ['Aluno', '@o1'] } }, n: H`O campo <code>nota</code> é <code>private</code>: fora da classe não se lhe pode mexer.` },
+      { l: 13, push: 'Nota (set)', d: { 'Nota (set)': { this: ['Aluno', '@o1'], value: ['int', '15'] } }, n: H`<code>a.Nota = 15</code> parece mudar um campo, mas chama o <code>set</code> da propriedade, com <code>value</code> = 15.` },
+      { l: 15, n: '15 está entre 0 e 20: aceita.' },
+      { l: 17, obj: { o1: ['Aluno', { nota: '15' }] }, n: 'Guarda no campo privado.' },
+      { l: 2, pop: true, n: 'Volta ao Main.' },
+      { l: 13, push: 'Nota (set)', d: { 'Nota (set)': { this: ['Aluno', '@o1'], value: ['int', '25'] } }, n: H`Agora <code>value</code> é 25.` },
+      { l: 15, n: H`25 não está entre 0 e 20: o <code>set</code> recusa e não muda nada.` },
+      { l: 3, pop: true, n: 'O objeto continua com 15.' },
+      { l: 4, o: '15\n', n: H`Ler <code>a.Nota</code> chama o <code>get</code>, que devolve o campo privado.` },
+    ],
+  }],
+  mistakes: [
+    H`Escrever <code>Nome = Nome;</code> num construtor cujo parâmetro também se chama Nome: o campo fica igual. Usa <code>this.Nome = Nome;</code> ou parâmetros com minúscula.`,
+    H`Pôr um tipo de retorno no construtor (<code>public void Aluno(...)</code>): deixa de ser construtor.`,
+    H`Depois de criares um construtor com parâmetros, <code>new Aluno()</code> deixa de compilar, a não ser que também escrevas um sem parâmetros.`,
+    H`Tentar mexer num campo private fora da classe: <em>error CS0122: 'Aluno.nota' is inaccessible due to its protection level</em>.`,
+  ],
+  quiz: [
+    { q: 'O que aparece no ecrã?', code: C`
+Ponto p = new Ponto(3, 4);
+Console.WriteLine(p.X + p.Y);
+
+class Ponto
+{
+    public int X;
+    public int Y;
+
+    public Ponto(int x, int y)
+    {
+        X = x;
+        Y = y;
+    }
+}`, opts: ['34', '7', '0', 'error CS1729'], ok: 1, mono: true, check: true,
+      exp: 'O construtor guarda o 3 em X e o 4 em Y, e 3 + 4 = 7. A soma é de números, não de texto.' },
+    { q: 'O que acontece com este programa?', code: C`
+Aluno a = new Aluno();
+a.nota = 15;
+Console.WriteLine("ok");
+
+class Aluno
+{
+    private int nota;
+}`, opts: ['ok', '15', "error CS0122: 'Aluno.nota' is inaccessible due to its protection level", 'Unhandled exception. System.NullReferenceException: Object reference not set to an instance of an object.'], ok: 2, mono: true, check: true,
+      exp: H`O campo é <code>private</code>: só o código dentro da classe Aluno lhe pode mexer. O programa nem compila.` },
+    { q: 'O que aparece no ecrã? (atenção aos nomes)', code: C`
+Aluno a = new Aluno("Ana");
+Console.WriteLine(a.Nome == null);
+
+class Aluno
+{
+    public string Nome;
+
+    public Aluno(string Nome)
+    {
+        Nome = Nome;
+    }
+}`, opts: ['True', 'False', 'Ana', 'error CS0103'], ok: 0, mono: true, check: true,
+      exp: H`Dentro do construtor, <code>Nome</code> é o parâmetro (o nome mais próximo ganha). <code>Nome = Nome</code> guarda o parâmetro nele próprio, e o campo fica null. Corrige-se com <code>this.Nome = Nome;</code>. O compilador até avisa: <em>warning CS1717: Assignment made to same variable</em>.` },
+    { q: 'O que aparece no ecrã?', code: C`
+Produto p = new Produto();
+p.Preco = 10;
+p.Preco = p.Preco * 2;
+Console.WriteLine(p.Preco);
+
+class Produto
+{
+    public int Preco { get; set; }
+}`, opts: ['10', '20', '0', 'error CS0200'], ok: 1, mono: true, check: true,
+      exp: H`Uma propriedade automática (<code>{ get; set; }</code>) usa-se como um campo: lê 10, multiplica por 2 e guarda 20.` },
+  ],
+  exercises: [{
+    title: 'Retângulo com construtor',
+    text: 'Cria a classe Retangulo com um construtor que recebe a largura e a altura, e os métodos Area() e Perimetro(). Cria um retângulo 3 × 4 e mostra os dois valores.',
+    run: 'Area: 12, Perimetro: 14\n',
+    hint: H`O construtor guarda os dois valores nos campos. <code>Perimetro()</code> devolve <code>2 * (Largura + Altura)</code>.`,
+    solution: C`
+Retangulo r = new Retangulo(3, 4);
+Console.WriteLine($"Area: {r.Area()}, Perimetro: {r.Perimetro()}");
+
+class Retangulo
+{
+    public int Largura;
+    public int Altura;
+
+    public Retangulo(int largura, int altura)
+    {
+        Largura = largura;
+        Altura = altura;
+    }
+
+    public int Area()
+    {
+        return Largura * Altura;
+    }
+
+    public int Perimetro()
+    {
+        return 2 * (Largura + Altura);
+    }
+}`,
+  }, {
+    title: 'Conta bancária',
+    text: 'Cria a classe Conta com a propriedade Saldo { get; private set; }, um método Depositar(int valor) e um método Levantar(int valor) que só levanta se houver saldo (e diz "Saldo insuficiente" se não houver). Deposita 50, tenta levantar 80, levanta 30 e mostra o saldo.',
+    run: 'Saldo insuficiente\nSaldo: 20\n',
+    hint: H`Dentro de <code>Levantar</code>: <code>if (valor &gt; Saldo)</code> escreve a mensagem; senão, <code>Saldo -= valor;</code>.`,
+    solution: C`
+Conta c = new Conta();
+c.Depositar(50);
+c.Levantar(80);
+c.Levantar(30);
+Console.WriteLine($"Saldo: {c.Saldo}");
+
+class Conta
+{
+    public int Saldo { get; private set; }
+
+    public void Depositar(int valor)
+    {
+        Saldo += valor;
+    }
+
+    public void Levantar(int valor)
+    {
+        if (valor > Saldo)
+        {
+            Console.WriteLine("Saldo insuficiente");
+        }
+        else
+        {
+            Saldo -= valor;
+        }
+    }
+}`,
+  }],
+});
+
+// ===== C# do Zero — conteúdo das lições (parte 3) =====
+
+// ---------------------------------------------------------------- 8
+LESSONS.push({
+  id: 8,
+  title: 'Tipos de valor e tipos de referência',
+  short: 'struct contra class, o que vai para a pilha e o que vai para o heap',
+  body: H`
+<p>Já viste os dois comportamentos: <code>int y = x;</code> copia o número, e <code>Aluno b = a;</code> copia a referência. Isto não depende da variável, depende do <strong>tipo</strong>:</p>
+<table class="t">
+<thead><tr><th></th><th>Tipos de valor</th><th>Tipos de referência</th></tr></thead>
+<tbody>
+<tr><td>Exemplos</td><td><code>int</code>, <code>double</code>, <code>bool</code>, <code>char</code>, <code>struct</code></td><td><code>class</code>, arrays, <code>List&lt;T&gt;</code>, <code>string</code></td></tr>
+<tr><td>A variável guarda</td><td>o próprio valor</td><td>uma referência para um objeto no heap</td></tr>
+<tr><td><code>b = a</code></td><td>copia o valor todo</td><td>copia a referência (mesmo objeto)</td></tr>
+<tr><td>Passar a um método</td><td>o método recebe uma cópia</td><td>o método pode mudar o objeto</td></tr>
+</tbody>
+</table>
+<p>Um <code>struct</code> escreve-se como uma classe, mas é um tipo de valor, como o <code>struct</code> do C: atribuir copia todos os campos. Usa-se para coisas pequenas, como um ponto ou uma cor.</p>
+<p>O <code>string</code> é de referência, mas <strong>nunca muda por dentro</strong>: <code>b = b + "!"</code> cria um texto novo. Por isso, na prática, comporta-se como um valor.</p>`,
+  analogy: 'Um tipo de valor é uma folha de papel: dar uma cópia é fotocopiá-la, e o que escreves na cópia não aparece no original. Um tipo de referência é um documento partilhado na nuvem: dar o link não copia o documento, e quem o editar muda-o para todos.',
+  examples: [{
+    title: 'struct contra class',
+    code: C`
+PontoS s1 = new PontoS();
+s1.X = 1;
+PontoS s2 = s1;
+s2.X = 9;
+PontoC c1 = new PontoC();
+c1.X = 1;
+PontoC c2 = c1;
+c2.X = 9;
+Console.WriteLine($"struct: {s1.X} {s2.X}");
+Console.WriteLine($"class: {c1.X} {c2.X}");
+
+struct PontoS
+{
+    public int X;
+}
+
+class PontoC
+{
+    public int X;
+}`,
+    steps: [
+      { l: 1, push: 'Main', d: { Main: { s1: ['PontoS', { X: '0' }] } }, n: H`<code>PontoS</code> é um <strong>struct</strong>: os campos ficam dentro da própria variável, na pilha. Não há nada no heap.` },
+      { l: 2, u: { Main: { 's1.X': '1' } }, n: 'Muda o X dentro de s1.' },
+      { l: 3, d: { Main: { s2: ['PontoS', { X: '1' }] } }, n: H`<code>s2 = s1</code> copia o struct <strong>todo</strong>: s2 é um ponto novo, com os mesmos valores.` },
+      { l: 4, u: { Main: { 's2.X': '9' } }, n: H`Mudar s2 não mexe em s1. É o que acontecia com um <code>struct</code> em C.` },
+      { l: 5, obj: { o1: ['PontoC', { X: '0' }] }, d: { Main: { c1: ['PontoC', '@o1'] } }, n: H`<code>PontoC</code> é uma <strong>classe</strong>: o objeto vai para o heap e c1 guarda a referência.` },
+      { l: 6, obj: { o1: ['PontoC', { X: '1' }] }, n: 'Muda o X do objeto #1.' },
+      { l: 7, d: { Main: { c2: ['PontoC', '@o1'] } }, n: H`<code>c2 = c1</code> copia a referência: os dois apontam para o #1.` },
+      { l: 8, obj: { o1: ['PontoC', { X: '9' }] }, n: 'Mudar através de c2 muda o único objeto.' },
+      { l: 9, o: 'struct: 1 9\n', n: 'Com o struct, cada variável tem o seu valor.' },
+      { l: 10, o: 'class: 9 9\n', n: 'Com a classe, as duas variáveis veem o mesmo objeto.' },
+    ],
+  }, {
+    title: 'int e string: cópias sem surpresas',
+    code: C`
+string a = "ola";
+string b = a;
+b = b + "!";
+Console.WriteLine($"{a} {b}");
+int x = 5;
+int y = x;
+y++;
+Console.WriteLine($"{x} {y}");`,
+    steps: [
+      { l: 1, push: 'Main', d: { Main: { a: ['string', '"ola"'] } }, n: H`Um texto. (Aqui o texto aparece direto na variável, para simplificar; na verdade está no heap.)` },
+      { l: 2, d: { Main: { b: ['string', '"ola"'] } }, n: 'b fica com o mesmo texto.' },
+      { l: 3, u: { Main: { b: '"ola!"' } }, n: H`Um <code>string</code> nunca muda por dentro: <code>b + "!"</code> cria um texto novo, e só o b passa a ser esse.` },
+      { l: 4, o: 'ola ola!\n', n: 'O a não mudou.' },
+      { l: 5, d: { Main: { x: ['int', '5'] } }, n: 'Um int.' },
+      { l: 6, d: { Main: { y: ['int', '5'] } }, n: 'y recebe uma cópia do 5.' },
+      { l: 7, u: { Main: { y: '6' } }, n: 'Só o y muda.' },
+      { l: 8, o: '5 6\n', n: 'Igual ao C.' },
+    ],
+  }],
+  mistakes: [
+    H`Esperar que mudar uma cópia de um <code>struct</code> mude o original: são dois valores separados.`,
+    H`Esperar o contrário com uma classe: <code>b = a</code> não copia o objeto.`,
+    H`Achar que <code>string</code> se comporta como um array de char do C: <code>s[0] = 'x'</code> dá <em>error CS0200: Property or indexer 'string.this[int]' cannot be assigned to -- it is read only</em>.`,
+    H`Usar <code>struct</code> para tudo "porque é mais rápido": structs grandes são copiados inteiros a cada atribuição e chamada.`,
+  ],
+  quiz: [
+    { q: 'O que aparece no ecrã?', code: C`
+Cor a = new Cor();
+a.R = 10;
+Cor b = a;
+b.R = 200;
+Console.WriteLine(a.R);
+
+struct Cor
+{
+    public int R;
+}`, opts: ['10', '200', '0', 'error CS0165'], ok: 0, mono: true, check: true,
+      exp: H`<code>Cor</code> é um struct: <code>b = a</code> copia os campos. Mudar b não mexe em a.` },
+    { q: 'O que aparece no ecrã?', code: C`
+Cor a = new Cor();
+a.R = 10;
+Cor b = a;
+b.R = 200;
+Console.WriteLine(a.R);
+
+class Cor
+{
+    public int R;
+}`, opts: ['10', '200', '0', 'error CS0165'], ok: 1, mono: true, check: true,
+      exp: H`O mesmo código, mas <code>Cor</code> agora é uma classe: a e b apontam para o mesmo objeto, por isso a.R também é 200.` },
+    { q: 'O que aparece no ecrã?', code: C`
+Ponto p = new Ponto();
+Mover(p);
+Console.WriteLine(p.X);
+
+static void Mover(Ponto q)
+{
+    q.X = 5;
+}
+
+struct Ponto
+{
+    public int X;
+}`, opts: ['0', '5', 'null', 'error CS0165'], ok: 0, mono: true, check: true,
+      exp: H`Um struct passado a um método é copiado, como um int. O <code>Mover</code> muda a cópia; o p fica com X = 0.` },
+    { q: 'Qual destes é um tipo de referência?', opts: ['int', 'double', 'bool', 'int[]'], ok: 3,
+      exp: H`Os arrays são sempre de referência, mesmo que os elementos sejam <code>int</code>. Por isso <code>int[] b = a;</code> partilha o mesmo array.` },
+  ],
+  exercises: [{
+    title: 'Copiar um struct',
+    text: 'Cria um struct Ponto com X e Y. Cria o ponto (1, 2), copia-o para outra variável, soma 5 ao X da cópia e mostra os dois pontos.',
+    run: 'original: (1, 2)\ncopia: (6, 2)\n',
+    hint: H`<code>Ponto copia = original;</code> e depois <code>copia.X += 5;</code>.`,
+    solution: C`
+Ponto original = new Ponto();
+original.X = 1;
+original.Y = 2;
+Ponto copia = original;
+copia.X += 5;
+Console.WriteLine($"original: ({original.X}, {original.Y})");
+Console.WriteLine($"copia: ({copia.X}, {copia.Y})");
+
+struct Ponto
+{
+    public int X;
+    public int Y;
+}`,
+  }, {
+    title: 'E se fosse uma classe?',
+    text: 'Repete o exercício anterior com Ponto como class em vez de struct. Mostra os dois pontos e repara na diferença.',
+    run: 'original: (6, 2)\ncopia: (6, 2)\n',
+    hint: H`Basta trocar <code>struct</code> por <code>class</code>. Agora as duas variáveis apontam para o mesmo objeto.`,
+    solution: C`
+Ponto original = new Ponto();
+original.X = 1;
+original.Y = 2;
+Ponto copia = original;
+copia.X += 5;
+Console.WriteLine($"original: ({original.X}, {original.Y})");
+Console.WriteLine($"copia: ({copia.X}, {copia.Y})");
+
+class Ponto
+{
+    public int X;
+    public int Y;
+}`,
+  }],
+});
+
+// ---------------------------------------------------------------- 9
+LESSONS.push({
+  id: 9,
+  title: 'Herança',
+  short: 'class Cao : Animal, base, virtual e override',
+  body: H`
+<p>Com <strong>herança</strong>, uma classe aproveita tudo o que outra já tem e acrescenta ou muda o que precisa. <code>class Cao : Animal</code> lê-se "um Cão é um Animal": o Cão tem os campos e métodos do Animal sem os escrever outra vez.</p>
+<ul>
+<li>O construtor da classe filha chama o da mãe com <code>: base(...)</code>.</li>
+<li>Um método marcado <code>virtual</code> na classe mãe pode ser substituído na filha com <code>override</code>.</li>
+<li>Uma variável do tipo da mãe pode apontar para um objeto da filha: <code>Animal a = new Cao("Bobi");</code>. Ao chamar <code>a.Som()</code>, corre a versão do <strong>objeto</strong> (a do Cão), não a do tipo da variável. Chama-se <strong>polimorfismo</strong>.</li>
+<li>É isto que permite ter uma <code>List&lt;Animal&gt;</code> com cães e gatos, e um só ciclo que pede o som a cada um.</li>
+<li><code>protected</code>: como <code>private</code>, mas as classes filhas também podem usar.</li>
+</ul>`,
+  analogy: 'A classe mãe é uma receita base de bolo; as filhas são variações. O bolo de chocolate segue a base toda e só troca um passo (override). Se pedires "faz um bolo" a quem tem a receita de chocolate, sai de chocolate.',
+  examples: [{
+    title: 'Um Cão é um Animal',
+    code: C`
+Animal a = new Animal("Rex");
+Cao c = new Cao("Bobi");
+Console.WriteLine(a.Apresentar());
+Console.WriteLine(c.Apresentar());
+
+class Animal
+{
+    public string Nome;
+
+    public Animal(string nome)
+    {
+        Nome = nome;
+    }
+
+    public virtual string Som()
+    {
+        return "...";
+    }
+
+    public string Apresentar()
+    {
+        return $"{Nome} faz {Som()}";
+    }
+}
+
+class Cao : Animal
+{
+    public Cao(string nome) : base(nome)
+    {
+    }
+
+    public override string Som()
+    {
+        return "Au au";
+    }
+}`,
+    steps: [
+      { l: 1, push: 'Main', obj: { o1: ['Animal', { Nome: '"Rex"' }] }, d: { Main: { a: ['Animal', '@o1'] } }, n: 'Um Animal, criado pelo construtor do Animal.' },
+      { l: 2, obj: { o2: ['Cao', { Nome: '"Bobi"' }] }, d: { Main: { c: ['Cao', '@o2'] } }, n: H`Um Cão. Tem o campo <code>Nome</code> sem o declarar, porque o herda do Animal. O construtor do Cão passou o nome ao do Animal com <code>: base(nome)</code>.` },
+      { l: 3, o: 'Rex faz ...\n', n: H`<code>a.Apresentar()</code> chama o <code>Som()</code> do Animal: "...".` },
+      { l: 21, push: 'Apresentar', d: { Apresentar: { this: ['Cao', '@o2'] } }, n: H`Agora <code>c.Apresentar()</code>. O Cão não tem este método, por isso corre o que herdou do Animal, com <code>this</code> a apontar para o Bobi.` },
+      { l: 23, n: H`Lá dentro chama <code>Som()</code>. O método é <code>virtual</code> e o objeto é um Cão...` },
+      { l: 34, push: 'Som', d: { Som: { this: ['Cao', '@o2'] } }, n: H`...por isso corre o <code>override</code> do Cão, e não o do Animal.` },
+      { l: 36, n: 'Devolve "Au au".' },
+      { l: 23, pop: true, n: 'De volta ao Apresentar, que monta o texto.' },
+      { l: 4, pop: true, o: 'Bobi faz Au au\n', n: 'O mesmo método Apresentar dá resultados diferentes, conforme o objeto.' },
+    ],
+  }, {
+    title: 'Uma lista de animais',
+    code: C`
+List<Animal> animais = new List<Animal>();
+animais.Add(new Cao());
+animais.Add(new Gato());
+foreach (Animal a in animais)
+{
+    Console.WriteLine(a.Som());
+}
+
+class Animal
+{
+    public virtual string Som()
+    {
+        return "...";
+    }
+}
+
+class Cao : Animal
+{
+    public override string Som()
+    {
+        return "Au";
+    }
+}
+
+class Gato : Animal
+{
+    public override string Som()
+    {
+        return "Miau";
+    }
+}`,
+    steps: [
+      { l: 1, push: 'Main', obj: { o1: ['List<Animal>', []] }, d: { Main: { animais: ['List<Animal>', '@o1'] } }, n: 'Uma lista que aceita qualquer Animal.' },
+      { l: 2, obj: { o2: ['Cao', {}], o1: ['List<Animal>', ['@o2']] }, n: 'Um Cão é um Animal, por isso pode entrar na lista.' },
+      { l: 3, obj: { o3: ['Gato', {}], o1: ['List<Animal>', ['@o2', '@o3']] }, n: 'Um Gato também.' },
+      { l: 4, d: { Main: { a: ['Animal', '@o2'] } }, n: H`O <code>foreach</code> dá a cada elemento o nome <code>a</code>, do tipo Animal. O primeiro objeto é um Cão.` },
+      { l: 6, o: 'Au\n', n: H`<code>a.Som()</code> corre a versão do objeto (Cão), apesar de a variável ser do tipo Animal.` },
+      { l: 4, u: { Main: { a: '@o3' } }, n: 'O segundo é um Gato.' },
+      { l: 6, o: 'Miau\n', n: 'A mesma linha, outro resultado: polimorfismo.' },
+    ],
+  }],
+  mistakes: [
+    H`Esquecer o <code>virtual</code> na classe mãe: o <code>override</code> na filha não compila (<em>error CS0506</em>).`,
+    H`Esquecer o <code>override</code> na filha: o método da filha não substitui o da mãe quando chamado através de uma variável do tipo da mãe.`,
+    H`Esquecer o <code>: base(...)</code> quando a classe mãe só tem construtores com parâmetros.`,
+    H`Usar herança só para reaproveitar código, quando a frase "um X é um Y" não faz sentido (um Carro não é um Motor).`,
+  ],
+  quiz: [
+    { q: 'O que aparece no ecrã?', code: C`
+Animal a = new Gato();
+Console.WriteLine(a.Som());
+
+class Animal
+{
+    public virtual string Som()
+    {
+        return "...";
+    }
+}
+
+class Gato : Animal
+{
+    public override string Som()
+    {
+        return "Miau";
+    }
+}`, opts: ['...', 'Miau', '...Miau', 'error CS0029'], ok: 1, mono: true, check: true,
+      exp: H`A variável é do tipo Animal, mas o objeto é um Gato. Com <code>virtual</code> e <code>override</code>, corre a versão do objeto.` },
+    { q: 'O que aparece no ecrã?', code: C`
+B obj = new B();
+
+class A
+{
+    public A()
+    {
+        Console.WriteLine("A");
+    }
+}
+
+class B : A
+{
+    public B()
+    {
+        Console.WriteLine("B");
+    }
+}`, opts: ['B', 'A\nB', 'B\nA', 'A'], ok: 1, mono: true, check: true,
+      exp: 'Ao criar um B, primeiro corre o construtor da classe mãe (A), e só depois o da filha. A base é construída primeiro.' },
+    { q: 'O que aparece no ecrã? (esta é difícil)', code: C`
+Animal a = new Cao();
+Console.WriteLine(a.Som());
+
+class Animal
+{
+    public string Som()
+    {
+        return "...";
+    }
+}
+
+class Cao : Animal
+{
+    public new string Som()
+    {
+        return "Au";
+    }
+}`, opts: ['...', 'Au', 'error CS0506', '...Au'], ok: 0, mono: true, check: true,
+      exp: H`Sem <code>virtual</code>/<code>override</code>, o método do Cão não substitui o do Animal: só o esconde (é o que diz o <code>new</code>). Através de uma variável do tipo Animal, corre o do Animal.` },
+    { q: 'O que quer dizer class Cao : Animal?', opts: ['Que um Cão tem um Animal lá dentro', 'Que Cao herda de Animal: um Cão é um Animal', 'Que Animal herda de Cao', 'Que Cao e Animal são a mesma classe'], ok: 1,
+      exp: 'Os dois pontos dizem de que classe se herda. O Cão fica com tudo o que o Animal tem e pode acrescentar ou substituir métodos.' },
+  ],
+  exercises: [{
+    title: 'Gerente',
+    text: 'Cria a classe Funcionario (Nome, SalarioBase e um método virtual Salario() que devolve o SalarioBase) e a classe Gerente, que herda de Funcionario e devolve o SalarioBase mais 500. Mostra o salário da Ana (funcionária, 1000) e do Rui (gerente, 1000).',
+    run: 'Ana: 1000\nRui: 1500\n',
+    hint: H`Em Gerente: <code>public override int Salario() { return SalarioBase + 500; }</code>. Podes guardar os dois numa <code>List&lt;Funcionario&gt;</code>.`,
+    solution: C`
+List<Funcionario> equipa = new List<Funcionario>();
+equipa.Add(new Funcionario("Ana", 1000));
+equipa.Add(new Gerente("Rui", 1000));
+foreach (Funcionario f in equipa)
+{
+    Console.WriteLine($"{f.Nome}: {f.Salario()}");
+}
+
+class Funcionario
+{
+    public string Nome;
+    public int SalarioBase;
+
+    public Funcionario(string nome, int salarioBase)
+    {
+        Nome = nome;
+        SalarioBase = salarioBase;
+    }
+
+    public virtual int Salario()
+    {
+        return SalarioBase;
+    }
+}
+
+class Gerente : Funcionario
+{
+    public Gerente(string nome, int salarioBase) : base(nome, salarioBase)
+    {
+    }
+
+    public override int Salario()
+    {
+        return SalarioBase + 500;
+    }
+}`,
+  }, {
+    title: 'Contar rodas',
+    text: 'Cria a classe Veiculo com um método virtual Rodas() que devolve 0, e as filhas Carro (4 rodas) e Mota (2 rodas). Numa lista com dois carros e uma mota, mostra o total de rodas.',
+    run: 'Total de rodas: 10\n',
+    hint: 'Percorre uma List<Veiculo> e soma v.Rodas(). Cada objeto responde com o seu próprio override.',
+    solution: C`
+List<Veiculo> garagem = new List<Veiculo>();
+garagem.Add(new Carro());
+garagem.Add(new Carro());
+garagem.Add(new Mota());
+int total = 0;
+foreach (Veiculo v in garagem)
+{
+    total += v.Rodas();
+}
+Console.WriteLine($"Total de rodas: {total}");
+
+class Veiculo
+{
+    public virtual int Rodas()
+    {
+        return 0;
+    }
+}
+
+class Carro : Veiculo
+{
+    public override int Rodas()
+    {
+        return 4;
+    }
+}
+
+class Mota : Veiculo
+{
+    public override int Rodas()
+    {
+        return 2;
+    }
+}`,
+  }],
+});
+
+// ---------------------------------------------------------------- 10
+LESSONS.push({
+  id: 10,
+  title: 'Interfaces',
+  short: 'um contrato que várias classes cumprem, e listas de interfaces',
+  body: H`
+<p>Uma <strong>interface</strong> é uma lista de métodos que uma classe promete ter, sem dizer como são feitos. Funciona como um contrato:</p>
+<pre class="snip"><code>interface IForma
+{
+    string Nome();
+    int Area();
+}</code></pre>
+<ul>
+<li><code>class Quadrado : IForma</code> diz que o Quadrado cumpre o contrato. Se faltar algum método, não compila.</li>
+<li>Não se pode fazer <code>new IForma()</code>: uma interface não é uma coisa, é uma promessa.</li>
+<li>Mas podes ter variáveis e listas do tipo da interface: <code>List&lt;IForma&gt;</code> aceita qualquer objeto de uma classe que a cumpra, e <code>f.Area()</code> corre a versão desse objeto.</li>
+<li>Uma classe só pode herdar de <strong>uma</strong> classe, mas pode cumprir <strong>várias</strong> interfaces: <code>class Pato : Animal, IVoa, INada</code>.</li>
+<li>Por convenção, os nomes das interfaces começam por I.</li>
+</ul>`,
+  analogy: 'Uma interface é como a tomada elétrica: define a forma e a voltagem, e qualquer aparelho com a ficha certa funciona, seja uma torradeira ou um carregador. A parede não precisa de saber que aparelho é.',
+  examples: [{
+    title: 'Formas diferentes, o mesmo contrato',
+    code: C`
+List<IForma> formas = new List<IForma>();
+formas.Add(new Retangulo(3, 4));
+formas.Add(new Quadrado(2));
+int total = 0;
+foreach (IForma f in formas)
+{
+    Console.WriteLine($"{f.Nome()}: {f.Area()}");
+    total += f.Area();
+}
+Console.WriteLine($"Total: {total}");
+
+interface IForma
+{
+    string Nome();
+    int Area();
+}
+
+class Retangulo : IForma
+{
+    public int Largura;
+    public int Altura;
+
+    public Retangulo(int largura, int altura)
+    {
+        Largura = largura;
+        Altura = altura;
+    }
+
+    public string Nome()
+    {
+        return "Retangulo";
+    }
+
+    public int Area()
+    {
+        return Largura * Altura;
+    }
+}
+
+class Quadrado : IForma
+{
+    public int Lado;
+
+    public Quadrado(int lado)
+    {
+        Lado = lado;
+    }
+
+    public string Nome()
+    {
+        return "Quadrado";
+    }
+
+    public int Area()
+    {
+        return Lado * Lado;
+    }
+}`,
+    steps: [
+      { l: 1, push: 'Main', obj: { o1: ['List<IForma>', []] }, d: { Main: { formas: ['List<IForma>', '@o1'] } }, n: H`Uma lista do tipo da interface: aceita qualquer objeto cuja classe cumpra o contrato <code>IForma</code>.` },
+      { l: 2, obj: { o2: ['Retangulo', { Largura: '3', Altura: '4' }], o1: ['List<IForma>', ['@o2']] }, n: 'Um Retangulo cumpre IForma: pode entrar.' },
+      { l: 3, obj: { o3: ['Quadrado', { Lado: '2' }], o1: ['List<IForma>', ['@o2', '@o3']] }, n: 'Um Quadrado também. São classes diferentes, sem nenhuma herança entre elas.' },
+      { l: 4, d: { Main: { total: ['int', '0'] } }, n: 'O acumulador.' },
+      { l: 5, d: { Main: { f: ['IForma', '@o2'] } }, n: H`Primeira volta: <code>f</code> é do tipo IForma e aponta para o Retangulo.` },
+      { l: 7, o: 'Retangulo: 12\n', n: H`<code>f.Nome()</code> e <code>f.Area()</code> correm os métodos do Retangulo: 3 × 4 = 12.` },
+      { l: 8, u: { Main: { total: '12' } }, n: 'total = 12' },
+      { l: 5, u: { Main: { f: '@o3' } }, n: 'Segunda volta: o Quadrado.' },
+      { l: 7, o: 'Quadrado: 4\n', n: 'Agora correm os métodos do Quadrado: 2 × 2 = 4. O ciclo não precisa de saber que formas existem.' },
+      { l: 8, u: { Main: { total: '16' } }, n: 'total = 16' },
+      { l: 10, x: { Main: ['f'] }, o: 'Total: 16\n', n: H`Se amanhã criares um <code>Circulo : IForma</code>, este ciclo funciona com ele sem mudar uma linha.` },
+    ],
+  }],
+  mistakes: [
+    H`Tentar criar uma interface: <em>error CS0144: Cannot create an instance of the abstract type or interface 'IForma'</em>.`,
+    H`Esquecer um método do contrato: <em>error CS0535</em>, a dizer que a classe não implementa esse membro da interface.`,
+    H`Esquecer o <code>public</code> nos métodos que cumprem a interface.`,
+    H`Tentar herdar de duas classes (<code>class Pato : Animal, Ave</code>). Só uma classe; o resto têm de ser interfaces.`,
+  ],
+  quiz: [
+    { q: 'O que acontece com este programa?', code: C`
+IForma f = new IForma();
+Console.WriteLine("ok");
+
+interface IForma
+{
+    int Area();
+}`, opts: ['ok', '0', "error CS0144: Cannot create an instance of the abstract type or interface 'IForma'", 'Unhandled exception. System.NullReferenceException: Object reference not set to an instance of an object.'], ok: 2, mono: true, check: true,
+      exp: H`Uma interface só diz que métodos têm de existir; não tem código para correr. Cria-se um objeto de uma classe que a cumpra: <code>IForma f = new Quadrado(2);</code>.` },
+    { q: 'O que acontece com este programa?', code: C`
+Console.WriteLine("ok");
+
+interface IForma
+{
+    int Area();
+}
+
+class Circulo : IForma
+{
+}`, opts: ['ok', "error CS0535: 'Circulo' does not implement interface member 'IForma.Area()'", "error CS0144: Cannot create an instance of the abstract type or interface 'IForma'", 'Nada'], ok: 1, mono: true, check: true,
+      exp: 'O Circulo diz que cumpre IForma, mas não tem o método Area(). O contrato não está cumprido e o programa não compila, mesmo sem nunca criar um Circulo.' },
+    { q: 'O que aparece no ecrã?', code: C`
+ISom s = new Pato();
+Console.WriteLine(s.Fazer());
+s = new Vaca();
+Console.WriteLine(s.Fazer());
+
+interface ISom
+{
+    string Fazer();
+}
+
+class Pato : ISom
+{
+    public string Fazer()
+    {
+        return "Qua";
+    }
+}
+
+class Vaca : ISom
+{
+    public string Fazer()
+    {
+        return "Mu";
+    }
+}`, opts: ['Qua\nMu', 'Qua\nQua', 'Mu\nMu', 'error CS0029'], ok: 0, mono: true, check: true,
+      exp: H`A variável <code>s</code> é do tipo ISom e pode apontar para qualquer objeto que cumpra o contrato. Cada chamada corre o método do objeto para onde aponta nesse momento.` },
+    { q: 'Qual é a diferença principal entre herdar de uma classe e cumprir uma interface?', opts: ['Não há diferença', 'Uma classe herda de uma só classe, mas pode cumprir várias interfaces', 'Uma classe pode herdar de várias classes, mas só cumprir uma interface', 'As interfaces têm campos e as classes não'], ok: 1,
+      exp: H`Em C# só há herança de uma classe. As interfaces não trazem código, só obrigações, por isso uma classe pode cumprir as que quiser: <code>class Pato : Animal, IVoa, INada</code>.` },
+  ],
+  exercises: [{
+    title: 'Sons',
+    text: 'Cria a interface ISom com o método string Fazer(), e as classes Cao ("Au") e Gato ("Miau") que a cumprem. Numa List<ISom> com um cão, um gato e outro cão, mostra os sons, um por linha.',
+    run: 'Au\nMiau\nAu\n',
+    hint: H`<code>class Cao : ISom</code> e <code>public string Fazer() { return "Au"; }</code>. Depois um <code>foreach</code> pela lista.`,
+    solution: C`
+List<ISom> sons = new List<ISom>();
+sons.Add(new Cao());
+sons.Add(new Gato());
+sons.Add(new Cao());
+foreach (ISom s in sons)
+{
+    Console.WriteLine(s.Fazer());
+}
+
+interface ISom
+{
+    string Fazer();
+}
+
+class Cao : ISom
+{
+    public string Fazer()
+    {
+        return "Au";
+    }
+}
+
+class Gato : ISom
+{
+    public string Fazer()
+    {
+        return "Miau";
+    }
+}`,
+  }, {
+    title: 'Total a pagar',
+    text: 'Cria a interface IPagavel com int Valor(). A classe Fatura guarda um montante e devolve-o; a classe Salario guarda horas e devolve horas × 10. Com uma fatura de 250 e um salário de 100 horas, mostra o total a pagar.',
+    run: 'Total a pagar: 1250\n',
+    hint: H`Cada classe tem um construtor que guarda o seu número e um <code>Valor()</code> diferente. Soma <code>p.Valor()</code> num <code>foreach</code> sobre uma <code>List&lt;IPagavel&gt;</code>.`,
+    solution: C`
+List<IPagavel> contas = new List<IPagavel>();
+contas.Add(new Fatura(250));
+contas.Add(new Salario(100));
+int total = 0;
+foreach (IPagavel p in contas)
+{
+    total += p.Valor();
+}
+Console.WriteLine($"Total a pagar: {total}");
+
+interface IPagavel
+{
+    int Valor();
+}
+
+class Fatura : IPagavel
+{
+    public int Montante;
+
+    public Fatura(int montante)
+    {
+        Montante = montante;
+    }
+
+    public int Valor()
+    {
+        return Montante;
+    }
+}
+
+class Salario : IPagavel
+{
+    public int Horas;
+
+    public Salario(int horas)
+    {
+        Horas = horas;
+    }
+
+    public int Valor()
+    {
+        return Horas * 10;
+    }
+}`,
+  }],
+});
+
+</script>
+<script>
+(function () {
+  'use strict';
+  const $ = (s, el) => (el || document).querySelector(s);
+  const $$ = (s, el) => Array.from((el || document).querySelectorAll(s));
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+  // ---------- progresso (só neste browser) ----------
+  const STORE = COURSE.storageKey;
+  let progress = {};
+  try { progress = JSON.parse(localStorage.getItem(STORE) || '{}') || {}; } catch (e) { progress = {}; }
+  const saveProgress = () => { try { localStorage.setItem(STORE, JSON.stringify(progress)); } catch (e) { /* sem armazenamento */ } };
+  const isDone = id => !!progress[id];
+
+  // ---------- realce de sintaxe ----------
+  // Cada curso define SYNTAX: uma regex com um grupo por tipo de token e a classe CSS de cada grupo.
+  const TOK = SYNTAX.re;
+  function hlLine(line) {
+    let out = '';
+    let last = 0;
+    let m;
+    TOK.lastIndex = 0;
+    while ((m = TOK.exec(line))) {
+      if (!m[0].length) { TOK.lastIndex++; continue; }
+      out += esc(line.slice(last, m.index));
+      const group = m.findIndex((g, i) => i > 0 && g !== undefined);
+      const cls = SYNTAX.classes[group - 1];
+      out += '<span class="t-' + cls + '">' + esc(m[0]) + '</span>';
+      last = m.index + m[0].length;
+    }
+    return out + esc(line.slice(last));
+  }
+  const hlBlock = code => code.split('\n').map(hlLine).join('\n');
+  function highlightStatic(root) {
+    $$('pre.snip code', root).forEach(el => {
+      if (el.dataset.hl) return;
+      el.innerHTML = hlBlock(el.textContent);
+      el.dataset.hl = '1';
+    });
+  }
+
+  // ---------- ecrã (terminal) ----------
+  function renderTerm(s, withCaret) {
+    if (!s) return '<span class="ph">(ainda nada no ecrã)</span>';
+    const html = s.split(/(⟦[^⟧]*⟧)/).map(part => {
+      if (part.charAt(0) === '⟦') return '<span class="in">' + esc(part.slice(1, -1)) + '</span><span class="enter" aria-hidden="true">↵</span>\n';
+      return esc(part);
+    }).join('');
+    return html + (withCaret ? '<span class="caret" aria-hidden="true"></span>' : '');
+  }
+
+  // ---------- memória ----------
+  function prevValue(prevFrames, fi, frameName, varName) {
+    if (!prevFrames) return undefined;
+    const f = prevFrames[fi];
+    if (!f || f.name !== frameName) return null;
+    const v = f.vars.find(x => x.name === varName);
+    return v ? v.value : null;
+  }
+  const changed = (pv, v) => pv !== undefined && pv !== null && JSON.stringify(pv) !== JSON.stringify(v);
+
+  function scalarHtml(v) {
+    if (v === '?') return '<span class="garbage" title="lixo: valor desconhecido">?</span>';
+    const s = String(v);
+    const k = s.indexOf('→');
+    if (k > -1) return '<span class="ptr-addr">' + esc(s.slice(0, k).trim()) + '</span> <span class="ptr-arrow">' + esc(s.slice(k)) + '</span>';
+    return esc(s);
+  }
+
+  function varHtml(v, pv) {
+    const isNew = pv === null;
+    const val = v.value;
+    let cls = 'var';
+    let body = '';
+    if (Array.isArray(val) && val.length && typeof val[0] === 'object') {
+      cls += ' wide';
+      const fields = Object.keys(val[0]);
+      body = '<div class="t-wrap"><table class="mini"><thead><tr><th>índice</th>' + fields.map(f => '<th>' + esc(f) + '</th>').join('') + '</tr></thead><tbody>' +
+        val.map((row, i) => '<tr><td>[' + i + ']</td>' + fields.map(f => {
+          const c = Array.isArray(pv) && pv[i] && changed(pv[i][f], row[f]);
+          return '<td><span class="' + (c ? 'chg' : '') + '">' + scalarHtml(row[f]) + '</span></td>';
+        }).join('') + '</tr>').join('') + '</tbody></table></div>';
+    } else if (Array.isArray(val)) {
+      cls += val.length > 5 ? ' wide' : '';
+      body = '<div class="cells">' + val.map((c, i) => {
+        const ch = Array.isArray(pv) && changed(pv[i], c);
+        return '<div class="cell"><span class="cell-v' + (ch ? ' chg' : '') + '">' + scalarHtml(c) + '</span><span class="cell-i">[' + i + ']</span></div>';
+      }).join('') + '</div>';
+    } else if (val && typeof val === 'object') {
+      cls += ' wide';
+      body = '<div class="fields">' + Object.keys(val).map(f => {
+        const ch = pv && typeof pv === 'object' && changed(pv[f], val[f]);
+        return '<span class="f-name">.' + esc(f) + '</span><span><span class="' + (ch ? 'chg' : '') + '">' + scalarHtml(val[f]) + '</span></span>';
+      }).join('') + '</div>';
+    } else {
+      body = '<div class="var-val' + (changed(pv, val) ? ' chg' : '') + '">' + scalarHtml(val) + '</div>';
+    }
+    if (isNew) cls += ' is-new';
+    const addr = v.addr ? '<span title="endereço (exemplo)">@' + esc(v.addr) + '</span>' : '';
+    return '<div class="' + cls + '"><div class="var-top"><span class="var-type">' + esc(v.type) + '</span>' + addr + '</div>' +
+      '<div class="var-name">' + esc(v.name) + '</div>' + body + '</div>';
+  }
+
+  function memHtml(frames, prevFrames) {
+    if (!frames.length) return '<p class="mem-empty">O programa ainda não começou a correr.</p>';
+    return frames.map((f, fi) => {
+      const active = fi === frames.length - 1;
+      const vars = f.vars.length
+        ? '<div class="vars">' + f.vars.map(v => varHtml(v, prevValue(prevFrames, fi, f.name, v.name))).join('') + '</div>'
+        : '<p class="mem-empty">sem variáveis</p>';
+      return '<div class="frame' + (active ? ' active' : '') + '"><div class="frame-name"><span>' + esc(f.name) + '()</span>' +
+        (active && frames.length > 1 ? '<span>a correr</span>' : (!active ? '<span>em pausa</span>' : '')) + '</div>' + vars + '</div>';
+    }).join('');
+  }
+
+  // ---------- visualizador ----------
+  // Alguns cursos trocam o painel da direita (Memória + Ecrã) por outro, definido em VIZ_SIDE
+  // (por exemplo, no SQL: Base de dados + Resultado). Sem VIZ_SIDE fica o painel do C.
+  const SIDE = typeof VIZ_SIDE !== 'undefined' ? VIZ_SIDE : null;
+
+  function mountViz(host, ex, num) {
+    const steps = buildSteps(ex.steps, ex.db);
+    const lines = ex.code.split('\n');
+    const hasAddr = ex.steps.some(s => s.d && Object.values(s.d).some(vs => Object.values(vs).some(spec => spec[2])));
+    let cur = 0;
+    host.className = 'viz';
+    host.tabIndex = 0;
+    host.setAttribute('aria-label', 'Exemplo ' + num + ': ' + ex.title + '. Usa as setas esquerda e direita para avançar.');
+    host.innerHTML =
+      '<div class="viz-head">' +
+        '<div class="viz-title"><small>Exemplo ' + num + '</small><h3>' + esc(ex.title) + '</h3></div>' +
+        '<div class="viz-controls">' +
+          '<button class="btn" type="button" data-a="prev">← Anterior</button>' +
+          '<span class="viz-count" aria-live="polite"></span>' +
+          '<button class="btn btn-primary" type="button" data-a="next">Seguinte →</button>' +
+          '<button class="btn btn-ghost" type="button" data-a="reset">Recomeçar</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="viz-bar"><span></span></div>' +
+      '<div class="viz-note"><span class="viz-note-line"></span><div class="viz-note-text"></div></div>' +
+      '<div class="viz-grid">' +
+        '<div class="panel"><div class="panel-label"><span>Código</span><span>▶ = linha a correr</span></div><div class="code">' +
+          lines.map((l, i) => '<div class="ln" data-n="' + (i + 1) + '"><span class="no">' + (i + 1) + '</span><span class="arrow"></span><span class="src">' + (hlLine(l) || ' ') + '</span></div>').join('') +
+        '</div></div>' +
+        '<div class="viz-side">' + (SIDE ? SIDE.panelsHtml() :
+          '<div class="panel"><div class="panel-label"><span>Memória</span>' + (hasAddr ? '<span class="addr-note">endereços de exemplo</span>' : '<span>amarelo = mudou agora</span>') + '</div><div class="mem"></div></div>' +
+          '<div class="panel out"><div class="panel-label"><span>Ecrã</span></div><pre class="term"></pre></div>') +
+        '</div>' +
+      '</div>';
+
+    const btnPrev = $('[data-a="prev"]', host);
+    const btnNext = $('[data-a="next"]', host);
+    const count = $('.viz-count', host);
+    const bar = $('.viz-bar span', host);
+    const noteLine = $('.viz-note-line', host);
+    const noteText = $('.viz-note-text', host);
+    const mem = $('.mem', host);
+    const term = $('.term', host);
+    const codeBox = $('.code', host);
+    const lnEls = $$('.ln', host);
+
+    function render() {
+      const s = steps[cur];
+      const prev = cur > 0 ? steps[cur - 1] : null;
+      lnEls.forEach(el => {
+        const on = Number(el.dataset.n) === s.l;
+        el.classList.toggle('cur', on);
+        $('.arrow', el).textContent = on ? '▶' : '';
+      });
+      noteLine.textContent = 'linha ' + s.l;
+      noteText.innerHTML = s.n;
+      if (SIDE) {
+        SIDE.render(host, s, prev, { renderTerm, isLast: cur === steps.length - 1 });
+      } else {
+        mem.innerHTML = memHtml(s.frames, prev ? prev.frames : null);
+        term.innerHTML = renderTerm(s.out, cur < steps.length - 1);
+        term.scrollTop = term.scrollHeight;
+      }
+      count.textContent = 'Passo ' + (cur + 1) + ' de ' + steps.length;
+      bar.style.width = ((cur + 1) / steps.length * 100) + '%';
+      btnPrev.disabled = cur === 0;
+      btnNext.disabled = cur === steps.length - 1;
+      btnNext.textContent = cur === steps.length - 1 ? 'Fim' : 'Seguinte →';
+    }
+    function go(i) { cur = Math.max(0, Math.min(steps.length - 1, i)); render(); }
+    host.addEventListener('click', e => {
+      const a = e.target.closest('[data-a]');
+      if (!a) return;
+      if (a.dataset.a === 'prev') go(cur - 1);
+      if (a.dataset.a === 'next') go(cur + 1);
+      if (a.dataset.a === 'reset') go(0);
+    });
+    host.addEventListener('keydown', e => {
+      if (e.target.closest('button') && (e.key === ' ' || e.key === 'Enter')) return;
+      if (e.key === 'ArrowRight') { e.preventDefault(); go(cur + 1); }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); go(cur - 1); }
+      if (e.key === 'Home') { e.preventDefault(); go(0); }
+    });
+    render();
+    void codeBox;
+  }
+
+  // ---------- quiz ----------
+  // Uma opção de resposta. No SQL, as respostas "mono" são resultados e aparecem como tabelinhas.
+  function optionHtml(q, text) {
+    if (q.mono && SIDE && SIDE.outputHtml) return '<span class="opt-txt">' + SIDE.outputHtml(text) + '</span>';
+    return '<span class="opt-txt' + (q.mono ? ' mono' : '') + '">' + esc(text) + '</span>';
+  }
+
+  function mountQuiz(host, lesson) {
+    const qs = lesson.quiz;
+    let answers = qs.map(() => null);
+    function draw() {
+      host.innerHTML = qs.map((q, qi) =>
+        '<div class="q" data-q="' + qi + '">' +
+          '<p class="q-text"><span class="q-num">' + (qi + 1) + '/' + qs.length + '</span><span>' + esc(q.q) + '</span></p>' +
+          (q.code ? '<pre class="snip"><code>' + hlBlock(q.code) + '</code></pre>' : '') +
+          '<div class="opts" role="group" aria-label="Opções">' + q.opts.map((o, oi) =>
+            '<button class="opt" type="button" data-o="' + oi + '"><span class="opt-key">' + 'ABCD'[oi] + '</span>' + optionHtml(q, o) + '</button>'
+          ).join('') + '</div>' +
+          '<div class="q-exp" hidden></div>' +
+        '</div>'
+      ).join('') + '<div class="score" hidden></div>';
+    }
+    function answer(qi, oi) {
+      if (answers[qi] !== null) return;
+      answers[qi] = oi;
+      const q = qs[qi];
+      const box = $('[data-q="' + qi + '"]', host);
+      $$('.opt', box).forEach((b, i) => {
+        b.disabled = true;
+        if (i === q.ok) b.classList.add('right');
+        else if (i === oi) b.classList.add('wrong');
+        else b.classList.add('dim');
+      });
+      const exp = $('.q-exp', box);
+      exp.innerHTML = (oi === q.ok ? '<strong class="ok">Certo.</strong> ' : '<strong class="bad">Não é bem.</strong> A resposta é a ' + 'ABCD'[q.ok] + '. ') + q.exp;
+      exp.hidden = false;
+      if (answers.every(a => a !== null)) finish();
+    }
+    function finish() {
+      const right = answers.filter((a, i) => a === qs[i].ok).length;
+      const prevBest = progress[lesson.id] ? progress[lesson.id].best : 0;
+      progress[lesson.id] = { best: Math.max(prevBest, right), total: qs.length };
+      saveProgress();
+      renderSidebar();
+      const msg = right === qs.length ? 'Acertaste todas. Podes passar à lição seguinte.'
+        : right * 2 >= qs.length ? 'Quase. Relê as explicações das que falhaste e corre outra vez o exemplo.'
+        : 'Volta a correr o exemplo passo a passo, com calma, e tenta outra vez.';
+      const sc = $('.score', host);
+      sc.innerHTML = '<div><span class="score-num">' + right + '/' + qs.length + '</span><p>' + msg + '</p></div><button class="btn" type="button" data-retry>Repetir perguntas</button>';
+      sc.hidden = false;
+    }
+    host.addEventListener('click', e => {
+      if (e.target.closest('[data-retry]')) { answers = qs.map(() => null); draw(); return; }
+      const b = e.target.closest('.opt');
+      if (!b) return;
+      answer(Number(b.closest('[data-q]').dataset.q), Number(b.dataset.o));
+    });
+    draw();
+  }
+
+  // ---------- exercícios ----------
+  // O que o programa da solução mostra. No SQL é o resultado da consulta, como tabela.
+  function runHtml(run) {
+    if (SIDE && SIDE.outputHtml) return '<div><div class="ex-label">Resultado esperado</div>' + SIDE.outputHtml(run) + '</div>';
+    return '<div><div class="ex-label">Exemplo de execução (a amarelo, o que escreves)</div><pre class="term">' + renderTerm(run, false) + '</pre></div>';
+  }
+
+  function exHtml(ex, i) {
+    return '<article class="ex">' +
+      '<h3>Exercício ' + (i + 1) + ': ' + esc(ex.title) + '</h3>' +
+      '<p>' + esc(ex.text) + '</p>' +
+      runHtml(ex.run) +
+      '<details><summary>Ver dica</summary><div class="det-body"><p>' + ex.hint + '</p></div></details>' +
+      '<details><summary>Ver solução</summary><div class="det-body"><pre class="snip"><code>' + hlBlock(ex.solution) + '</code></pre>' +
+        '<div class="sol-tools"><button class="btn" type="button" data-copy="' + i + '">Copiar código</button></div></div></details>' +
+    '</article>';
+  }
+
+  // ---------- vistas ----------
+  const view = $('#view');
+
+  function renderHome() {
+    view.innerHTML = '';
+    view.appendChild($('#tpl-home').content.cloneNode(true));
+    const next = LESSONS.find(l => !isDone(l.id));
+    const actions = $('#hero-actions');
+    if (!Object.keys(progress).length) {
+      actions.innerHTML = '<a class="btn btn-primary" href="#licao-0">Começar pela lição 0</a><a class="btn" href="#cabula">Ver a cábula</a>';
+    } else if (next) {
+      actions.innerHTML = '<a class="btn btn-primary" href="#licao-' + next.id + '">Continuar: lição ' + next.id + '</a><a class="btn" href="#cabula">Ver a cábula</a>';
+    } else {
+      actions.innerHTML = '<a class="btn btn-primary" href="#cabula">Rever a cábula</a><a class="btn" href="#licao-0">Recomeçar as lições</a>';
+    }
+    $('#home-lessons').innerHTML = LESSONS.map(l =>
+      '<a class="card-lesson" href="#licao-' + l.id + '"><span class="nav-num">' + l.id + '</span><strong>' + esc(l.title) + '</strong><span class="s">' + esc(l.short) + '</span>' +
+      (isDone(l.id) ? '<span class="done-tag">Feita · ' + progress[l.id].best + '/' + progress[l.id].total + '</span>' : '') + '</a>'
+    ).join('');
+  }
+
+  function renderCheat() {
+    view.innerHTML = '';
+    view.appendChild($('#tpl-cheat').content.cloneNode(true));
+    highlightStatic(view);
+  }
+
+  function renderLesson(id) {
+    const L = LESSONS[id];
+    const prev = LESSONS[id - 1];
+    const next = LESSONS[id + 1];
+    view.innerHTML =
+      '<section class="lesson-head"><span class="eyebrow">Lição ' + L.id + ' de ' + (LESSONS.length - 1) + '</span><h1>' + esc(L.title) + '</h1><p class="lead">' + esc(L.short.charAt(0).toUpperCase() + L.short.slice(1)) + '.</p></section>' +
+      '<section class="prose">' + L.body + '</section>' +
+      '<aside class="analogy"><span class="analogy-label">Pensa assim</span><p>' + L.analogy + '</p></aside>' +
+      (L.db && SIDE && SIDE.dbHtml ? '<section class="section"><div class="section-head"><h2>A base de dados desta lição</h2><p>Os exemplos, as perguntas e os exercícios usam estas tabelas.</p></div>' + SIDE.dbHtml(L.db) + '</section>' : '') +
+      '<section class="section"><div class="section-head"><h2>Vê a correr</h2><p>Carrega em "Seguinte" (ou usa as setas do teclado) e acompanha a linha amarela, a memória e o ecrã.</p></div>' +
+        L.examples.map((_, i) => '<div data-viz="' + i + '"></div>').join('') + '</section>' +
+      '<section class="section"><div class="section-head"><h2>Erros comuns</h2></div><ul class="mistakes">' + L.mistakes.map(m => '<li>' + m + '</li>').join('') + '</ul></section>' +
+      '<section class="section"><div class="section-head"><h2>Testa-te</h2><p>Responde sem correr o código. Se precisares, faz a tabela de execução no papel.</p></div><div class="quiz" id="quiz"></div></section>' +
+      '<section class="section"><div class="section-head"><h2>Pratica</h2><p>Escreve o programa no computador antes de abrires a solução.</p></div><div class="exs">' + L.exercises.map(exHtml).join('') + '</div></section>' +
+      '<nav class="pager" aria-label="Navegação entre lições">' +
+        (prev ? '<a href="#licao-' + prev.id + '"><small>← Anterior</small><span>' + prev.id + '. ' + esc(prev.title) + '</span></a>' : '<a href="#inicio"><small>← Início</small><span>Como usar</span></a>') +
+        (next ? '<a class="next" href="#licao-' + next.id + '"><small>Seguinte →</small><span>' + next.id + '. ' + esc(next.title) + '</span></a>' : '<a class="next" href="#cabula"><small>Seguinte →</small><span>' + esc(COURSE.cheatTitle) + '</span></a>') +
+      '</nav>';
+    L.examples.forEach((ex, i) => mountViz($('[data-viz="' + i + '"]', view), ex, i + 1));
+    mountQuiz($('#quiz', view), L);
+    highlightStatic(view);
+    view.querySelectorAll('[data-copy]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const code = L.exercises[Number(btn.dataset.copy)].solution;
+        try {
+          await navigator.clipboard.writeText(code);
+          btn.textContent = 'Copiado';
+        } catch (e) {
+          const pre = btn.closest('.det-body').querySelector('pre');
+          const r = document.createRange();
+          r.selectNodeContents(pre);
+          const sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(r);
+          btn.textContent = 'Selecionado: usa Ctrl+C';
+        }
+        setTimeout(() => { btn.textContent = 'Copiar código'; }, 2200);
+      });
+    });
+  }
+
+  // ---------- barra lateral ----------
+  function currentKey() {
+    const h = location.hash.replace('#', '');
+    if (h === 'cabula') return 'cabula';
+    const m = h.match(/^licao-(\d+)$/);
+    if (m && LESSONS[Number(m[1])]) return 'licao-' + m[1];
+    return 'inicio';
+  }
+  function renderSidebar() {
+    const key = currentKey();
+    const done = LESSONS.filter(l => isDone(l.id)).length;
+    $('#progress').innerHTML = '<span>' + done + ' de ' + LESSONS.length + ' lições feitas</span><div class="progress-track"><div class="progress-fill" style="width:' + (done / LESSONS.length * 100) + '%"></div></div>';
+    const cur = k => (key === k ? ' aria-current="page"' : '');
+    $('#nav').innerHTML =
+      '<a href="#inicio"' + cur('inicio') + '><span class="nav-icon">~</span><span>Início</span><span></span></a>' +
+      '<div class="nav-label">Lições</div>' +
+      LESSONS.map(l => '<a href="#licao-' + l.id + '"' + cur('licao-' + l.id) + '><span class="nav-num">' + l.id + '</span><span>' + esc(l.title) + '</span><span class="nav-done">' + (isDone(l.id) ? '✓' : '') + '</span></a>').join('') +
+      '<div class="nav-label">Consulta</div>' +
+      '<a href="#cabula"' + cur('cabula') + '><span class="nav-icon">{ }</span><span>' + esc(COURSE.cheatTitle) + '</span><span></span></a>';
+  }
+
+  // ---------- menu no telemóvel ----------
+  const sidebar = $('#sidebar');
+  const menuBtn = $('#menu-btn');
+  let scrim = null;
+  function setMenu(open) {
+    sidebar.classList.toggle('open', open);
+    menuBtn.setAttribute('aria-expanded', String(open));
+    if (open && !scrim) {
+      scrim = document.createElement('div');
+      scrim.className = 'scrim';
+      scrim.addEventListener('click', () => setMenu(false));
+      document.body.appendChild(scrim);
+    } else if (!open && scrim) {
+      scrim.remove();
+      scrim = null;
+    }
+  }
+  menuBtn.addEventListener('click', () => setMenu(!sidebar.classList.contains('open')));
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') setMenu(false); });
+
+  // ---------- rotas ----------
+  function route() {
+    const key = currentKey();
+    if (key === 'cabula') renderCheat();
+    else if (key.indexOf('licao-') === 0) renderLesson(Number(key.slice(6)));
+    else renderHome();
+    renderSidebar();
+    setMenu(false);
+    window.scrollTo(0, 0);
+  }
+  window.addEventListener('hashchange', route);
+  route();
+})();
+</script>
+</body>
+</html>

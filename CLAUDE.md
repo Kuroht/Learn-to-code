@@ -68,6 +68,18 @@ Exercise `run` uses the same `⟦...⟧` convention. All of `o` joined together 
   a variable whose value is `'@o1'` points to object o1 (shown as a coloured `→ #1` tag, no drawn arrows). Objects no name can reach
   fade for one step, then disappear. Frame `global` is shown as is; other frames get `()`.
 
+## C# course specifics (`courses/csharp`)
+
+- Programs use top-level statements: statements first, then static methods (local functions), then classes/interfaces at the end.
+- The runner's `prepare` compiles **all** programs in one `dotnet build` (each in its own namespace `P<n>`, with a generated
+  `Dispatcher` Main), then runs the one exe per program. Invariant culture (reals print `3.5`; on a pt-PT Windows students see `3,5`),
+  English compiler messages, nullable off.
+- A program that doesn't compile outputs its first error, e.g. `error CS0029: Cannot implicitly convert type 'int' to 'bool'`,
+  so "isto compila?" quizzes are verified. An uncaught exception outputs `Unhandled exception. System.X: message`.
+- Never print an object without `ToString`: in the checker its type name would include the wrapper namespace (`P12.Aluno`).
+- Visualizer: `viz: 'refs'` with `vizLabels` Pilha (stack) / Heap. Value types sit in the stack (`['int', '19']`), structs as
+  inline objects (`['Ponto', { X: '1' }]`), strings inline (simplification, said in lesson 8), classes/arrays/lists in the heap.
+
 ## Python course specifics (`courses/python`)
 
 - Runs `python -I` (or `python3`). If the program ends with an exception, the last stderr line (e.g. `TypeError: ...`)

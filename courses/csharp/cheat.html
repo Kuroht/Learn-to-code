@@ -1,0 +1,161 @@
+  <section class="lesson-head">
+    <span class="eyebrow">Resumo</span>
+    <h1>Cábula de C#</h1>
+    <p class="lead">Tudo o que as lições ensinam, numa página. Boa para ter aberta enquanto fazes exercícios.</p>
+  </section>
+  <div class="cheat">
+    <div class="box">
+      <h3>Estrutura de um programa</h3>
+<pre class="snip"><code class="csharp">// 1. instruções (top-level statements)
+Console.Write("Idade? ");
+int idade = int.Parse(Console.ReadLine());
+Console.WriteLine($"Para o ano: {idade + 1}");
+
+// 2. métodos
+static int Dobro(int x)
+{
+    return x * 2;
+}
+
+// 3. classes e interfaces, sempre no fim
+class Aluno { }</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Tipos</h3>
+      <div class="t-wrap"><table class="t">
+        <thead><tr><th>Tipo</th><th>Exemplo</th><th>Valor ou referência</th></tr></thead>
+        <tbody>
+          <tr><td><code>int</code>, <code>double</code></td><td><code>19</code>, <code>14.5</code></td><td>valor</td></tr>
+          <tr><td><code>bool</code>, <code>char</code></td><td><code>true</code>, <code>'A'</code></td><td>valor</td></tr>
+          <tr><td><code>struct</code></td><td><code>struct Ponto { ... }</code></td><td>valor</td></tr>
+          <tr><td><code>string</code></td><td><code>"Ana"</code></td><td>referência (mas não muda)</td></tr>
+          <tr><td>arrays, <code>List&lt;T&gt;</code></td><td><code>int[]</code>, <code>List&lt;int&gt;</code></td><td>referência</td></tr>
+          <tr><td><code>class</code></td><td><code>class Aluno { ... }</code></td><td>referência</td></tr>
+        </tbody>
+      </table></div>
+      <p><code>(int)2.9</code> → 2 · <code>(double)7 / 2</code> → 3.5 · <code>int.Parse("12")</code> → 12</p>
+    </div>
+
+    <div class="box">
+      <h3>Decisões e ciclos</h3>
+<pre class="snip"><code class="csharp">if (nota &gt;= 10 &amp;&amp; nota &lt;= 20) { ... }
+else if (nota &gt;= 0) { ... }
+else { ... }
+
+switch (opcao)
+{
+    case 1:
+        ...
+        break;      // obrigatório
+    default:
+        ...
+        break;
+}
+
+for (int i = 0; i &lt; n; i++) { ... }
+foreach (int x in lista) { ... }
+while (cond) { ... }
+do { ... } while (cond);</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Arrays e List&lt;T&gt;</h3>
+<pre class="snip"><code class="csharp">int[] v = { 12, 17, 9 };     // ou new int[3] (zeros)
+v[0]   v.Length
+
+List&lt;int&gt; l = new List&lt;int&gt;();
+l.Add(5);  l.Insert(0, 3);
+l.Remove(5);  l.RemoveAt(0);
+l[0]  l.Count  l.Contains(3)
+string.Join(", ", l)         // para mostrar</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Classes</h3>
+<pre class="snip"><code class="csharp">class Aluno
+{
+    private int nota;                 // campo escondido
+    public string Nome { get; set; }  // propriedade
+
+    public Aluno(string nome)         // construtor
+    {
+        Nome = nome;
+    }
+
+    public int Nota
+    {
+        get { return nota; }
+        set { if (value &gt;= 0) nota = value; }
+    }
+}
+Aluno a = new Aluno("Ana");</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Herança e interfaces</h3>
+<pre class="snip"><code class="csharp">class Animal
+{
+    public virtual string Som() { return "..."; }
+}
+class Cao : Animal
+{
+    public override string Som() { return "Au"; }
+}
+
+interface IForma { int Area(); }
+class Quadrado : IForma
+{
+    public int Lado;
+    public int Area() { return Lado * Lado; }
+}
+List&lt;IForma&gt; formas = new List&lt;IForma&gt;();</code></pre>
+    </div>
+
+    <div class="box">
+      <h3>Erros de compilação</h3>
+      <div class="t-wrap"><table class="t">
+        <thead><tr><th>Código</th><th>Costuma ser</th></tr></thead>
+        <tbody>
+          <tr><td><code>CS1002: ; expected</code></td><td>falta um <code>;</code></td></tr>
+          <tr><td><code>CS0103: The name 'x' does not exist in the current context</code></td><td>nome mal escrito, ou variável de outro bloco</td></tr>
+          <tr><td><code>CS0165: Use of unassigned local variable 'x'</code></td><td>variável usada sem valor (ou objeto sem <code>new</code>)</td></tr>
+          <tr><td><code>CS0029: Cannot implicitly convert type 'int' to 'bool'</code></td><td><code>=</code> em vez de <code>==</code> num if; ou tipos misturados</td></tr>
+          <tr><td><code>CS0266: Cannot implicitly convert type 'double' to 'int'</code></td><td>falta a conversão <code>(int)</code></td></tr>
+          <tr><td><code>CS0163: Control cannot fall through from one case label</code></td><td>falta o <code>break</code> num case</td></tr>
+          <tr><td><code>CS0122: 'Aluno.nota' is inaccessible due to its protection level</code></td><td>o campo é <code>private</code></td></tr>
+          <tr><td><code>CS0144: Cannot create an instance of the abstract type or interface</code></td><td><code>new</code> de uma interface ou classe abstrata</td></tr>
+          <tr><td><code>CS0535: 'X' does not implement interface member</code></td><td>falta um método do contrato</td></tr>
+          <tr><td><code>CS0161: not all code paths return a value</code></td><td>falta o <code>return</code> em algum caminho</td></tr>
+          <tr><td><code>CS8600</code> (aviso)</td><td>nos projetos novos, <code>string s = Console.ReadLine();</code> avisa que pode vir null. Para já, podes ignorar.</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="box">
+      <h3>Exceções (ao correr)</h3>
+      <div class="t-wrap"><table class="t">
+        <thead><tr><th>Exceção</th><th>Costuma ser</th></tr></thead>
+        <tbody>
+          <tr><td><code>NullReferenceException</code></td><td>usaste uma variável que está a <code>null</code></td></tr>
+          <tr><td><code>IndexOutOfRangeException</code></td><td>índice fora do array (o último é <code>Length - 1</code>)</td></tr>
+          <tr><td><code>ArgumentOutOfRangeException</code></td><td>índice fora de uma <code>List</code></td></tr>
+          <tr><td><code>FormatException</code></td><td><code>int.Parse</code> de um texto que não é número</td></tr>
+          <tr><td><code>DivideByZeroException</code></td><td>divisão inteira por zero</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="box">
+      <h3>Antes de entregar</h3>
+      <ul class="checklist">
+        <li>As instruções estão no topo, os métodos a seguir e as classes no fim.</li>
+        <li>Todos os objetos foram criados com <code>new</code> antes de serem usados.</li>
+        <li>Onde querias uma cópia de um objeto, criaste um objeto novo (<code>b = a</code> não copia).</li>
+        <li>Os campos que não devem ser mexidos de fora são <code>private</code>.</li>
+        <li>Os métodos substituídos têm <code>virtual</code> na mãe e <code>override</code> na filha.</li>
+        <li>Cada case do switch tem <code>break</code>.</li>
+        <li>As divisões que precisam de casas decimais têm um <code>double</code>.</li>
+      </ul>
+    </div>
+  </div>

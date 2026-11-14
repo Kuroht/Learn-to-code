@@ -13,11 +13,18 @@ const VIZ_SIDE = (function () {
     return '<span class="ref ref-c' + (n % 6) + (changed ? ' chg' : '') + '">' + (arrow ? '→ ' : '') + '#' + esc(id.replace(/^o/, '')) + '</span>';
   }
 
-  // Um valor dentro de uma variável ou de um objeto: uma referência vira etiqueta, o resto aparece tal e qual.
+  // Um valor dentro de uma variável ou de um objeto: uma referência vira etiqueta, um struct do C#
+  // (um objeto guardado na própria variável) mostra os campos, e o resto aparece tal e qual.
   function valueHtml(v, changed) {
     if (isRef(v)) return chip(v.slice(1), changed, true);
+    if (v && typeof v === 'object' && !Array.isArray(v)) {
+      return '<span class="inline-struct' + (changed ? ' chg' : '') + '">' +
+        Object.keys(v).map(k => '<span class="f-name">' + esc(k) + '</span> ' + valueHtml(v[k], false)).join('<span class="sep">, </span>') + '</span>';
+    }
     return '<span class="' + (changed ? 'chg' : '') + '">' + esc(v) + '</span>';
   }
+  // Os nomes dos painéis: por omissão os do Python; um curso pode trocá-los em course.js (vizLabels).
+  const LABELS = Object.assign({ names: 'Nomes', objects: 'Objetos' }, typeof COURSE !== 'undefined' && COURSE.vizLabels ? COURSE.vizLabels : {});
   const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 
   // ---------- Nomes ----------
@@ -36,7 +43,7 @@ const VIZ_SIDE = (function () {
         }).join('') + '</div>'
         : '<p class="mem-empty">sem nomes</p>';
       // O frame de topo chama-se "global" (Python) ou "Main" (C#); os das funções levam () no fim.
-      const label = f.name === 'global' ? 'global' : f.name + '()';
+      const label = f.name === 'global' || !/^\w+$/.test(f.name) ? f.name : f.name + '()';
       return '<div class="frame' + (active ? ' active' : '') + '"><div class="frame-name"><span>' + esc(label) + '</span>' +
         (active && frames.length > 1 ? '<span>a correr</span>' : (!active ? '<span>em pausa</span>' : '')) + '</div>' + vars + '</div>';
     }).join('');
@@ -92,8 +99,8 @@ const VIZ_SIDE = (function () {
 
   return {
     panelsHtml() {
-      return '<div class="panel"><div class="panel-label"><span>Nomes</span><span>→ #n = aponta para o objeto #n</span></div><div class="mem names-box"></div></div>' +
-        '<div class="panel"><div class="panel-label"><span>Objetos</span><span>amarelo = mudou agora</span></div><div class="mem heap-box"></div></div>' +
+      return '<div class="panel"><div class="panel-label"><span>' + esc(LABELS.names) + '</span><span>→ #n = aponta para o objeto #n</span></div><div class="mem names-box"></div></div>' +
+        '<div class="panel"><div class="panel-label"><span>' + esc(LABELS.objects) + '</span><span>amarelo = mudou agora</span></div><div class="mem heap-box"></div></div>' +
         '<div class="panel out"><div class="panel-label"><span>Ecrã</span></div><pre class="term"></pre></div>';
     },
     // helpers vem do template: renderTerm (o ecrã) e isLast (se é o último passo).

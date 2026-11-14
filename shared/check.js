@@ -102,6 +102,18 @@ function runPrograms(course, lessons, report) {
   };
   const nonAscii = (label, text) => { if (/[^\x00-\x7f⟦⟧]/.test(text)) report.warn(label + ': acentos no texto do programa', JSON.stringify(text)); };
 
+  // Um runner pode compilar tudo de uma vez antes de correr (o de C# faz um só "dotnet build"
+  // para os programas todos, em vez de um por programa). Recebe a lista de todos os programas.
+  if (runner.prepare) {
+    const all = lessons.flatMap(L => [].concat(
+      runner.checkExample ? [] : L.examples.map(ex => ex.code),
+      L.quiz.filter(q => q.check).map(q => runner.wrapQuiz(q.code, q, L)),
+      L.exercises.map(ex => ex.solution),
+    ));
+    const problem = runner.prepare(all, tmpDir);
+    if (problem) { report.check(`${runner.toolName}: preparar os programas`, false, problem); return; }
+  }
+
   lessons.forEach(L => {
     L.examples.forEach((ex, ei) => {
       const label = `Lição ${L.id} exemplo ${ei + 1} (${ex.title})`;

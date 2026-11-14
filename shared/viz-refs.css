@@ -25,3 +25,6 @@
 .obj-empty { font-family: var(--font-mono); font-size: .8rem; color: var(--muted); font-style: italic; }
 .orphan-note { font-size: .7rem; color: var(--muted); font-style: italic; }
 .mini.kv td { font-family: var(--font-mono); }
+.inline-struct { font-size: .88rem; }
+.inline-struct .f-name { color: var(--muted); }
+.inline-struct .sep { color: var(--muted); }
